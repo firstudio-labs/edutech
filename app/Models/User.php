@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'purchase_count',
+        'total_spent',
+        'status',
+        'role',
     ];
 
     /**
@@ -44,5 +49,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'user_products')->withPivot('purchased_at')->withTimestamps();
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }

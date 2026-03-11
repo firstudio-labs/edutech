@@ -1,0 +1,286 @@
+/* Spacer handled by about-hero padding */
+
+.about-hero {
+    position: relative;
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    padding: calc(var(--navbar-height) + var(--space-12)) 0 var(--space-16);
+    overflow: hidden;
+}
+
+.about-hero__glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 100%;
+    background: radial-gradient(ellipse, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.about-hero__content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+}
+
+.about-title {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-bold);
+    margin: var(--space-3) 0;
+    line-height: 1.2;
+}
+
+.about-desc {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+}
+
+.about-main {
+    padding: var(--space-12) var(--space-6) var(--space-20);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+}
+
+.about-section {}
+
+.about-section-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-6);
+}
+
+.about-section-title.text-center {
+    text-align: center;
+}
+
+.story-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-10);
+    align-items: flex-start;
+}
+
+.story-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.story-text p {
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+}
+
+.story-text em {
+    color: var(--color-accent-light);
+    font-style: normal;
+    font-weight: var(--font-semibold);
+}
+
+.story-visual {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.story-card {
+    padding: var(--space-4);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.story-card__year {
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    color: var(--color-accent-light);
+    background: var(--color-accent-dim);
+    padding: 2px 10px;
+    border-radius: var(--radius-full);
+    display: inline-block;
+    margin-bottom: var(--space-2);
+}
+
+.story-card p {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+
+.vm-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+}
+
+.vm-card {
+    padding: var(--space-8);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+}
+
+.vm-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-lg);
+    background: var(--color-accent-dim);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent-light);
+    margin-bottom: var(--space-4);
+}
+
+.vm-card h3 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-3);
+}
+
+.vm-card p {
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+}
+
+.vm-card ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.vm-card li {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    padding-left: var(--space-4);
+    position: relative;
+    line-height: 1.6;
+}
+
+.vm-card li::before {
+    content: '•';
+    color: var(--color-accent-light);
+    position: absolute;
+    left: 0;
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+}
+
+.achievement-card {
+    text-align: center;
+    padding: var(--space-6);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+}
+
+.achievement-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-lg);
+    background: var(--color-accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent-light);
+    margin: 0 auto var(--space-4);
+}
+
+.achievement-value {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-extrabold);
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.achievement-label {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-1);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+}
+
+.team-card {
+    text-align: center;
+    padding: var(--space-6);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    transition: all var(--transition-base);
+}
+
+.team-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-3px);
+}
+
+.team-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gradient-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: white;
+    margin: 0 auto var(--space-3);
+}
+
+.team-name {
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    margin-bottom: 2px;
+}
+
+.team-role {
+    font-size: var(--text-xs);
+    color: var(--color-accent-light);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-2);
+}
+
+.team-bio {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+    .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+
+    .story-section,
+    .vm-section {
+        grid-template-columns: 1fr;
+    }
+
+    .about-title {
+        font-size: var(--text-2xl);
+    }
+}

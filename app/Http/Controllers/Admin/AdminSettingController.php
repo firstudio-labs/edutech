@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\SiteContent;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class AdminSettingController extends Controller
+{
+    // Ads page
+    public function ads()
+    {
+        $adsData = SiteContent::where('key', 'ads_promo')->first();
+        $products = \App\Models\Product::select('id', 'name', 'price')->get();
+        return Inertia::render('Admin/AdminAds', [
+            'dbAds' => $adsData ? $adsData->value : null,
+            'products' => $products
+        ]);
+    }
+
+    public function saveAds(Request $request)
+    {
+        $request->validate([
+            'title' => 'nullable|string',
+            'subtitle' => 'nullable|string',
+            'videoUrl' => 'nullable|string',
+            'ctaTitle' => 'nullable|string',
+            'ctaSubtitle' => 'nullable|string',
+            'benefits' => 'nullable|array',
+            'selectedProductIds' => 'nullable|array'
+        ]);
+
+        SiteContent::updateOrCreate(
+            ['key' => 'ads_promo'],
+            ['value' => json_encode($request->all())]
+        );
+
+        return back()->with('success', 'Landing Page Ads berhasil dipublikasikan!');
+    }
+
+    // Content page
+    public function content()
+    {
+        $contentData = SiteContent::where('key', 'site_content')->first();
+        return Inertia::render('Admin/AdminContent', [
+            'dbContent' => $contentData ? $contentData->value : null
+        ]);
+    }
+
+    public function saveContent(Request $request)
+    {
+        $request->validate([
+            'home' => 'required|array',
+            'about' => 'required|array',
+            'contact' => 'required|array',
+            'social' => 'required|array',
+        ]);
+
+        SiteContent::updateOrCreate(
+            ['key' => 'site_content'],
+            ['value' => json_encode($request->all())]
+        );
+
+        return back()->with('success', 'Konten berhasil disimpan dan dipublikasikan!');
+    }
+
+    // Chatbot page
+    public function chatbot()
+    {
+        return Inertia::render('Admin/AdminChatbot');
+    }
+}

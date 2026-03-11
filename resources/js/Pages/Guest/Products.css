@@ -1,0 +1,186 @@
+
+.products-header {
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    padding: calc(var(--navbar-height) + var(--space-10)) 0 var(--space-10);
+}
+
+.products-title {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-3);
+}
+
+.products-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+}
+
+.products-main {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-24);
+}
+
+.products-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-icon {
+    position: absolute;
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.search-input:focus {
+    border-color: var(--color-accent);
+}
+
+.search-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.categories-tabs {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.cat-tab {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    transition: all var(--transition-fast);
+}
+
+.cat-tab:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text-primary);
+}
+
+.cat-tab.active {
+    background: var(--color-accent-dim);
+    border-color: var(--color-accent);
+    color: var(--color-accent-light);
+}
+
+.sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-muted);
+    min-width: 220px;
+}
+
+.sort-select {
+    flex: 1;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    outline: none;
+    cursor: pointer;
+}
+
+.sort-select:focus {
+    border-color: var(--color-accent);
+}
+
+.results-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.results-count {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+.clear-filter {
+    font-size: var(--text-sm);
+    color: var(--color-accent-light);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: var(--color-accent-dim);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-20) 0;
+    color: var(--color-text-secondary);
+}
+
+.empty-state p {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-4);
+}
+
+.btn-reset {
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-full);
+    background: var(--color-accent-dim);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    color: var(--color-accent-light);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+}
+
+@media (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .products-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sort-wrap {
+        min-width: auto;
+    }
+}
+

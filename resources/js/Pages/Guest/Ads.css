@@ -1,0 +1,252 @@
+/* src/pages/guest/Ads.css */
+.ads-landing-min {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1a1a2e;
+    background: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.ads-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.ads-header {
+    background: #fff;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.ads-header .ads-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ads-brand {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: #0f4c81;
+    letter-spacing: -0.5px;
+}
+
+.ads-badge-top {
+    background: #ffebee;
+    color: #d32f2f;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.section-dark {
+    background: linear-gradient(135deg, #0f4c81 0%, #0a2e4f 100%);
+    color: white;
+    padding: 40px 0 60px;
+    text-align: center;
+}
+
+.ads-title-main {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 15px;
+    color: #ffca28;
+}
+
+.ads-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.ads-video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin-bottom: 30px;
+    background: #000;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.ads-video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ads-video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.ads-btn-primary {
+    background: #ffca28;
+    color: #000;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255, 202, 40, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+    text-transform: uppercase;
+}
+
+.ads-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 202, 40, 0.5);
+    background: #ffd54f;
+}
+
+.pulse-anim {
+    animation: ads-pulse 2s infinite;
+}
+
+@keyframes ads-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 202, 40, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 15px rgba(255, 202, 40, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 202, 40, 0);
+    }
+}
+
+.ads-guarantee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.section-light {
+    padding: 40px 0;
+    flex-grow: 1;
+}
+
+.ads-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+    margin-top: -40px;
+    position: relative;
+    z-index: 10;
+}
+
+.ads-section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #1a1a2e;
+}
+
+.ads-materi-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+
+.ads-materi-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+    color: #4a5568;
+    line-height: 1.4;
+}
+
+.icon-check {
+    color: #10b981;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ads-pricing-box {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px dashed #cbd5e1;
+}
+
+.ads-price-strike {
+    display: block;
+    text-decoration: line-through;
+    color: #ef4444;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.ads-price-final {
+    display: block;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #10b981;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.ads-scarcity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.ads-footer {
+    text-align: center;
+    padding: 20px;
+    background: #1a1a2e;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+}
