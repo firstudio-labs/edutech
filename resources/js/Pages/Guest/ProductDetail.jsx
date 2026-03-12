@@ -108,7 +108,7 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
                                                 {m.title}
                                             </div>
                                             <span className="material-meta">
-                                                {m.pages ? `${m.pages} hal` : m.videos ? `${m.videos} video` : m.duration || 'Akses Instan'}
+                                                {m.pages ? `${m.pages} hal` : m.videos ? `${m.videos} video` : (m.duration && m.duration !== 'N/A' ? m.duration : '')}
                                             </span>
                                         </div>
                                     ))}

@@ -1,5 +1,8 @@
 import { Head } from '@inertiajs/react';
-import { Users, Target, Eye, BookOpen, Award, CheckCircle } from 'lucide-react';
+import { 
+    Users, Target, Eye, BookOpen, Award, CheckCircle, Zap, Shield, 
+    Video, Mic, MessageSquare, Globe, Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp 
+} from 'lucide-react';
 import { useContent } from '../../Contexts/ContentContext';
 import MainLayout from '../../Layouts/MainLayout';
 import './About.css';
@@ -9,7 +12,8 @@ export default function About({ previewMode = false }) {
     const about = content?.about || {};
 
     const iconMap = {
-        Users, Target, Eye, BookOpen
+        Users, Target, Eye, BookOpen, Award, Zap, Shield, CheckCircle,
+        Video, Mic, MessageSquare, Globe, Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp
     };
 
     const PageContent = (

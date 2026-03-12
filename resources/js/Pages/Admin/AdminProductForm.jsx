@@ -68,7 +68,7 @@ export default function AdminProductForm({ dbCategories = [], product }) {
         if (!newMaterialTitle.trim()) return;
 
         const title = newMaterialTitle.trim();
-        const duration = newMaterialMeta.trim() || 'N/A';
+        const duration = newMaterialMeta.trim() || '';
         const link = newMaterialLink.trim();
 
         setForm(prev => ({
@@ -284,7 +284,11 @@ export default function AdminProductForm({ dbCategories = [], product }) {
                                                     <span>{m.title}</span>
                                                     {m.link && <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>{m.link}</span>}
                                                 </span>
-                                                <span style={{ color: 'var(--color-accent)', fontSize: '11px', padding: '2px 6px', background: 'var(--color-accent-dim)', borderRadius: 4 }}>{m.duration || m.pages || m.videos}</span>
+                                                {(m.duration || m.pages || m.videos) && (
+                                                    <span style={{ color: 'var(--color-accent)', fontSize: '11px', padding: '2px 6px', background: 'var(--color-accent-dim)', borderRadius: 4 }}>
+                                                        {m.duration || m.pages || m.videos}
+                                                    </span>
+                                                )}
                                             </div>
                                             <button type="button" onClick={() => setForm(prev => ({
                                                 ...prev,

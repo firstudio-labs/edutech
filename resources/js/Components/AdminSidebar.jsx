@@ -1,6 +1,6 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import {
-    LayoutDashboard, Package, BoxSelect, Receipt, Users,
+    LayoutDashboard, Package, FileBox, Receipt, Users,
     MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight, Menu, Megaphone
 } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -9,7 +9,7 @@ import './AdminSidebar.css';
 const menuItems = [
     { href: route('admin.dashboard'), icon: LayoutDashboard, label: 'Dashboard' },
     { href: route('admin.products.index'), icon: Package, label: 'Produk' },
-    { href: route('admin.categories.index'), icon: BoxSelect, label: 'Kategori' },
+    { href: route('admin.categories.index'), icon: FileBox, label: 'Kategori' },
     { href: route('admin.transactions.index'), icon: Receipt, label: 'Transaksi' },
     { href: route('admin.users.index'), icon: Users, label: 'Pengguna' },
     { href: route('admin.testimonials.index'), icon: MessageSquare, label: 'Testimoni (Soon)' },

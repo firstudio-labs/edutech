@@ -38,7 +38,8 @@ const defaultContent = {
         achievements: [
             { label: 'Alumni Sukses', value: '10.000+', icon: 'Users' },
             { label: 'Produk Digital', value: '50+', icon: 'BookOpen' },
-            { label: 'Tingkat Kepuasan', value: '98%', icon: 'Target' }
+            { label: 'Tingkat Kepuasan', value: '98%', icon: 'Target' },
+            { label: 'Mentor Expert', value: '25+', icon: 'Award' }
         ],
         milestones: [
             { year: '2021', text: 'SAGA Academy berdiri dengan 3 produk pertama' },

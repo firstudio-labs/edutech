@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { Save, Eye, EyeOff, Layout, Type, Image as ImageIcon, MessageSquare, Phone, MapPin, Globe, Loader2, Monitor, Smartphone, PanelLeftClose, PanelLeftOpen, Target, Shield, BookOpen, UserCheck, Zap, ArrowRight, Trash2, Plus, X } from 'lucide-react';
+import { 
+    Save, Eye, EyeOff, Layout, Type, Image as ImageIcon, MessageSquare, Phone, MapPin, Globe, 
+    Loader2, Monitor, Smartphone, PanelLeftClose, PanelLeftOpen, Target, Shield, BookOpen, 
+    UserCheck, Zap, ArrowRight, Trash2, Plus, X, Users, Award, CheckCircle, Video, Mic, 
+    Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp 
+} from 'lucide-react';
 import { useContent } from '../../Contexts/ContentContext';
 import AdminLayout from '../../Layouts/AdminLayout';
 import toast from 'react-hot-toast';
@@ -11,7 +16,12 @@ import Welcome from '../Guest/Welcome';
 import About from '../Guest/About';
 import Contact from '../Guest/Contact';
 
-export default function AdminContent() {
+const availableIcons = {
+    Users, Target, Eye, BookOpen, Award, Zap, Shield, CheckCircle,
+    Video, Mic, MessageSquare, Globe, Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp
+};
+
+export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [] }) {
     const { content, updateContent } = useContent();
     const [activeTab, setActiveTab] = useState('home');
     const [isSaving, setIsSaving] = useState(false);
@@ -44,7 +54,7 @@ export default function AdminContent() {
 
     const renderPreview = () => {
         switch (activeTab) {
-            case 'home': return <Welcome previewMode={true} />;
+            case 'home': return <Welcome previewMode={true} products={dbFeaturedProducts} categories={dbCategories} />;
             case 'about': return <About previewMode={true} />;
             case 'contact': return <Contact previewMode={true} />;
             default: return null;
@@ -230,12 +240,44 @@ export default function AdminContent() {
                                                     </div>
                                                 </div>
                                                 <div style={{ marginTop: 12 }}>
-                                                    <label style={{ fontSize: 11, marginBottom: 6, display: 'block', fontWeight: 600 }}>Icon (Users, Target, Eye, BookOpen, Award)</label>
-                                                    <input style={{ width: '100%', fontSize: 14, height: '40px', padding: '0 12px' }} value={ach.icon} onChange={e => {
-                                                        const newAch = [...content.about.achievements];
-                                                        newAch[idx].icon = e.target.value;
-                                                        handleInputChange('about', 'achievements', newAch);
-                                                    }} />
+                                                    <label style={{ fontSize: 11, marginBottom: 8, display: 'block', fontWeight: 600 }}>Pilih Ikon</label>
+                                                    <div style={{ 
+                                                        display: 'grid', 
+                                                        gridTemplateColumns: 'repeat(6, 1fr)', 
+                                                        gap: 8,
+                                                        background: 'rgba(0,0,0,0.2)',
+                                                        padding: 10,
+                                                        borderRadius: 8,
+                                                        border: '1px solid rgba(255,255,255,0.05)'
+                                                    }}>
+                                                        {Object.entries(availableIcons).map(([name, IconComp]) => (
+                                                            <button 
+                                                                key={name}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newAch = [...content.about.achievements];
+                                                                    newAch[idx].icon = name;
+                                                                    handleInputChange('about', 'achievements', newAch);
+                                                                }}
+                                                                style={{
+                                                                    padding: 8,
+                                                                    background: ach.icon === name ? 'var(--color-accent)' : 'transparent',
+                                                                    border: '1px solid',
+                                                                    borderColor: ach.icon === name ? 'var(--color-accent)' : 'rgba(255,255,255,0.1)',
+                                                                    borderRadius: 6,
+                                                                    cursor: 'pointer',
+                                                                    color: ach.icon === name ? 'white' : 'var(--color-text-muted)',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    transition: 'all 0.2s'
+                                                                }}
+                                                                title={name}
+                                                            >
+                                                                <IconComp size={16} />
+                                                            </button>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}

@@ -57,15 +57,16 @@ export default function ProductSales({ id, product: dbProduct }) {
     const handleNext = () => {
         if (step < STEPS.length - 1) setStep(step + 1);
         else {
+            addToCart(product);
             if (!auth.user) {
                 toast.error('Harap login terlebih dahulu untuk melanjutkan pembayaran.');
-                return router.get(route('login'));
+                router.get(route('checkout'));
+                return;
             }
             if (isPurchased) {
                 toast.error('Anda sudah memiliki produk ini!');
                 return router.get(route('dashboard.learning', product.id));
             }
-            addToCart(product);
             router.get(route('checkout'));
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -238,7 +239,7 @@ export default function ProductSales({ id, product: dbProduct }) {
                                             <div key={i} className="material-row">
                                                 <div className="material-num">{String(i + 1).padStart(2, '0')}</div>
                                                 <span>{m.title}</span>
-                                                <span className="material-meta-sm">{m.pages ? `${m.pages} hal` : m.videos ? `${m.videos} video` : m.duration}</span>
+                                                <span className="material-meta-sm">{m.pages ? `${m.pages} hal` : m.videos ? `${m.videos} video` : (m.duration && m.duration !== 'N/A' ? m.duration : '')}</span>
                                             </div>
                                         ))}
                                     </div>

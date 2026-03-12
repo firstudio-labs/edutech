@@ -62,5 +62,45 @@ class AdminTransactionController extends Controller
 
         return back()->with('success', 'Transaksi ditolak.');
     }
+
+    public function exportCsv()
+    {
+        $transactions = Transaction::with(['user', 'items.product', 'payment.paymentMethod'])
+            ->latest()
+            ->get();
+
+        $filename = "transactions-" . date('Y-m-d') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID Transaksi', 'Tanggal', 'Pelanggan', 'Email', 'Produk', 'Total', 'Status', 'Metode Pembayaran'];
+
+        $callback = function() use($transactions, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($transactions as $t) {
+                $row['ID'] = $t->transaction_code;
+                $row['Tanggal'] = $t->created_at->format('Y-m-d H:i');
+                $row['Pelanggan'] = $t->user->name ?? 'N/A';
+                $row['Email'] = $t->user->email ?? 'N/A';
+                $row['Produk'] = $t->items->map(fn($i) => $i->product->name)->join(', ');
+                $row['Total'] = $t->total_amount;
+                $row['Status'] = $t->status;
+                $row['Metode'] = $t->payment->paymentMethod->bank_name ?? 'Gateway/Lainnya';
+
+                fputcsv($file, array_values($row));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
 

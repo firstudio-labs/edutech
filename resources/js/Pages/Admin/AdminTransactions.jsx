@@ -101,7 +101,11 @@ export default function AdminTransactions({ dbTransactions }) {
                             </select>
                             <ChevronDown size={14} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--color-text-muted)' }} />
                         </div>
-                        <button className="pulse-anim" style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '24px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, padding: '8px 20px', cursor: 'pointer', fontWeight: 600 }}>
+                        <button 
+                            className="pulse-anim" 
+                            style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '24px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, padding: '8px 20px', cursor: 'pointer', fontWeight: 600 }}
+                            onClick={() => window.location.href = route('admin.transactions.export')}
+                        >
                             <Download size={15} /> Export CSV
                         </button>
                     </div>
@@ -182,19 +186,24 @@ export default function AdminTransactions({ dbTransactions }) {
                                         <div><span>Jumlah Bayar</span><strong>{formatPrice(selectedTrx.amount)}</strong></div>
                                     </div>
 
-                                    {selectedTrx.payment.includes('Manual') && (
+                                    {selectedTrx.proof ? (
                                         <div style={{ marginTop: 'var(--space-2)' }}>
                                             <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)' }}>Bukti Pembayaran:</span>
-                                            {selectedTrx.proof ? (
-                                                <div style={{ padding: 'var(--space-4)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                                                    <img src={selectedTrx.proof} alt="Proof" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '4px' }} />
-                                                    <a href={selectedTrx.proof} target="_blank" rel="noreferrer" style={{ display: 'block', fontSize: 11, color: 'var(--color-accent-light)', marginTop: 8 }}>Lihat Gambar Penuh</a>
+                                            <div style={{ background: '#000', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                                <div style={{ width: '100%', height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%)' }}>
+                                                    <img src={selectedTrx.proof} alt="Proof" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                                 </div>
-                                            ) : (
-                                                <div style={{ padding: 'var(--space-3)', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '4px', color: 'var(--color-error)', fontSize: 12, textAlign: 'center' }}>
-                                                    Bukti belum diunggah pelanggan
+                                                <div style={{ width: '100%', padding: '8px', background: 'rgba(255,255,255,0.03)', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                                                    <a href={selectedTrx.proof} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: 'var(--color-accent-light)', textDecoration: 'none', fontWeight: 600 }}>Klik untuk Lihat Gambar Penuh</a>
                                                 </div>
-                                            )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div style={{ marginTop: 'var(--space-2)' }}>
+                                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)' }}>Bukti Pembayaran:</span>
+                                            <div style={{ padding: 'var(--space-3)', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '4px', color: 'var(--color-error)', fontSize: 12, textAlign: 'center' }}>
+                                                Bukti belum diunggah atau tidak diperlukan
+                                            </div>
                                         </div>
                                     )}
                                 </div>

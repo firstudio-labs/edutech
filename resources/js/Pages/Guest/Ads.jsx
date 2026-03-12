@@ -87,14 +87,7 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
                                 </div>
                             )}
 
-                            {!videoUrl && (
-                                <div className="ads-video-wrapper" style={{ background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: 40 }}>
-                                        <PlayCircle size={48} style={{ marginBottom: 10, opacity: 0.5 }} />
-                                        <p style={{ fontSize: '0.9rem' }}>Video Presentasi Promo</p>
-                                    </div>
-                                </div>
-                            )}
+
 
                             <p className="ads-guarantee" style={{ marginTop: 24 }}><ShieldCheck size={16} /> Garansi Uang Kembali 100%</p>
                         </div>
@@ -118,12 +111,17 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
                                         {product.short_description || product.description}
                                     </p>
 
-                                    <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 15, borderBottom: '1px solid #eee', paddingBottom: 10 }}>Apa yang Akan Anda Dapatkan:</h4>
-                                    <ul className="ads-materi-list">
-                                        {(customBenefits || (parseList(product.benefits).length > 0 ? parseList(product.benefits) : ['Akses Materi Lifetime', 'Exclusive Modul Pembelajaran', 'Sertifikat Kelulusan'])).map((item, i) => (
-                                            <li key={i}><CheckCircle2 size={18} className="icon-check" /> {item}</li>
-                                        ))}
-                                    </ul>
+                                    {/* Benefits Section */}
+                                    {parseList(product.benefits).length > 0 && (
+                                        <>
+                                            <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 15, borderBottom: '1px solid #eee', paddingBottom: 10 }}>Apa yang Akan Anda Dapatkan:</h4>
+                                            <ul className="ads-materi-list">
+                                                {parseList(product.benefits).map((item, i) => (
+                                                    <li key={i}><CheckCircle2 size={18} className="icon-check" /> {item}</li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    )}
 
                                     <div className="ads-pricing-box" style={{ background: '#fff9e6', borderColor: '#ffe082', marginTop: 30 }}>
                                         <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: 5 }}>Dapatkan penawaran ini hanya seharga:</p>
@@ -134,7 +132,21 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
                                     <button onClick={(e) => handleBuy(e, product)} className="ads-btn-primary w-full pulse-anim" style={{ marginTop: 20 }}>
                                         {ctaTitle}
                                     </button>
-                                    <p className="ads-scarcity"><Zap size={16} /> {ctaSubtitle}</p>
+                                    
+                                    {/* Calculated Discount & Custom Subtitle */}
+                                    {(() => {
+                                        const normal = product.normal_price || product.originalPrice || 0;
+                                        const current = product.price || 0;
+                                        const diskonPerc = normal > current ? Math.round(((normal - current) / normal) * 100) : 0;
+                                        
+                                        return (
+                                            <p className="ads-scarcity">
+                                                <Zap size={16} /> 
+                                                {diskonPerc > 0 && <strong>Diskon {diskonPerc}% </strong>}
+                                                {ctaSubtitle}
+                                            </p>
+                                        );
+                                    })()}
                                 </div>
                             ))
                         )}

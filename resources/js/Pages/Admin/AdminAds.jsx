@@ -15,16 +15,10 @@ export default function AdminAds({ dbAds, products = [] }) {
     const [adsContent, setAdsContent] = useState({
         title: savedContent?.title || savedContent?.heroTitle || 'Rahasia Digital Marketing Yang Belum Pernah Dibocorkan',
         subtitle: savedContent?.subtitle || savedContent?.heroSubtitle || 'Dapatkan Akses Eksklusif Ke Strategi Yang Digunakan Para Expert Untuk Mencapai 1M Pertama Mereka Dari Produk Digital.',
-        videoUrl: savedContent?.videoUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        ctaTitle: savedContent?.ctaTitle || 'SAYA MAU AKSES SEKARANG',
-        ctaSubtitle: savedContent?.ctaSubtitle || '*Diskon 75% Berakhir Dalam 15 Menit',
-        selectedProductIds: savedContent?.selectedProductIds || [],
-        benefits: savedContent?.benefits || [
-            'Strategi Content Pillar 2025',
-            'Formula Copywriting Jitu',
-            'Sistem Automasi Penjualan',
-            'Grup Support Eksklusif'
-        ]
+        videoUrl: savedContent?.videoUrl || '',
+        ctaTitle: savedContent?.ctaTitle || 'AMBIL PROMO SEKARANG',
+        ctaSubtitle: savedContent?.ctaSubtitle || 'Berakhir Dalam 15 Menit',
+        selectedProductIds: savedContent?.selectedProductIds || []
     });
 
     const [isSaving, setIsSaving] = useState(false);
@@ -117,6 +111,18 @@ export default function AdminAds({ dbAds, products = [] }) {
                             <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginBottom: 8, marginTop: 4 }}>
                                 Pilih produk dari database untuk ditampilkan di landing page promo ini.
                             </p>
+                            <div style={{ 
+                                fontSize: '11px', 
+                                color: 'var(--color-accent-light)', 
+                                background: 'var(--color-accent-dim)', 
+                                padding: '6px 12px', 
+                                borderRadius: '4px',
+                                marginBottom: '12px',
+                                display: 'block',
+                                fontWeight: 500
+                            }}>
+                                💡 Benefit "Apa yang Akan Anda Dapatkan" sekarang otomatis diambil dari data produk yang Anda pilih.
+                            </div>
 
                             <select
                                 onChange={(e) => {
@@ -157,7 +163,7 @@ export default function AdminAds({ dbAds, products = [] }) {
                             </div>
                         </div>
 
-                        <div className="cms-form-group" style={{ marginTop: 'var(--space-6)' }}>
+                        <div className="cms-form-group">
                             <h4 className="cms-section-label">Call To Action (CTA)</h4>
                             <label>Teks Tombol</label>
                             <input
@@ -165,10 +171,25 @@ export default function AdminAds({ dbAds, products = [] }) {
                                 onChange={(e) => handleInput('ctaTitle', e.target.value)}
                             />
                             <label>Sub-teks Tombol (Urgency)</label>
-                            <input
-                                value={adsContent.ctaSubtitle || ''}
-                                onChange={(e) => handleInput('ctaSubtitle', e.target.value)}
-                            />
+                            <div style={{ position: 'relative' }}>
+                                <div style={{ 
+                                    fontSize: '11px', 
+                                    color: 'var(--color-success)', 
+                                    background: 'var(--color-success-dim)', 
+                                    padding: '4px 10px', 
+                                    borderRadius: '4px',
+                                    marginBottom: '8px',
+                                    display: 'inline-block',
+                                    fontWeight: 600
+                                }}>
+                                    ✨ Diskon % Otomatis akan ditambahkan di depan teks ini
+                                </div>
+                                <input
+                                    value={adsContent.ctaSubtitle || ''}
+                                    onChange={(e) => handleInput('ctaSubtitle', e.target.value)}
+                                    placeholder="Contoh: Berakhir Dalam 15 Menit"
+                                />
+                            </div>
                         </div>
                     </div>
 

@@ -795,6 +795,11 @@ textarea:disabled {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    margin-bottom: var(--space-6);
+}
+
+.cms-form-group:last-child {
+    margin-bottom: 0;
 }
 
 .cms-form-group label {
@@ -832,11 +837,17 @@ textarea:disabled {
     text-transform: uppercase;
     font-size: 10px;
     letter-spacing: 0.1em;
-    color: var(--color-text-muted);
-    font-weight: 700;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 6px;
-    margin-bottom: var(--space-2);
+    color: var(--color-accent-light);
+    font-weight: 800;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 8px;
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.cms-editor-fields > :not(:first-child) .cms-section-label,
+.cms-editor-fields > .cms-form-group:not(:first-child) .cms-section-label {
+    margin-top: var(--space-10);
 }
 
 .cms-sidebar-footer {

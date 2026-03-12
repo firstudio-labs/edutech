@@ -13,7 +13,7 @@ class AdminCategoryController extends Controller
     public function index()
     {
         // Get all categories with product count
-        $categories = Category::withCount('products')->orderBy('name')->get();
+        $categories = Category::withCount('products')->latest()->get();
         return Inertia::render('Admin/AdminCategories', [
             'dbCategories' => $categories
         ]);

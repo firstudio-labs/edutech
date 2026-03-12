@@ -31,7 +31,7 @@ class PublicController extends Controller
 
     public function products(Request $request)
     {
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->latest()->get();
         $categories = Category::all();
 
         return Inertia::render('Guest/Products', [

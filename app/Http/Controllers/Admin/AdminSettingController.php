@@ -13,7 +13,7 @@ class AdminSettingController extends Controller
     public function ads()
     {
         $adsData = SiteContent::where('key', 'ads_promo')->first();
-        $products = \App\Models\Product::select('id', 'name', 'price')->get();
+        $products = \App\Models\Product::select('id', 'name', 'price', 'normal_price', 'benefits')->get();
         return Inertia::render('Admin/AdminAds', [
             'dbAds' => $adsData ? $adsData->value : null,
             'products' => $products
@@ -44,8 +44,13 @@ class AdminSettingController extends Controller
     public function content()
     {
         $contentData = SiteContent::where('key', 'site_content')->first();
+        $categories = \App\Models\Category::withCount('products')->get();
+        $featuredProducts = \App\Models\Product::with('category')->where('featured', true)->take(6)->get();
+        
         return Inertia::render('Admin/AdminContent', [
-            'dbContent' => $contentData ? $contentData->value : null
+            'dbContent' => $contentData ? $contentData->value : null,
+            'dbCategories' => $categories,
+            'dbFeaturedProducts' => $featuredProducts
         ]);
     }
 
