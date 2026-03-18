@@ -25,12 +25,16 @@ class UserController extends Controller
         ]);
     }
 
-    public function learning(Request $request, $id)
+    public function learning(Request $request, \App\Models\Product $product)
     {
         $user = $request->user();
         
         // Ensure user owns this product
-        $product = $user->products()->with('category')->findOrFail($id);
+        if (!$user->products()->where('products.id', $product->id)->exists()) {
+            abort(403, 'Anda tidak memiliki akses ke produk ini.');
+        }
+
+        $product->load('category');
 
         return Inertia::render('User/UserLearning', [
             'product' => $product

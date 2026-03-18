@@ -1,7 +1,7 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import {
     LayoutDashboard, Package, FileBox, Receipt, Users,
-    MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight, Menu, Megaphone
+    MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight, Menu, Megaphone, Settings
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import './AdminSidebar.css';
@@ -17,6 +17,7 @@ const menuItems = [
     { href: route('admin.ads.index'), icon: Megaphone, label: 'Ads Page' },
     { href: route('admin.payment.index'), icon: CreditCard, label: 'Pembayaran' },
     { href: route('admin.chatbot.index'), icon: Bot, label: 'Chatbot AI' },
+    { href: route('admin.settings.index'), icon: Settings, label: 'Settings' },
 ];
 
 export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
@@ -79,7 +80,11 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
 
             <div className="admin-sidebar__footer">
                 <div className="admin-sidebar__user">
-                    <div className="user-avatar">{user?.name?.[0] || 'A'}</div>
+                    {user?.avatar ? (
+                        <img src={user.avatar} alt={user.name} className="user-avatar" style={{ objectCover: 'cover' }} />
+                    ) : (
+                        <div className="user-avatar">{user?.name?.[0] || 'A'}</div>
+                    )}
                     {!isCollapsed && (
                         <div className="user-info">
                             <p className="user-name">{user?.name || 'Admin'}</p>

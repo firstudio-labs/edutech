@@ -52,7 +52,7 @@ export default function AdminCategories({ dbCategories = [] }) {
         if (!form.id || !form.label) return toast.error('Lengkapi semua data');
 
         if (editingItem) {
-            post(route('admin.categories.update', editingItem.dbId), {
+            post(route('admin.categories.update', editingItem.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     toast.success('Kategori diperbarui');
@@ -72,9 +72,9 @@ export default function AdminCategories({ dbCategories = [] }) {
         }
     };
 
-    const handleDelete = (dbId) => {
+    const handleDelete = (slug) => {
         if (confirm('Yakin ingin menghapus kategori ini?')) {
-            router.delete(route('admin.categories.destroy', dbId), {
+            router.delete(route('admin.categories.destroy', slug), {
                 preserveScroll: true,
                 onSuccess: () => toast.success('Kategori dihapus'),
                 onError: (e) => toast.error(e.message || 'Gagal menghapus kategori')
@@ -121,7 +121,7 @@ export default function AdminCategories({ dbCategories = [] }) {
                                         <td>
                                             <div className="actions-col">
                                                 <button className="btn-icon edit" onClick={() => openEdit(c)}><Pencil size={15} /></button>
-                                                <button className="btn-icon delete" onClick={() => handleDelete(c.dbId)}><Trash2 size={15} /></button>
+                                                <button className="btn-icon delete" onClick={() => handleDelete(c.id)}><Trash2 size={15} /></button>
                                             </div>
                                         </td>
                                     </tr>

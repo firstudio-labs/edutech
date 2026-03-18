@@ -22,7 +22,8 @@ export default function AdminUsers({ dbUsers = [] }) {
     });
 
     const users = dbUsers.map(u => ({
-        dbId: u.id,
+        id: u.id,
+        slug: u.slug,
         name: u.name,
         email: u.email,
         phone: u.phone || '',
@@ -65,7 +66,7 @@ export default function AdminUsers({ dbUsers = [] }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editingUser) {
-            put(route('admin.users.update', editingUser.dbId), {
+            put(route('admin.users.update', editingUser.slug || editingUser.id), {
                 onSuccess: () => {
                     closeFormModal();
                     toast.success('Pengguna berhasil diperbarui');
@@ -81,21 +82,21 @@ export default function AdminUsers({ dbUsers = [] }) {
         }
     };
 
-    const handleToggleStatus = (dbId) => {
-        router.patch(route('admin.users.toggle', dbId), {}, {
+    const handleToggleStatus = (slug) => {
+        router.patch(route('admin.users.toggle', slug), {}, {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Status pengguna diperbarui');
-                if (selectedUser && selectedUser.dbId === dbId) {
+                if (selectedUser && (selectedUser.slug === slug || selectedUser.id === slug)) {
                     setSelectedUser(prev => ({ ...prev, status: prev.status === 'Aktif' ? 'Nonaktif' : 'Aktif' }));
                 }
             }
         });
     };
 
-    const handleDelete = (dbId) => {
+    const handleDelete = (slug) => {
         if (confirm('Yakin ingin menghapus pengguna secara permanen?')) {
-            router.delete(route('admin.users.destroy', dbId), {
+            router.delete(route('admin.users.destroy', slug), {
                 preserveScroll: true,
                 onSuccess: () => toast.success('Pengguna berhasil dihapus')
             });
@@ -133,7 +134,7 @@ export default function AdminUsers({ dbUsers = [] }) {
                             </thead>
                             <tbody>
                                 {filtered.map(u => (
-                                    <tr key={u.dbId}>
+                                <tr key={u.id}>
                                         <td>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                                                 <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--gradient-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'white', flexShrink: 0 }}>{u.name[0]}</div>
@@ -154,8 +155,8 @@ export default function AdminUsers({ dbUsers = [] }) {
                                             <div className="actions-col">
                                                 <button className="btn-icon" onClick={() => setSelectedUser(u)} title="Lihat Detail"><Eye size={15} /></button>
                                                 <button className="btn-icon" onClick={() => openEditModal(u)} title="Edit Pengguna"><Pencil size={15} /></button>
-                                                <button className={`btn-icon ${u.status === 'Aktif' ? 'delete' : ''}`} onClick={() => handleToggleStatus(u.dbId)} title={u.status === 'Aktif' ? 'Nonaktifkan' : 'Aktifkan'}><Ban size={15} /></button>
-                                                <button className="btn-icon delete" onClick={() => handleDelete(u.dbId)} title="Hapus Permanen"><Trash2 size={15} /></button>
+                                                <button className={`btn-icon ${u.status === 'Aktif' ? 'delete' : ''}`} onClick={() => handleToggleStatus(u.slug || u.id)} title={u.status === 'Aktif' ? 'Nonaktifkan' : 'Aktifkan'}><Ban size={15} /></button>
+                                                <button className="btn-icon delete" onClick={() => handleDelete(u.slug || u.id)} title="Hapus Permanen"><Trash2 size={15} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -256,7 +257,7 @@ export default function AdminUsers({ dbUsers = [] }) {
                                     {selectedUser.name[0]}
                                 </div>
                                 <div style={{ marginLeft: 'var(--space-4)' }}>
-                                    <p className="modal-detail-id">USER-ID: #{selectedUser.dbId.toString().padStart(4, '0')}</p>
+                                    <p className="modal-detail-id">USER-ID: #{selectedUser.id.toString().padStart(4, '0')}</p>
                                     <h3 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--color-text-primary)' }}>{selectedUser.name}</h3>
                                     <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 4 }}>
                                         <span className={`status-badge ${selectedUser.status === 'Aktif' ? 'success' : 'error'}`} style={{ fontSize: 'var(--text-xs)' }}>
@@ -296,7 +297,7 @@ export default function AdminUsers({ dbUsers = [] }) {
 
                             <div className="modal-actions">
                                 <button className="btn-modal-cancel" style={{ flex: 1 }} onClick={() => setSelectedUser(null)}>Tutup</button>
-                                <button className="btn-modal-save" style={{ flex: 1, background: selectedUser.status === 'Aktif' ? 'var(--color-error)' : 'var(--color-success)' }} onClick={() => handleToggleStatus(selectedUser.dbId)}>
+                                <button className="btn-modal-save" style={{ flex: 1, background: selectedUser.status === 'Aktif' ? 'var(--color-error)' : 'var(--color-success)' }} onClick={() => handleToggleStatus(selectedUser.slug || selectedUser.id)}>
                                     {selectedUser.status === 'Aktif' ? 'Nonaktifkan Akun' : 'Aktifkan Akun'}
                                 </button>
                             </div>

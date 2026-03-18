@@ -65,14 +65,14 @@ export default function ProductSales({ id, product: dbProduct }) {
             }
             if (isPurchased) {
                 toast.error('Anda sudah memiliki produk ini!');
-                return router.get(route('dashboard.learning', product.id));
+                return router.get(route('dashboard.learning', product.slug || product.id));
             }
             router.get(route('checkout'));
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     
-    const handleBack = () => step > 0 ? setStep(step - 1) : router.get(route('products.detail', product.id));
+    const handleBack = () => step > 0 ? setStep(step - 1) : router.get(route('products.detail', product.slug || product.id));
 
     const faqs = [
         { q: 'Apakah saya mendapat akses seumur hidup?', a: 'Ya! Setelah membeli, akses produk ini tidak akan pernah kedaluwarsa.' },
@@ -313,7 +313,7 @@ export default function ProductSales({ id, product: dbProduct }) {
                                     </div>
 
                                     {isPurchased ? (
-                                        <button className="btn-checkout-now" onClick={() => router.get(route('dashboard.learning', product.id))} style={{ background: 'var(--color-success)', border: 'none', boxShadow: 'none' }}>
+                                        <button className="btn-checkout-now" onClick={() => router.get(route('dashboard.learning', product.slug || product.id))} style={{ background: 'var(--color-success)', border: 'none', boxShadow: 'none' }}>
                                             ☑ Sudah Dibeli (Buka Materi)
                                         </button>
                                     ) : (

@@ -21,6 +21,7 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
 
     const myProducts = purchasedProducts.map(p => ({
         id: p.id,
+        slug: p.slug,
         title: p.name,
         category: p.category?.name || 'Tidak Ada',
         thumbnail: getStorageUrl(p.image),
@@ -89,7 +90,7 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
                                         <p className="my-product-cat">{product.category}</p>
                                         <h3 className="my-product-title" style={{ height: '40px', overflow: 'hidden' }}>{product.title}</h3>
                                         <div className="my-product-actions">
-                                            <Link href={route('dashboard.learning', { id: product.id })} className="access-btn">
+                                            <Link href={route('dashboard.learning', product.slug || product.id)} className="access-btn">
                                                 <ExternalLink size={14} /> Buka Materi
                                             </Link>
                                         </div>

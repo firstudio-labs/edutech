@@ -9,6 +9,34 @@ use Inertia\Inertia;
 
 class AdminSettingController extends Controller
 {
+    // Settings for Credentials
+    public function index()
+    {
+        $settingsData = SiteContent::where('key', 'site_settings')->first();
+        return Inertia::render('Admin/AdminSettings', [
+            'dbSettings' => $settingsData ? json_decode($settingsData->value, true) : null,
+        ]);
+    }
+
+    public function saveSettings(Request $request)
+    {
+        $request->validate([
+            'google_client_id' => 'nullable|string',
+            'google_client_secret' => 'nullable|string',
+            'google_redirect_url' => 'nullable|url',
+            'midtrans_server_key' => 'nullable|string',
+            'midtrans_client_key' => 'nullable|string',
+            'midtrans_is_production' => 'nullable|boolean',
+        ]);
+
+        SiteContent::updateOrCreate(
+            ['key' => 'site_settings'],
+            ['value' => json_encode($request->all())]
+        );
+
+        return back()->with('success', 'Pengaturan kredensial berhasil disimpan!');
+    }
+
     // Ads page
     public function ads()
     {

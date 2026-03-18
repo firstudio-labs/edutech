@@ -20,12 +20,19 @@ class PublicController extends Controller
             ->get();
 
         $categories = Category::withCount('products')->get();
+        
+        $stats = [
+            'users' => \App\Models\User::where('role', 'user')->count(),
+            'products' => Product::count(),
+            'sales' => \App\Models\Transaction::where('status', 'success')->count(),
+        ];
 
         return Inertia::render('Guest/Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'products' => $featuredProducts,
             'categories' => $categories,
+            'dbStats' => $stats,
         ]);
     }
 
@@ -40,10 +47,9 @@ class PublicController extends Controller
         ]);
     }
 
-    public function productDetail($slug)
+    public function productDetail(Product $product)
     {
-        // First try by slug, else fallback to id in case links use id
-        $product = Product::with('category')->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+        $product->load('category');
         
         // Similar products
         $similarProducts = Product::with('category')
@@ -57,9 +63,9 @@ class PublicController extends Controller
             'similarProducts' => $similarProducts
         ]);
     }
-    public function productSales($slug)
+    public function productSales(Product $product)
     {
-        $product = Product::with('category')->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+        $product->load('category');
         return Inertia::render('Guest/ProductSales', [
             'product' => $product
         ]);

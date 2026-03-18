@@ -23,7 +23,7 @@ export default function ProductCard({ product }) {
     // Auto-calculate discount if DB doesn't have it natively
     const discount = product.discount || (originalPrice > price ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0);
 
-    const goToDetail = () => router.get(route('products.detail', product.id || product.slug));
+    const goToDetail = () => router.get(route('products.detail', product.slug || product.id));
 
     return (
         <div 
@@ -61,6 +61,16 @@ export default function ProductCard({ product }) {
                 </div>
 
                 <h3 className="product-card__title">{title}</h3>
+                
+                <div className="product-card__meta">
+                    <div className="meta-rating">
+                        <Star size={12} fill="var(--color-warning)" stroke="var(--color-warning)" />
+                        <span>{product.rating || '5.0'}</span>
+                        <span className="meta-sep">•</span>
+                        <span>{product.sold_count || 0} Terjual</span>
+                    </div>
+                </div>
+
                 <p className="product-card__desc">{desc}</p>
 
                 <div className="product-card__footer">

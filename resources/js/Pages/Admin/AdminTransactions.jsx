@@ -33,8 +33,8 @@ export default function AdminTransactions({ dbTransactions }) {
         return matchSearch && matchFilter;
     });
 
-    const handleConfirm = (dbId) => {
-        router.patch(route('admin.transactions.approve', dbId), {}, {
+    const handleConfirm = (code) => {
+        router.patch(route('admin.transactions.approve', code), {}, {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success(`Transaksi berhasil dikonfirmasi`);
@@ -43,8 +43,8 @@ export default function AdminTransactions({ dbTransactions }) {
         });
     };
 
-    const handleReject = (dbId) => {
-        router.patch(route('admin.transactions.reject', dbId), {}, {
+    const handleReject = (code) => {
+        router.patch(route('admin.transactions.reject', code), {}, {
             preserveScroll: true,
             onSuccess: () => {
                 toast.error(`Transaksi ditolak`);
@@ -211,8 +211,8 @@ export default function AdminTransactions({ dbTransactions }) {
 
                             {selectedTrx.status === 'Pending' && (
                                 <div className="modal-actions" style={{ padding: 'var(--space-5) var(--space-6)', background: 'var(--color-bg-secondary)', borderTop: '1px solid var(--color-border)' }}>
-                                    <button className="btn-modal-cancel" style={{ color: 'var(--color-error)', borderColor: 'var(--color-error)', background: 'transparent' }} onClick={() => handleReject(selectedTrx.dbId)}>Tolak Transaksi</button>
-                                    <button className="btn-modal-save" style={{ background: 'var(--color-success)' }} onClick={() => handleConfirm(selectedTrx.dbId)}>Konfirmasi Pembayaran</button>
+                                    <button className="btn-modal-cancel" style={{ color: 'var(--color-error)', borderColor: 'var(--color-error)', background: 'transparent' }} onClick={() => handleReject(selectedTrx.id)}>Tolak Transaksi</button>
+                                    <button className="btn-modal-save" style={{ background: 'var(--color-success)' }} onClick={() => handleConfirm(selectedTrx.id)}>Konfirmasi Pembayaran</button>
                                 </div>
                             )}
                         </div>

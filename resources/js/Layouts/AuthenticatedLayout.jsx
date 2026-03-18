@@ -61,6 +61,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 type="button"
                                                 className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                             >
+                                                {user.avatar ? (
+                                                    <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full object-cover mr-2" />
+                                                ) : null}
                                                 {user.name}
 
                                                 <svg

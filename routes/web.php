@@ -18,7 +18,7 @@ use Inertia\Inertia;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/products', [PublicController::class, 'products'])->name('products');
-Route::get('/products/{id}', [PublicController::class, 'productDetail'])->name('products.detail');
+Route::get('/products/{product}', [PublicController::class, 'productDetail'])->name('products.detail');
 
 
 Route::get('/about', function () {
@@ -29,7 +29,7 @@ Route::get('/contact', function () {
     return Inertia::render('Guest/Contact');
 })->name('contact');
 
-Route::get('/products/{id}/sales', [PublicController::class, 'productSales'])->name('products.sales');
+Route::get('/products/{product}/sales', [PublicController::class, 'productSales'])->name('products.sales');
 
 Route::get('/packages/{slug}', function ($slug) {
     return Inertia::render('Guest/PackageLanding', ['slug' => $slug]);
@@ -45,7 +45,7 @@ Route::get('/promo', [PublicController::class, 'promo'])->name('ads');
 
 Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
-    Route::get('/dashboard/learning/{id}', [UserController::class, 'learning'])->name('dashboard.learning');
+    Route::get('/dashboard/learning/{product}', [UserController::class, 'learning'])->name('dashboard.learning');
 });
 
 
@@ -94,6 +94,9 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
         Route::get('/ads', [AdminSettingController::class, 'ads'])->name('ads.index');
         Route::post('/ads', [AdminSettingController::class, 'saveAds'])->name('ads.store');
+
+        Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [AdminSettingController::class, 'saveSettings'])->name('settings.store');
 
         Route::get('/payment', [AdminPaymentController::class, 'index'])->name('payment.index');
         Route::post('/payment', [AdminPaymentController::class, 'store'])->name('payment.store');

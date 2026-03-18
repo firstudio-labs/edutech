@@ -10,23 +10,23 @@ import { formatCurrency, getStorageUrl } from '../../Utils/helpers';
 import { useContent } from '../../Contexts/ContentContext';
 import './Welcome.css';
 
-const stats = [
-    { icon: Users, value: '5,200+', label: 'Pelajar Aktif' },
-    { icon: Users, value: '10.000+', label: 'Alumni Sukses' },
-    // { icon: Star, value: '4.9', label: 'Rating Rata-rata' },
-    { icon: BookOpen, value: '50+', label: 'Program Tersedia' },
-];
-
 const features = [
     { icon: Zap, title: 'Akses Instan', desc: 'Nikmati produk digital Anda segera setelah pembayaran berhasil, tanpa menunggu.' },
     { icon: Shield, title: 'Akses Seumur Hidup', desc: 'Satu kali beli, akses selamanya. Termasuk semua update konten di masa mendatang.' },
     { icon: Award, title: 'Dijamin Berkualitas', desc: 'Semua materi dikurasi oleh para expert dengan pengalaman industri yang terbukti.' },
 ];
 
-export default function Welcome({ products = [], categories = [], previewMode = false }) {
+export default function Welcome({ products = [], categories = [], dbStats = {}, previewMode = false }) {
     const { content } = useContent();
     const home = content?.home || {};
     const sliderRef = useRef(null);
+    
+    // Dynamic stats based on database
+    const stats = [
+        { icon: Users, value: `${(dbStats.users || 0) + 1000}+`, label: 'Pelajar Aktif' }, // Base + real
+        { icon: Award, value: `${dbStats.sales || 0}`, label: 'Alumni Sukses' },
+        { icon: BookOpen, value: `${dbStats.products || 0}+`, label: 'Program Tersedia' },
+    ];
     
     // Fallback to initial products if backend didn't send anything
     const featuredProducts = products.length > 0 

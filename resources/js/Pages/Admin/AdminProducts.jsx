@@ -13,6 +13,7 @@ export default function AdminProducts({ dbProducts = [] }) {
 
     const items = dbProducts.map(dbP => ({
         id: dbP.id,
+        slug: dbP.slug,
         title: dbP.name,
         category: dbP.category?.name || 'Tidak Ada',
         price: dbP.price,
@@ -23,9 +24,9 @@ export default function AdminProducts({ dbProducts = [] }) {
     const filtered = items.filter(p => p.title.toLowerCase().includes(search.toLowerCase()));
 
     const openAdd = () => router.get(route('admin.products.create'));
-    const openEdit = (p) => router.get(route('admin.products.edit', p.id));
+    const openEdit = (p) => router.get(route('admin.products.edit', p.slug || p.id));
 
-    const confirmDelete = (id) => setDeleteConfirm(id);
+    const confirmDelete = (slug) => setDeleteConfirm(slug);
     const handleDelete = () => {
         router.delete(route('admin.products.destroy', deleteConfirm), {
             preserveScroll: true,
@@ -77,7 +78,7 @@ export default function AdminProducts({ dbProducts = [] }) {
                                         <td>
                                             <div className="actions-col">
                                                 <button className="btn-icon edit" onClick={() => openEdit(p)} title="Edit"><Pencil size={15} /></button>
-                                                <button className="btn-icon delete" onClick={() => confirmDelete(p.id)} title="Hapus"><Trash2 size={15} /></button>
+                                                <button className="btn-icon delete" onClick={() => confirmDelete(p.slug || p.id)} title="Hapus"><Trash2 size={15} /></button>
                                             </div>
                                         </td>
                                     </tr>

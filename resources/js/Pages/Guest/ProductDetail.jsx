@@ -15,7 +15,7 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
     const { auth } = usePage().props;
     const { addToCart, isInCart } = useCart();
     // Fallback to imported mock if dbProduct is absent (for offline UI work)
-    const productDef = products.find(p => p.id === Number(id));
+    const productDef = products.find(p => p.slug === id || p.id === Number(id));
     const product = dbProduct || productDef;
     const [openSection, setOpenSection] = useState(null);
     
@@ -51,7 +51,7 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
     const related = similarProducts.length > 0 ? similarProducts : products.filter(p => p.category === categorySlug && p.id !== product.id).slice(0, 3);
 
     const handleBuy = () => {
-        router.get(route('products.sales', product.id || product.slug));
+        router.get(route('products.sales', product.slug || product.id));
     };
 
     const handleAddToCart = () => {
@@ -122,7 +122,21 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
                                 <div className="detail-card__category">
                                     <span>{getCategoryLabel(categorySlug)}</span>
                                 </div>
+                                
                                 <h1 className="detail-card__title">{title}</h1>
+
+                                <div className="detail-card__meta">
+                                    <div className="detail-meta-item">
+                                        <Star size={14} fill="var(--color-warning)" stroke="var(--color-warning)" />
+                                        <span className="rating-val">{product.rating || '5.0'}</span>
+                                        <span className="rating-count">({product.total_ratings || 0} Penilaian)</span>
+                                    </div>
+                                    <span className="meta-divider">|</span>
+                                    <div className="detail-meta-item">
+                                        <span className="sold-val">{product.sold_count || 0}</span>
+                                        <span className="sold-label">Terjual</span>
+                                    </div>
+                                </div>
 
                                 <div className="detail-card__price">
                                     <span className="price-big">{formatCurrency(price)}</span>
@@ -160,7 +174,7 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
 
                                 <div className="detail-card__actions">
                                     {isPurchased ? (
-                                        <button className="btn-buy" onClick={() => router.get(route('dashboard.learning', product.id))} style={{ background: 'var(--color-success)', color: 'white', border: 'none' }}>
+                                        <button className="btn-buy" onClick={() => router.get(route('dashboard.learning', product.slug || product.id))} style={{ background: 'var(--color-success)', color: 'white', border: 'none' }}>
                                             ☑ Sudah Dibeli (Buka Materi)
                                         </button>
                                     ) : (

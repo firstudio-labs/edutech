@@ -13,6 +13,11 @@ class Transaction extends Model
         'status',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'transaction_code';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

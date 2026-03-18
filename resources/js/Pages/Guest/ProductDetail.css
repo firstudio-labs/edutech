@@ -191,25 +191,43 @@
     font-size: var(--text-xl);
     font-weight: var(--font-bold);
     line-height: 1.4;
+    margin-bottom: var(--space-1);
 }
 
-.detail-card__rating {
+.detail-card__meta {
     display: flex;
     align-items: center;
-    gap: 3px;
-    color: var(--color-warning);
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
 }
 
-.rating-num {
+.detail-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+
+.rating-val {
     font-weight: var(--font-bold);
     color: var(--color-text-primary);
-    margin-left: 3px;
+    margin-left: 2px;
 }
 
-.rating-total {
-    font-size: var(--text-sm);
+.rating-count, .sold-label {
     color: var(--color-text-muted);
+}
+
+.sold-val {
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+}
+
+.meta-divider {
+    color: var(--color-border);
+    font-size: 14px;
+    opacity: 0.5;
 }
 
 .detail-card__price {

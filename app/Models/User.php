@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'slug',
         'email',
         'password',
         'phone',
@@ -26,7 +27,29 @@ class User extends Authenticatable
         'total_spent',
         'status',
         'role',
+        'google_id',
+        'avatar',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->slug)) {
+                $user->slug = \Illuminate\Support\Str::slug($user->name) . '-' . uniqid();
+            }
+        });
+
+        static::updating(function ($user) {
+            if (($user->isDirty('name') && empty($user->slug)) || empty($user->slug)) {
+                $user->slug = \Illuminate\Support\Str::slug($user->name) . '-' . uniqid();
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.

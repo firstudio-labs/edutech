@@ -12,6 +12,23 @@ class InitialDataSeeder extends Seeder
      */
     public function run(): void
     {
+        // 0. Default Users
+        \App\Models\User::create([
+            'name' => 'Admin SAGA',
+            'email' => 'admin@saga.id',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
+
+        \App\Models\User::create([
+            'name' => 'Trial User',
+            'email' => 'user@gmail.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'customer',
+            'status' => 'active',
+        ]);
+
         // 1. Payment Methods
         \App\Models\PaymentMethod::create([
             'bank_name' => 'Bank Central Asia (BCA)',
@@ -39,9 +56,10 @@ class InitialDataSeeder extends Seeder
             'category_id' => $catEbook->id,
             'price' => 149000,
             'normal_price' => 299000,
-            'sold_count' => 1250,
+            'sold_count' => 0,
             'image' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=80',
             'badge' => 'Bestseller',
+            'featured' => true,
             'short_description' => 'Panduan komprehensif membangun dan mengembangkan bisnis digital di era modern. Berisi strategi terbukti dari para expert.',
             'description' => 'Ebook ini dirancang untuk para entrepreneur dan pebisnis yang ingin memaksimalkan potensi bisnis digital mereka. Dengan lebih dari 200 halaman konten berkualitas, Anda akan mendapatkan panduan lengkap mulai dari membangun fondasi bisnis hingga strategi scaling yang efektif.',
             'benefits' => json_encode(['Strategi pemasaran digital yang terbukti', 'Framework bisnis yang mudah diterapkan', 'Tools dan resource eksklusif', 'Template bisnis siap pakai', 'Akses lifetime ke update terbaru']),
@@ -60,9 +78,10 @@ class InitialDataSeeder extends Seeder
             'category_id' => $catVideo->id,
             'price' => 299000,
             'normal_price' => 599000,
-            'sold_count' => 2340,
+            'sold_count' => 0,
             'image' => 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&q=80',
             'badge' => 'Terpopuler',
+            'featured' => true,
             'short_description' => 'Kuasai Instagram Marketing dari nol hingga mahir dengan 50+ video pembelajaran berkualitas HD.',
             'description' => 'Kelas video komprehensif yang akan membawa Anda dari pemula menjadi expert dalam Instagram Marketing. Dipandu oleh instruktur berpengalaman dengan track record yang terbukti.',
             'benefits' => json_encode(['Akses seumur hidup ke semua materi', '50+ video HD dengan total 30 jam', 'Community eksklusif member', 'Sertifikat kelulusan', 'Q&A session dengan instruktur']),
@@ -81,9 +100,10 @@ class InitialDataSeeder extends Seeder
             'category_id' => $catWebinar->id,
             'price' => 99000,
             'normal_price' => 199000,
-            'sold_count' => 456,
+            'sold_count' => 0,
             'image' => 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80',
             'badge' => 'Live',
+            'featured' => true,
             'short_description' => 'Pelajari cara mengelola keuangan secara cerdas sebagai freelancer bersama pakar finansial.',
             'description' => 'Webinar interaktif 3 jam bersama certified financial planner yang akan membantu Anda mengatur keuangan freelance secara optimal.',
             'benefits' => json_encode(['Sesi live 3 jam interaktif', 'Recording tersedia setelah webinar', 'Template tracking keuangan', 'Q&A session langsung', 'Certificate of attendance']),
@@ -99,9 +119,10 @@ class InitialDataSeeder extends Seeder
             'category_id' => $catOffline->id,
             'price' => 1500000,
             'normal_price' => 2500000,
-            'sold_count' => 120,
+            'sold_count' => 0,
             'image' => 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=80',
             'badge' => 'Premium',
+            'featured' => true,
             'short_description' => 'Bootcamp intensif 3 hari di Jakarta untuk menguasai digital marketing secara menyeluruh.',
             'description' => 'Program bootcamp offline terbaik yang dirancang untuk memberikan pengalaman belajar langsung dengan mentor berpengalaman dan networking dengan sesama peserta.',
             'benefits' => json_encode(['3 hari intensif di Jakarta', 'Makan siang & coffee break included', 'Materi cetak eksklusif', 'Networking dengan 50+ peserta', 'Sertifikat internasional']),
@@ -117,7 +138,7 @@ class InitialDataSeeder extends Seeder
             'category_id' => $catEbook->id,
             'price' => 129000,
             'normal_price' => 249000,
-            'sold_count' => 890,
+            'sold_count' => 0,
             'image' => 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&q=80',
             'badge' => 'New',
             'short_description' => 'Panduan SEO lengkap dari teknik on-page hingga off-page yang terbukti meningkatkan ranking Google.',
@@ -137,7 +158,7 @@ class InitialDataSeeder extends Seeder
             'category_id' => $catVideo->id,
             'price' => 249000,
             'normal_price' => 449000,
-            'sold_count' => 1560,
+            'sold_count' => 0,
             'image' => 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&q=80',
             'badge' => null,
             'short_description' => 'Kuasai seni menulis copy yang persuasif dan meningkatkan konversi bisnis Anda.',
@@ -201,6 +222,21 @@ class InitialDataSeeder extends Seeder
         \App\Models\SiteContent::updateOrCreate(
             ['key' => 'ads_promo'],
             ['value' => json_encode($defaultAdsPromo)]
+        );
+
+        // 5. Default Credentials (Blank for user to fill)
+        $defaultSettings = [
+            'google_client_id' => '',
+            'google_client_secret' => '',
+            'google_redirect_url' => url('/auth/google/callback'),
+            'midtrans_server_key' => '',
+            'midtrans_client_key' => '',
+            'midtrans_is_production' => false,
+        ];
+
+        \App\Models\SiteContent::updateOrCreate(
+            ['key' => 'site_settings'],
+            ['value' => json_encode($defaultSettings)]
         );
     }
 }
