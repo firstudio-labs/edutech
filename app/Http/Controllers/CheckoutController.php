@@ -28,8 +28,7 @@ class CheckoutController extends Controller
             'cart' => 'required|array',
             'cart.*.id' => 'required|exists:products,id',
             'cart.*.price' => 'required|numeric',
-            // Proof is only required for manual bank transfers (status 1 means active, let's check PM)
-            'proof' => 'required_if:is_manual,true|image|max:5120',
+            'proof' => 'nullable|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $pm = PaymentMethod::find($request->payment_method_id);

@@ -58,5 +58,10 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Exception $e) {
             // Silently fail if DB not found/ready
         }
+
+        // Force HTTPS in production
+        if (config('app.env') === 'production' || config('app.debug') === false) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }

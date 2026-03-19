@@ -50,7 +50,13 @@ class HandleInertiaRequests extends Middleware
             'midtrans' => [
                 'client_key' => $siteSettings['midtrans_client_key'] ?? config('services.midtrans.client_key'),
                 'is_production' => $siteSettings['midtrans_is_production'] ?? config('services.midtrans.is_production'),
-            ]
+            ],
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
+                'snap_token' => $request->session()->get('snap_token'),
+                'trx_code' => $request->session()->get('trx_code'),
+            ],
         ];
     }
 }

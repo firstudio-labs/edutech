@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Building2, CheckCircle2, ShoppingBag, Upload, Trash2, ArrowRight, Lock, CreditCard } from 'lucide-react';
+import { Building2, CheckCircle2, ShoppingBag, Upload, Trash2, ArrowRight, Lock, CreditCard, Shield } from 'lucide-react';
 import { useCart } from '../../Contexts/CartContext';
 import { formatCurrency } from '../../Utils/helpers';
 import MainLayout from '../../Layouts/MainLayout';
@@ -51,8 +51,10 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
         setStep(2);
     };
 
-    const handlePay = () => {
-        const pm = activeMethods.find(m => m.id === selectedMethod);
+    const handlePay = (methodId = null) => {
+        const targetId = methodId || selectedMethod;
+        const pm = activeMethods.find(m => m.id === targetId);
+        
         if (!pm) return toast.error('Pilih metode pembayaran');
         if (pm.isManual && !proofFile) return toast.error('Harap unggah bukti pembayaran');
 
@@ -60,7 +62,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
         
         router.post(route('checkout.process'), {
             phone: form.phone,
-            payment_method_id: selectedMethod,
+            payment_method_id: targetId,
             cart: cartItems.map(item => ({ id: item.id, price: item.price, name: item.title })),
             proof: pm.isManual ? proofFile : null,
             _method: 'post',
@@ -187,7 +189,18 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
 
                                     <div className="payment-methods">
                                         {activeMethods.map(method => (
-                                            <div key={method.id} className={`payment-option ${selectedMethod === method.id ? 'selected' : ''}`} onClick={() => setSelectedMethod(method.id)}>
+                                            <div 
+                                                key={method.id} 
+                                                className={`payment-option ${selectedMethod === method.id ? 'selected' : ''}`} 
+                                                onClick={() => {
+                                                    setSelectedMethod(method.id);
+                                                    // Auto-trigger pay if it's Midtrans (automated)
+                                                    if (!method.isManual) {
+                                                        // We need to wait for state to update or use method.id directly
+                                                        handlePay(method.id);
+                                                    }
+                                                }}
+                                            >
                                                 <div className="payment-option__header">
                                                     <div className="payment-icon">
                                                         {method.isManual ? <Building2 size={20} /> : <CreditCard size={20} />}
@@ -208,6 +221,27 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                                             </div>
                                         ))}
                                     </div>
+
+                                    {activeMethods.find(m => m.id === selectedMethod)?.isManual === false && (
+                                        <div className="automated-steps-guide" style={{ marginTop: 'var(--space-4)', padding: 'var(--space-4)', background: 'rgba(59, 130, 246, 0.05)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
+                                            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: '#3b82f6', marginBottom: 'var(--space-3)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                <Shield size={16} /> Langkah Pembayaran Otomatis
+                                            </h4>
+                                            <div className="step-list" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                                                {[
+                                                    'Klik tombol "Konfirmasi Pembayaran" di bawah.',
+                                                    'Popup Midtrans Snap akan muncul secara otomatis.',
+                                                    'Pilih metode (QRIS, VA, E-Wallet) dan bayar.',
+                                                    'Akses produk langsung aktif detik itu juga!'
+                                                ].map((text, idx) => (
+                                                    <div key={idx} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                                                        <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#3b82f6', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, flexShrink: 0 }}>{idx + 1}</span>
+                                                        <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', margin: 0 }}>{text}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {activeMethods.find(m => m.id === selectedMethod)?.isManual && (
                                      <div className="proof-upload-section">
