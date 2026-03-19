@@ -34,12 +34,19 @@ class InitialDataSeeder extends Seeder
             'bank_name' => 'Bank Central Asia (BCA)',
             'account_number' => '1234567890',
             'account_name' => 'JAGGAD ACADEMY',
-            'status' => true,
+            'status' => false,
         ]);
 
         \App\Models\PaymentMethod::create([
             'bank_name' => 'Bank Mandiri',
             'account_number' => '0987654321',
+            'account_name' => 'JAGGAD ACADEMY',
+            'status' => false,
+        ]);
+
+        \App\Models\PaymentMethod::create([
+            'bank_name' => 'Midtrans (Otomatis: QRIS, VA, Kartu)',
+            'account_number' => '-',
             'account_name' => 'JAGGAD ACADEMY',
             'status' => true,
         ]);

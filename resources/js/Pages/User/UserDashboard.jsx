@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { BookOpen, Video, Receipt, User, Download, ExternalLink, Plus, Eye, XCircle, CheckCircle, Clock, Package, CreditCard } from 'lucide-react';
 import { products } from '../../Data/products';
 import { packages } from '../../Data/packages';
 import { formatCurrency, getCategoryLabel, getStorageUrl } from '../../Utils/helpers';
 import MainLayout from '../../Layouts/MainLayout';
+import toast from 'react-hot-toast';
 import './User.css';
 
 const transactions = [
@@ -16,8 +17,44 @@ const transactions = [
 ];
 
 export default function UserDashboard({ auth, purchasedProducts = [], transactions = [] }) {
+    const { midtrans } = usePage().props;
     const user = auth.user;
     const [selectedTrx, setSelectedTrx] = useState(null);
+
+    useEffect(() => {
+        if (!midtrans.client_key) return;
+        const snapScriptUrl = midtrans.is_production 
+            ? 'https://app.midtrans.com/snap/snap.js' 
+            : 'https://app.sandbox.midtrans.com/snap/snap.js';
+        
+        const script = document.createElement('script');
+        script.src = snapScriptUrl;
+        script.setAttribute('data-client-key', midtrans.client_key);
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, [midtrans]);
+
+    const handleRePay = (token) => {
+        if (!window.snap) return toast.error('Midtrans belum siap, silakan tunggu atau refresh.');
+        window.snap.pay(token, {
+            onSuccess: () => {
+                router.reload();
+                toast.success('Pembayaran Berhasil!');
+            },
+            onPending: () => {
+                toast.success('Menunggu pembayaran Anda...');
+            },
+            onError: () => {
+                toast.error('Pembayaran Gagal!');
+            }
+        });
+    };
 
     const myProducts = purchasedProducts.map(p => ({
         id: p.id,
@@ -34,7 +71,9 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
         amount: t.total_amount,
         status: t.status === 'success' ? 'Berhasil' : t.status === 'pending' ? 'Pending' : 'Gagal',
         proof: getStorageUrl(t.payment?.proof_image),
-        bank: t.payment?.payment_method?.bank_name || 'Transfer Bank',
+        bank: t.payment_type ? t.payment_type.toUpperCase() : (t.payment?.payment_method?.bank_name || 'Pembayaran Otomatis'),
+        snapToken: t.snap_token,
+        payload: t.payment_payload ? JSON.parse(t.payment_payload) : null
     }));
 
     return (
@@ -133,9 +172,16 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
                                                 </span>
                                             </td>
                                             <td>
-                                                <button onClick={() => setSelectedTrx(t)} style={{ background: 'none', border: 'none', color: 'var(--color-accent-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
-                                                    <Eye size={14} /> Lihat
-                                                </button>
+                                                <div style={{ display: 'flex', gap: 12 }}>
+                                                    <button onClick={() => setSelectedTrx(t)} style={{ background: 'none', border: 'none', color: 'var(--color-accent-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
+                                                        <Eye size={14} /> Lihat
+                                                    </button>
+                                                    {t.status === 'Pending' && t.snapToken && (
+                                                        <button onClick={() => handleRePay(t.snapToken)} style={{ border: '1px solid #f59e0b', borderRadius: 8, padding: '2px 8px', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.05)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                                                            Bayar Sekarang
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -185,15 +231,32 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
                                             </div>
                                         </div>
 
-                                        {selectedTrx.proof && (
-                                            <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                                                <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>Bukti Pembayaran:</div>
-                                                <div style={{ background: '#000', border: '1px solid var(--color-border)', borderRadius: 12, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <div style={{ width: '100%', height: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%)' }}>
-                                                        <img src={selectedTrx.proof} alt="Bukti Bayar" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                        {selectedTrx.payload ? (
+                                            <div style={{ marginTop: 16, padding: 12, background: 'rgba(255,255,255,0.02)', border: '1px dashed var(--color-border)', borderRadius: 12 }}>
+                                                <div style={{ fontSize: 10, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, fontWeight: 'bold' }}>Gateway Detail</div>
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                                                    <div>
+                                                        <div style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>ID Midtrans</div>
+                                                        <div style={{ fontSize: 11, fontFamily: 'monospace' }}>{selectedTrx.payload.transaction_id || '-'}</div>
                                                     </div>
-                                                    <div style={{ width: '100%', padding: '8px', background: 'rgba(255,255,255,0.03)', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                                                        <a href={selectedTrx.proof} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: 'var(--color-accent-light)', textDecoration: 'none', fontWeight: 600 }}>Klik untuk Perbesar Gambar</a>
+                                                    <div>
+                                                        <div style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>Status</div>
+                                                        <div style={{ fontSize: 11, fontWeight: 600, color: '#10b981' }}>{selectedTrx.payload.transaction_status?.toUpperCase() || '-'}</div>
+                                                    </div>
+                                                </div>
+                                                {selectedTrx.payload.va_numbers && (
+                                                    <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                                                        <div style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>Virtual Account ({selectedTrx.payload.va_numbers[0]?.bank?.toUpperCase()})</div>
+                                                        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1 }}>{selectedTrx.payload.va_numbers[0]?.va_number}</div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : selectedTrx.proof && (
+                                            <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>Bukti Pembayaran Manual:</div>
+                                                <div style={{ background: '#000', border: '1px solid var(--color-border)', borderRadius: 12, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                                    <div style={{ width: '100%', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        <img src={selectedTrx.proof} alt="Bukti" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                                     </div>
                                                 </div>
                                             </div>

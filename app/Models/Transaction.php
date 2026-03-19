@@ -13,6 +13,8 @@ class Transaction extends Model
         'status',
         'snap_token',
         'paid_at',
+        'payment_type',
+        'payment_payload',
     ];
 
     public function getRouteKeyName()

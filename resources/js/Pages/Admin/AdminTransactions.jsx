@@ -23,8 +23,9 @@ export default function AdminTransactions({ dbTransactions }) {
         status: dbT.status === 'success' ? 'Berhasil' : (dbT.status === 'failed' ? 'Gagal' : 'Pending'),
         rawStatus: dbT.status,
         date: new Date(dbT.created_at).toLocaleDateString('id-ID'),
-        payment: dbT.payment?.payment_method?.bank_name || 'Pindah Saldo/Gateway',
-        proof: getStorageUrl(dbT.payment?.proof_image)
+        payment: dbT.payment_type ? dbT.payment_type.toUpperCase() : (dbT.payment?.payment_method?.bank_name || 'Gateway Pembayaran'),
+        proof: getStorageUrl(dbT.payment?.proof_image),
+        payload: dbT.payment_payload ? JSON.parse(dbT.payment_payload) : null
     }));
 
     const filtered = transactions.filter(t => {
@@ -186,23 +187,39 @@ export default function AdminTransactions({ dbTransactions }) {
                                         <div><span>Jumlah Bayar</span><strong>{formatPrice(selectedTrx.amount)}</strong></div>
                                     </div>
 
-                                    {selectedTrx.proof ? (
+                                    {selectedTrx.payload ? (
+                                        <div style={{ marginTop: 'var(--space-4)', padding: 'var(--space-4)', background: 'var(--color-bg)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)' }}>
+                                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Midtrans Gateway Info</span>
+                                            <div className="detail-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                                <div><span style={{ fontSize: '11px' }}>Payment Type</span><strong style={{ fontSize: '12px' }}>{selectedTrx.payload.payment_type?.toUpperCase() || '-'}</strong></div>
+                                                <div><span style={{ fontSize: '11px' }}>Midtrans Trx ID</span><strong style={{ fontSize: '10px', fontFamily: 'monospace' }}>{selectedTrx.payload.transaction_id || '-'}</strong></div>
+                                                <div><span style={{ fontSize: '11px' }}>Status</span><strong style={{ fontSize: '12px', color: 'var(--color-success)' }}>{selectedTrx.payload.transaction_status?.toUpperCase() || '-'}</strong></div>
+                                                <div><span style={{ fontSize: '11px' }}>Waktu Bayar</span><strong style={{ fontSize: '12px' }}>{selectedTrx.payload.settlement_time || selectedTrx.payload.transaction_time || '-'}</strong></div>
+                                            </div>
+                                            {selectedTrx.payload.va_numbers && (
+                                                <div style={{ marginTop: 8, borderTop: '1px solid var(--color-border)', paddingTop: 8 }}>
+                                                    <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>Bank VA</span>
+                                                    <div style={{ fontWeight: 600, fontSize: 12 }}>{selectedTrx.payload.va_numbers[0]?.bank?.toUpperCase()}: {selectedTrx.payload.va_numbers[0]?.va_number}</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : selectedTrx.proof ? (
                                         <div style={{ marginTop: 'var(--space-2)' }}>
-                                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)' }}>Bukti Pembayaran:</span>
+                                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)' }}>Bukti Pembayaran Manual:</span>
                                             <div style={{ background: '#000', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                 <div style={{ width: '100%', height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%)' }}>
                                                     <img src={selectedTrx.proof} alt="Proof" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                                 </div>
                                                 <div style={{ width: '100%', padding: '8px', background: 'rgba(255,255,255,0.03)', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                                                    <a href={selectedTrx.proof} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: 'var(--color-accent-light)', textDecoration: 'none', fontWeight: 600 }}>Klik untuk Lihat Gambar Penuh</a>
+                                                    <a href={selectedTrx.proof} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: 'var(--color-accent-light)', textDecoration: 'none', fontWeight: 600 }}>Lihat Gambar Penuh</a>
                                                 </div>
                                             </div>
                                         </div>
                                     ) : (
                                         <div style={{ marginTop: 'var(--space-2)' }}>
                                             <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)' }}>Bukti Pembayaran:</span>
-                                            <div style={{ padding: 'var(--space-3)', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '4px', color: 'var(--color-error)', fontSize: 12, textAlign: 'center' }}>
-                                                Bukti belum diunggah atau tidak diperlukan
+                                            <div style={{ padding: 'var(--space-3)', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '4px', color: 'var(--color-text-muted)', fontSize: 12, textAlign: 'center', border: '1px dashed var(--color-border)' }}>
+                                                Menunggu pembayaran otomatis via Midtrans
                                             </div>
                                         </div>
                                     )}

@@ -38,6 +38,7 @@ Route::get('/packages/{slug}', function ($slug) {
 Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/checkout/verify/{transaction}', [CheckoutController::class, 'verify'])->name('checkout.verify');
 });
 
 

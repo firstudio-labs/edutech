@@ -53,11 +53,13 @@ class MidtransWebhookController extends Controller
         }
 
         if ($status) {
-             \Illuminate\Support\Facades\DB::transaction(function () use ($transaction, $status) {
+             \Illuminate\Support\Facades\DB::transaction(function () use ($transaction, $status, $type, $payload) {
                 $oldStatus = $transaction->status;
                 $transaction->update([
                     'status' => $status,
                     'paid_at' => ($status === 'success') ? now() : $transaction->paid_at,
+                    'payment_type' => $type,
+                    'payment_payload' => json_encode($payload),
                 ]);
 
                 if ($transaction->payment) {

@@ -10,10 +10,8 @@ import './Checkout.css';
 export default function Checkout({ auth, dbPaymentMethods = [] }) {
     const { midtrans } = usePage().props;
     const { cartItems, getTotal, clearCart, removeFromCart } = useCart();
-    const [selectedMethod, setSelectedMethod] = useState('');
-    const [step, setStep] = useState(1); // 1=form, 2=payment, 3=success
+    const [step, setStep] = useState(1); // 1=form, 2=success
     const [form, setForm] = useState({ name: auth.user?.name || '', email: auth.user?.email || '', phone: auth.user?.phone || '' });
-    const [proofFile, setProofFile] = useState(null);
     const [processing, setProcessing] = useState(false);
 
     useEffect(() => {
@@ -48,15 +46,18 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
 
     const handleOrder = () => {
         if (!form.name || !form.email || !form.phone) return toast.error('Lengkapi data diri termasuk Nomor HP');
-        setStep(2);
+        
+        const midtransMethod = activeMethods.find(m => !m.isManual);
+        if (!midtransMethod) return toast.error('Midtrans belum dikonfigurasi!');
+        
+        handlePay(midtransMethod.id);
     };
 
-    const handlePay = (methodId = null) => {
-        const targetId = methodId || selectedMethod;
+    const handlePay = (methodId) => {
+        const targetId = methodId;
         const pm = activeMethods.find(m => m.id === targetId);
         
         if (!pm) return toast.error('Pilih metode pembayaran');
-        if (pm.isManual && !proofFile) return toast.error('Harap unggah bukti pembayaran');
 
         setProcessing(true);
         
@@ -64,7 +65,6 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
             phone: form.phone,
             payment_method_id: targetId,
             cart: cartItems.map(item => ({ id: item.id, price: item.price, name: item.title })),
-            proof: pm.isManual ? proofFile : null,
             _method: 'post',
         }, {
             forceFormData: true,
@@ -75,15 +75,22 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                 if (snap_token) {
                     window.snap.pay(snap_token, {
                         onSuccess: (result) => {
-                            setProcessing(false);
-                            clearCart();
-                            setStep(3);
-                            toast.success('Pembayaran Berhasil!');
+                            router.post(route('checkout.verify', page.props.flash.trx_code), {}, {
+                                onSuccess: () => {
+                                    setProcessing(false);
+                                    clearCart();
+                                    setStep(2);
+                                }
+                            });
                         },
                         onPending: (result) => {
-                            setProcessing(false);
-                            toast.success('Pembayaran Diproses, Silakan Selesaikan Pembayaran Anda.');
-                            router.visit(route('dashboard'));
+                            router.post(route('checkout.verify', page.props.flash.trx_code), {}, {
+                                onSuccess: () => {
+                                    setProcessing(false);
+                                    toast.success('Pembayaran Diproses, Silakan Selesaikan Pembayaran Anda.');
+                                    router.visit(route('dashboard'));
+                                }
+                            });
                         },
                         onError: (result) => {
                             setProcessing(false);
@@ -97,7 +104,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                 } else {
                     setProcessing(false);
                     clearCart();
-                    setStep(3);
+                    setStep(2);
                 }
             },
             onError: (errors) => {
@@ -107,7 +114,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
         });
     };
 
-    if (step === 3) {
+    if (step === 2) {
         return (
             <MainLayout>
                 <Head title="Pembayaran Berhasil! - JAGGAD ACADEMY" />
@@ -126,7 +133,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
         );
     }
 
-    if (cartItems.length === 0 && step !== 3) {
+    if (cartItems.length === 0 && step !== 2) {
         return (
             <MainLayout>
                 <Head title="Keranjang Kosong - JAGGAD ACADEMY" />
@@ -146,7 +153,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
             <div className="checkout-page">
                 <div className="container checkout-inner">
                     <div className="checkout-steps">
-                        {['Data Diri', 'Pembayaran', 'Selesai'].map((s, i) => (
+                        {['Data Diri', 'Selesai'].map((s, i) => (
                             <div key={s} className={`step-item ${step > i + 1 ? 'done' : step === i + 1 ? 'active' : ''}`}>
                                 <div className="step-circle">{step > i + 1 ? '✓' : i + 1}</div>
                                 <span>{s}</span>
@@ -172,122 +179,13 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                                         <label>Nomor HP</label>
                                         <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+62 xxx-xxxx-xxxx" className="form-input" />
                                     </div>
-                                    <button className="btn-checkout-action w-full" onClick={handleOrder}>
-                                        Lanjutkan ke Pembayaran <ArrowRight size={20} />
+                                    <button className="btn-checkout-action w-full" onClick={handleOrder} disabled={processing}>
+                                        {processing ? 'Memproses...' : 'Lanjutkan ke Pembayaran'} <ArrowRight size={20} />
                                     </button>
                                 </div>
                             )}
 
-                            {step === 2 && (
-                                <div className="checkout-card">
-                                    <h2 className="checkout-card-title">Metode Pembayaran</h2>
-                                    <p className="text-muted" style={{ marginBottom: 'var(--space-4)', fontSize: 'var(--text-sm)' }}>
-                                        {activeMethods.find(m => m.id === selectedMethod)?.isManual === false 
-                                            ? 'Anda akan diarahkan ke pop-up pembayaran otomatis Midtrans.'
-                                            : 'Silakan transfer sesuai total tagihan ke salah satu rekening di bawah ini, lalu unggah buktinya.'}
-                                    </p>
 
-                                    <div className="payment-methods">
-                                        {activeMethods.map(method => (
-                                            <div 
-                                                key={method.id} 
-                                                className={`payment-option ${selectedMethod === method.id ? 'selected' : ''}`} 
-                                                onClick={() => {
-                                                    setSelectedMethod(method.id);
-                                                    // Auto-trigger pay if it's Midtrans (automated)
-                                                    if (!method.isManual) {
-                                                        // We need to wait for state to update or use method.id directly
-                                                        handlePay(method.id);
-                                                    }
-                                                }}
-                                            >
-                                                <div className="payment-option__header">
-                                                    <div className="payment-icon">
-                                                        {method.isManual ? <Building2 size={20} /> : <CreditCard size={20} />}
-                                                    </div>
-                                                    <div style={{ flex: 1 }}>
-                                                        <span className="payment-label" style={{ display: 'block' }}>{method.label}</span>
-                                                        {!method.isManual && <span style={{ fontSize: '10px', color: 'var(--color-accent-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Otomatis (QRIS, VA, DLL)</span>}
-                                                    </div>
-                                                    <div className={`payment-radio ${selectedMethod === method.id ? 'checked' : ''}`} />
-                                                </div>
-                                                {selectedMethod === method.id && method.isManual && (
-                                                    <div className="bank-details" style={{ margin: '0 var(--space-4) var(--space-4)', padding: 'var(--space-3)', background: 'var(--color-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
-                                                        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Nomor Rekening</p>
-                                                        <p style={{ fontSize: 'var(--text-lg)', fontWeight: 600, fontFamily: 'monospace', letterSpacing: '1px', color: 'var(--color-text)' }}>{method.accNo}</p>
-                                                        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>Atas Nama: <strong>{method.accName}</strong></p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {activeMethods.find(m => m.id === selectedMethod)?.isManual === false && (
-                                        <div className="automated-steps-guide" style={{ marginTop: 'var(--space-4)', padding: 'var(--space-4)', background: 'rgba(59, 130, 246, 0.05)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
-                                            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: '#3b82f6', marginBottom: 'var(--space-3)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                                                <Shield size={16} /> Langkah Pembayaran Otomatis
-                                            </h4>
-                                            <div className="step-list" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                                                {[
-                                                    'Klik tombol "Konfirmasi Pembayaran" di bawah.',
-                                                    'Popup Midtrans Snap akan muncul secara otomatis.',
-                                                    'Pilih metode (QRIS, VA, E-Wallet) dan bayar.',
-                                                    'Akses produk langsung aktif detik itu juga!'
-                                                ].map((text, idx) => (
-                                                    <div key={idx} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                                                        <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#3b82f6', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, flexShrink: 0 }}>{idx + 1}</span>
-                                                        <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', margin: 0 }}>{text}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {activeMethods.find(m => m.id === selectedMethod)?.isManual && (
-                                     <div className="proof-upload-section">
-                                          <h3 className="proof-upload-title">Upload Bukti Pembayaran</h3>
-                                          <label className={`proof-upload-label ${proofFile ? 'has-file' : ''}`}>
-                                              {proofFile ? (
-                                                  <>
-                                                      {proofFile.type && proofFile.type.startsWith('image/') ? (
-                                                          <img 
-                                                              src={URL.createObjectURL(proofFile)} 
-                                                              alt="Preview Bukti" 
-                                                              className="proof-preview-image"
-                                                          />
-                                                      ) : (
-                                                          <CheckCircle2 size={32} className="proof-upload-icon" />
-                                                      )}
-                                                      <span className="proof-file-name">{proofFile.name}</span>
-                                                      <span className="proof-upload-hint">(Klik untuk mengganti)</span>
-                                                  </>
-                                              ) : (
-                                                  <>
-                                                      <Upload size={32} className="proof-upload-icon" />
-                                                      <span className="proof-upload-text">Pilih File Bukti Transfer</span>
-                                                      <span className="proof-upload-hint">JPG, PNG, atau PDF (Max 2MB)</span>
-                                                  </>
-                                              )}
-                                              <input
-                                                  type="file"
-                                                  accept="image/*,.pdf"
-                                                  style={{ display: 'none' }}
-                                                  onChange={(e) => {
-                                                      if (e.target.files && e.target.files[0]) {
-                                                          setProofFile(e.target.files[0]);
-                                                      }
-                                                  }}
-                                              />
-                                          </label>
-                                      </div>
-                                    )}
-
-                                    <button className={`btn-checkout-action w-full ${processing ? 'loading' : ''}`} style={{ marginTop: 'var(--space-6)' }} onClick={handlePay} disabled={processing}>
-                                        <Lock size={20} />
-                                        {processing ? 'Memproses Pesanan...' : `Konfirmasi Pembayaran ${formatCurrency(grandTotal)}`}
-                                    </button>
-                                </div>
-                            )}
                         </div>
 
                         {/* Order summary */}
