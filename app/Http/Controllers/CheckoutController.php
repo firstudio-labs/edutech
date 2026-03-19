@@ -122,6 +122,11 @@ class CheckoutController extends Controller
                         'phone' => $request->phone,
                     ],
                     'item_details' => $itemDetails,
+                    'callbacks' => [
+                        'finish'   => url('/dashboard'),
+                        'unfinish' => url('/dashboard'),
+                        'error'    => url('/checkout'),
+                    ],
                 ];
 
                 $snapToken = \Midtrans\Snap::getSnapToken($params);
