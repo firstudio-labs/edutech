@@ -14,6 +14,22 @@ class CheckoutController extends Controller
 {
     public function index()
     {
+        // Self-healing: Ensure Midtrans record exists if configured
+        $settingsData = \App\Models\SiteContent::where('key', 'site_settings')->first();
+        $siteSettings = $settingsData ? json_decode($settingsData->value, true) : [];
+        $midtransClientKey = $siteSettings['midtrans_client_key'] ?? config('services.midtrans.client_key');
+
+        if (!empty($midtransClientKey)) {
+            \App\Models\PaymentMethod::updateOrCreate(
+                ['account_number' => '-'],
+                [
+                    'bank_name' => 'Midtrans (Otomatis: QRIS, VA, Kartu)',
+                    'account_name' => 'JAGGAD ACADEMY',
+                    'status' => true,
+                ]
+            );
+        }
+
         $paymentMethods = PaymentMethod::where('status', 1)->get();
         return Inertia::render('Guest/Checkout', [
             'dbPaymentMethods' => $paymentMethods,

@@ -47,8 +47,12 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
     const handleOrder = () => {
         if (!form.name || !form.email || !form.phone) return toast.error('Lengkapi data diri termasuk Nomor HP');
         
+        // 1. Check if Client Key is configured
+        if (!midtrans.client_key) return toast.error('Midtrans Client Key belum diisi di Pengaturan!');
+
+        // 2. Check if Payment Method record exists
         const midtransMethod = activeMethods.find(m => !m.isManual);
-        if (!midtransMethod) return toast.error('Midtrans belum dikonfigurasi!');
+        if (!midtransMethod) return toast.error('Metode Pembayaran Midtrans tidak ditemukan di Database!');
         
         handlePay(midtransMethod.id);
     };
