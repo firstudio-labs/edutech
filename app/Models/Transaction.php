@@ -11,6 +11,8 @@ class Transaction extends Model
         'user_id',
         'total_amount',
         'status',
+        'snap_token',
+        'paid_at',
     ];
 
     public function getRouteKeyName()

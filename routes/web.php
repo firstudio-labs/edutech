@@ -107,4 +107,11 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::get('/chatbot', [AdminSettingController::class, 'chatbot'])->name('chatbot.index');
     });
 });
+
+Route::post('/midtrans/webhook', [\App\Http\Controllers\MidtransWebhookController::class, 'handle']);
+
 require __DIR__.'/auth.php';
+
+// Google Auth
+Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);

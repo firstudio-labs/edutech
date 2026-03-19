@@ -37,6 +37,9 @@ class HandleInertiaRequests extends Middleware
             $purchasedProductIds = $request->user()->products()->pluck('products.id')->toArray();
         }
 
+        $settingsData = \App\Models\SiteContent::where('key', 'site_settings')->first();
+        $siteSettings = $settingsData ? json_decode($settingsData->value, true) : [];
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -44,6 +47,10 @@ class HandleInertiaRequests extends Middleware
                 'purchased_products' => $purchasedProductIds,
             ],
             'siteContent' => $dbContent,
+            'midtrans' => [
+                'client_key' => $siteSettings['midtrans_client_key'] ?? config('services.midtrans.client_key'),
+                'is_production' => $siteSettings['midtrans_is_production'] ?? config('services.midtrans.is_production'),
+            ]
         ];
     }
 }

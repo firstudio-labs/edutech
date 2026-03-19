@@ -28,8 +28,12 @@ class CheckoutController extends Controller
             'cart' => 'required|array',
             'cart.*.id' => 'required|exists:products,id',
             'cart.*.price' => 'required|numeric',
-            'proof' => 'required|image|max:5120',
+            // Proof is only required for manual bank transfers (status 1 means active, let's check PM)
+            'proof' => 'required_if:is_manual,true|image|max:5120',
         ]);
+
+        $pm = PaymentMethod::find($request->payment_method_id);
+        $isManual = ($pm->account_number !== '-'); // My quick check for manual vs midtrans
 
         $user = $request->user();
 
@@ -39,12 +43,27 @@ class CheckoutController extends Controller
         }
 
         $totalAmount = 0;
+        $itemDetails = [];
         foreach ($request->cart as $item) {
             $totalAmount += $item['price'];
+            $itemDetails[] = [
+                'id' => $item['id'],
+                'price' => $item['price'],
+                'quantity' => 1,
+                'name' => $item['name'] ?? 'Product Item'
+            ];
         }
 
         $tax = round($totalAmount * 0.11);
         $grandTotal = $totalAmount + $tax;
+
+        // Add tax as an item detail for Midtrans
+        $itemDetails[] = [
+            'id' => 'TAX',
+            'price' => $tax,
+            'quantity' => 1,
+            'name' => 'PPN 11%'
+        ];
 
         $transaction = Transaction::create([
             'transaction_code' => 'TRX-' . strtoupper(Str::random(8)),
@@ -61,20 +80,48 @@ class CheckoutController extends Controller
             ]);
         }
 
-        if ($request->hasFile('proof')) {
-            $path = $request->file('proof')->store('payments', 'public');
+        if ($isManual) {
+            if ($request->hasFile('proof')) {
+                $path = $request->file('proof')->store('payments', 'public');
+    
+                Payment::create([
+                    'transaction_id' => $transaction->id,
+                    'payment_method_id' => $request->payment_method_id,
+                    'amount' => $grandTotal,
+                    'proof_image' => $path,
+                    'status' => 'pending',
+                ]);
+            }
+            return back()->with('success', 'Pesanan berhasil dibuat, silakan tunggu konfirmasi admin!');
+        } else {
+            // Midtrans Automated Payment
+            try {
+                $params = [
+                    'transaction_details' => [
+                        'order_id' => $transaction->transaction_code,
+                        'gross_amount' => (int)$grandTotal,
+                    ],
+                    'customer_details' => [
+                        'first_name' => $user->name,
+                        'email' => $user->email,
+                        'phone' => $request->phone,
+                    ],
+                    'item_details' => $itemDetails,
+                ];
 
-            Payment::create([
-                'transaction_id' => $transaction->id,
-                'payment_method_id' => $request->payment_method_id,
-                'amount' => $grandTotal,
-                'proof_image' => $path,
-                'status' => 'pending',
-            ]);
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+                $transaction->update(['snap_token' => $snapToken]);
+
+                return back()->with([
+                    'success' => 'Silakan selesaikan pembayaran!',
+                    'snap_token' => $snapToken,
+                    'trx_code' => $transaction->transaction_code
+                ]);
+
+            } catch (\Exception $e) {
+                return back()->with('error', 'Gagal terhubung ke gateway pembayaran: ' . $e->getMessage());
+            }
         }
-
-        // Return a successful response so frontend can redirect/show success step
-        return back()->with('success', 'Pesanan berhasil dibuat!');
     }
 }
 
