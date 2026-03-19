@@ -60,6 +60,7 @@ class InitialDataSeeder extends Seeder
         // 3. Products
         \App\Models\Product::create([
             'name' => 'Ebook: Strategi Bisnis Digital 2024',
+            'slug' => 'ebook-strategi-bisnis-digital-2024',
             'category_id' => $catEbook->id,
             'price' => 149000,
             'normal_price' => 299000,
@@ -82,6 +83,7 @@ class InitialDataSeeder extends Seeder
 
         \App\Models\Product::create([
             'name' => 'Video Kelas: Instagram Marketing Mastery',
+            'slug' => 'video-kelas-instagram-marketing-mastery',
             'category_id' => $catVideo->id,
             'price' => 299000,
             'normal_price' => 599000,
@@ -104,6 +106,7 @@ class InitialDataSeeder extends Seeder
 
         \App\Models\Product::create([
             'name' => 'Webinar: Financial Planning untuk Freelancer',
+            'slug' => 'webinar-financial-planning-untuk-freelancer',
             'category_id' => $catWebinar->id,
             'price' => 99000,
             'normal_price' => 199000,
@@ -123,6 +126,7 @@ class InitialDataSeeder extends Seeder
 
         \App\Models\Product::create([
             'name' => 'Kelas Offline: Digital Marketing Bootcamp',
+            'slug' => 'kelas-offline-digital-marketing-bootcamp',
             'category_id' => $catOffline->id,
             'price' => 1500000,
             'normal_price' => 2500000,
@@ -142,6 +146,7 @@ class InitialDataSeeder extends Seeder
 
         \App\Models\Product::create([
             'name' => 'Ebook: SEO Mastery Guide',
+            'slug' => 'ebook-seo-mastery-guide',
             'category_id' => $catEbook->id,
             'price' => 129000,
             'normal_price' => 249000,
@@ -162,6 +167,7 @@ class InitialDataSeeder extends Seeder
 
         \App\Models\Product::create([
             'name' => 'Video Kelas: Copywriting yang Menjual',
+            'slug' => 'video-kelas-copywriting-yang-menjual',
             'category_id' => $catVideo->id,
             'price' => 249000,
             'normal_price' => 449000,

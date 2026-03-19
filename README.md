@@ -249,12 +249,28 @@ php artisan optimize
 | Masalah | Solusi |
 |---|---|
 | **Tampilan rusak saat refresh** | Pastikan `npm run build` sudah dijalankan ulang setelah pull. Vite menggunakan per-page CSS splitting. |
+| **Produk 404 saat diklik** | Jalankan perintah fix slug di bawah — produk lama mungkin tidak punya slug |
 | **Midtrans belum dikonfigurasi** | Buka Admin > Settings, isi Server Key & Client Key, lalu simpan. Refresh halaman Checkout. |
 | **Error 500 setelah migrate** | Jalankan `php artisan config:clear && php artisan cache:clear` lalu coba lagi. |
 | **Gambar tidak muncul** | Pastikan `php artisan storage:link` sudah dijalankan. |
 | **Google Login tidak berfungsi** | Isi Google Client ID/Secret di Admin > Settings. Verifikasi redirect URL di Google Cloud Console. |
 | **File Permission Error** | `chmod -R 775 storage bootstrap/cache` |
 | **Webhook Midtrans tidak bekerja** | Pastikan URL webhook di dashboard Midtrans sudah benar dan server bisa diakses publik. |
+
+### 🛠 Fix Produk 404 (Slug Kosong)
+
+Jika produk sudah ada di database **sebelum migrasi slug** ditambahkan, kolom slug-nya bisa kosong dan menyebabkan error 404. Jalankan perintah berikut di server untuk memperbaikinya:
+
+```bash
+php artisan tinker --execute="App\Models\Product::all()->each(function(\$p) { if(empty(\$p->slug)) { \$p->slug = Illuminate\Support\Str::slug(\$p->name); \$p->saveQuietly(); echo 'Fixed: '.\$p->name.PHP_EOL; } });"
+```
+
+Atau jika menggunakan Windows (Command Prompt):
+```bash
+php artisan tinker
+App\Models\Product::all()->each(function($p) { if(empty($p->slug)) { $p->slug = Illuminate\Support\Str::slug($p->name); $p->saveQuietly(); echo 'Fixed: '.$p->name."\n"; } });
+exit
+```
 
 ---
 

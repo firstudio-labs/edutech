@@ -22,7 +22,7 @@ class PublicController extends Controller
         $categories = Category::withCount('products')->get();
         
         $stats = [
-            'users' => \App\Models\User::where('role', 'user')->count(),
+            'users' => \App\Models\User::where('role', 'customer')->count(),
             'products' => Product::count(),
             'sales' => \App\Models\Transaction::where('status', 'success')->count(),
         ];
