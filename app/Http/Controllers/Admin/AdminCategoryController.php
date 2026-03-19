@@ -24,7 +24,7 @@ class AdminCategoryController extends Controller
         $data = $request->validate([
             'id' => 'required|string|max:255|unique:categories,slug',
             'label' => 'required|string|max:255',
-            'imageFile' => 'nullable|image|max:2048',
+            'imageFile' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $imagePath = null;
@@ -47,7 +47,7 @@ class AdminCategoryController extends Controller
     {
         $data = $request->validate([
             'label' => 'required|string|max:255',
-            'imageFile' => 'nullable|image|max:2048',
+            'imageFile' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $imagePath = $category->image;

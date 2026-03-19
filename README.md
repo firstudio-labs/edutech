@@ -250,6 +250,7 @@ php artisan optimize
 |---|---|
 | **Tampilan rusak saat refresh** | Pastikan `npm run build` sudah dijalankan ulang setelah pull. Vite menggunakan per-page CSS splitting. |
 | **Produk 404 saat diklik** | Jalankan perintah fix slug di bawah — produk lama mungkin tidak punya slug |
+| **413 Entity Too Large saat upload gambar** | Atur limit di Nginx & PHP — lihat panduan di bawah |
 | **Midtrans belum dikonfigurasi** | Buka Admin > Settings, isi Server Key & Client Key, lalu simpan. Refresh halaman Checkout. |
 | **Error 500 setelah migrate** | Jalankan `php artisan config:clear && php artisan cache:clear` lalu coba lagi. |
 | **Gambar tidak muncul** | Pastikan `php artisan storage:link` sudah dijalankan. |
@@ -271,6 +272,41 @@ php artisan tinker
 App\Models\Product::all()->each(function($p) { if(empty($p->slug)) { $p->slug = Illuminate\Support\Str::slug($p->name); $p->saveQuietly(); echo 'Fixed: '.$p->name."\n"; } });
 exit
 ```
+
+---
+
+### 🛠 Fix 413 Entity Too Large (Upload Gambar)
+
+Error ini terjadi karena **Nginx** atau **PHP** membatasi ukuran request. Solusi berdasarkan web server:
+
+#### Untuk Nginx (tambahkan di server block):
+```nginx
+server {
+    # ... konfigurasi lain ...
+    
+    # Izinkan upload sampai 7MB (lebih besar dari limit PHP)
+    client_max_body_size 7M;
+}
+```
+Lalu restart Nginx:
+```bash
+sudo nginx -t && sudo systemctl restart nginx
+```
+
+#### Untuk PHP-FPM (edit `/etc/php/8.2/fpm/php.ini`):
+```ini
+upload_max_filesize = 5M
+post_max_size = 6M
+max_execution_time = 120
+memory_limit = 256M
+```
+Lalu restart PHP-FPM:
+```bash
+sudo systemctl restart php8.2-fpm
+```
+
+#### Untuk Apache (sudah otomatis via `.htaccess`):
+File `public/.htaccess` di project ini sudah berisi setting PHP yang diperlukan. Pastikan `mod_php` aktif di server Apache Anda.
 
 ---
 
