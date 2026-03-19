@@ -36,11 +36,11 @@ export default function AdminDashboard({ stats = {}, recentTransactions = [], sa
 
     return (
         <AdminLayout>
-            <Head title="Admin Dashboard - SAGA Academy" />
+            <Head title="Admin Dashboard - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <h1>Dashboard</h1>
-                    <p className="admin-page-subtitle">Ringkasan aktivitas platform SAGA Academy</p>
+                    <p className="admin-page-subtitle">Ringkasan aktivitas platform JAGGAD ACADEMY</p>
                 </div>
 
                 {/* Stats */}

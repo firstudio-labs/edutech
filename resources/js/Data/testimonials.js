@@ -6,7 +6,7 @@ export const testimonials = [
         company: 'PT. Maju Bersama',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Andi',
         rating: 5,
-        text: 'Setelah mengikuti kelas Instagram Marketing di SAGA, omzet produk saya naik 300% dalam 2 bulan!',
+        text: 'Setelah mengikuti kelas Instagram Marketing di JAGGAD, omzet produk saya naik 300% dalam 2 bulan!',
         verified: true,
     },
     {

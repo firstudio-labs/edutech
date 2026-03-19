@@ -83,7 +83,7 @@ export default function ProductSales({ id, product: dbProduct }) {
 
     return (
         <MainLayout hideNavbar={true}>
-            <Head title={`${product.title} - SAGA Academy`} />
+            <Head title={`${product.title} - JAGGAD ACADEMY`} />
             <div className="product-sales">
                 {/* Progress bar */}
                 <div className="sales-progress-bar">

@@ -66,7 +66,7 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
 
     return (
         <MainLayout>
-            <Head title={`${title} - SAGA Academy`} />
+            <Head title={`${title} - JAGGAD ACADEMY`} />
             <div className="product-detail">
                 <div className="container product-detail__inner">
                     <Link href={route('products')} className="back-link">

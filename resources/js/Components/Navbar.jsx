@@ -50,7 +50,7 @@ export default function Navbar() {
         <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
             <div className="navbar__inner container">
                 <Link href={route('home')} className="navbar__brand">
-                    <span className="navbar__logo">SAGA</span>
+                    <span className="navbar__logo">JAGGAD</span>
                     <span className="navbar__tagline">Academy</span>
                 </Link>
 

@@ -30,7 +30,7 @@ export default function ResetPassword({ token, email }) {
             
             <div className="auth-card">
                 <div className="auth-header">
-                    <Link href="/" className="auth-brand">SAGA<span>Academy</span></Link>
+                    <Link href="/" className="auth-brand">JAGGAD<span>Academy</span></Link>
                     <h1 className="auth-title">Reset Password</h1>
                     <p className="auth-subtitle">Masukkan password baru Anda.</p>
                 </div>

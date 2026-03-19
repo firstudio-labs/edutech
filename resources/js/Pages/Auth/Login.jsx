@@ -29,9 +29,9 @@ export default function Login({ status, canResetPassword }) {
             
             <div className="auth-card">
                 <div className="auth-header">
-                    <Link href="/" className="auth-brand">SAGA<span>Academy</span></Link>
+                    <Link href="/" className="auth-brand">JAGGAD<span>Academy</span></Link>
                     <h1 className="auth-title">Selamat Datang</h1>
-                    <p className="auth-subtitle">Masuk ke akun SAGA Academy Anda</p>
+                    <p className="auth-subtitle">Masuk ke akun JAGGAD ACADEMY Anda</p>
                 </div>
 
                 {status && (
@@ -45,14 +45,14 @@ export default function Login({ status, canResetPassword }) {
                     <div className="demo-accounts">
                         <button 
                             type="button"
-                            onClick={() => setData({ ...data, email: 'user@saga.id', password: 'password' })} 
+                            onClick={() => setData({ ...data, email: 'user@jaggad.id', password: 'password' })} 
                             className="demo-btn"
                         >
                             👤 User Demo
                         </button>
                         <button 
                             type="button"
-                            onClick={() => setData({ ...data, email: 'admin@saga.id', password: 'password' })} 
+                            onClick={() => setData({ ...data, email: 'admin@jaggad.id', password: 'password' })} 
                             className="demo-btn"
                         >
                             🛡️ Admin Demo

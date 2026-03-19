@@ -30,7 +30,7 @@ export default function Register() {
             
             <div className="auth-card">
                 <div className="auth-header">
-                    <Link href="/" className="auth-brand">SAGA<span>Academy</span></Link>
+                    <Link href="/" className="auth-brand">JAGGAD<span>Academy</span></Link>
                     <h1 className="auth-title">Buat Akun</h1>
                     <p className="auth-subtitle">Daftar dan mulai perjalanan belajar Anda</p>
                 </div>

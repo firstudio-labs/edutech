@@ -18,7 +18,7 @@ export default function About({ previewMode = false }) {
 
     const PageContent = (
         <div className="about-page">
-            <Head title="Tentang Kami - SAGA Academy" />
+            <Head title="Tentang Kami - JAGGAD ACADEMY" />
             <div className="about-hero">
                 <div className="about-hero__glow" />
                 <div className="container">
@@ -92,7 +92,7 @@ export default function About({ previewMode = false }) {
 
                 {/* Achievements */}
                 <section className="about-section">
-                    <h2 className="about-section-title text-center">SAGA dalam Angka</h2>
+                    <h2 className="about-section-title text-center">JAGGAD dalam Angka</h2>
                     <div className="achievements-grid">
                         {(about.achievements || []).map(({ icon, value, label }, idx) => {
                             const IconComp = iconMap[icon] || Award;

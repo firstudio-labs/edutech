@@ -27,7 +27,7 @@ export default function EditProfile({ auth }) {
 
     return (
         <MainLayout>
-            <Head title="Edit Profil - SAGA Academy" />
+            <Head title="Edit Profil - JAGGAD ACADEMY" />
             <div className="edit-profile-page">
                 <div className="dashboard-header">
                     <div className="container">

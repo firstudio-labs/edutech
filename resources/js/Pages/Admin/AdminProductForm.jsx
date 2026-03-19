@@ -99,7 +99,7 @@ export default function AdminProductForm({ dbCategories = [], product }) {
 
     return (
         <AdminLayout>
-            <Head title={`${isEdit ? 'Edit' : 'Tambah'} Produk - SAGA Academy`} />
+            <Head title={`${isEdit ? 'Edit' : 'Tambah'} Produk - JAGGAD ACADEMY`} />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <button className="btn-icon" onClick={() => router.get(route('admin.products.index'))} style={{ marginBottom: 'var(--space-3)', display: 'inline-flex', gap: 6, alignItems: 'center', width: 'fit-content' }}>

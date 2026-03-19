@@ -41,7 +41,7 @@ export default function Products({ products = [], categories: categoriesData = [
 
     return (
         <MainLayout>
-            <Head title="Katalog Produk - SAGA Academy" />
+            <Head title="Katalog Produk - JAGGAD ACADEMY" />
             <div className="products-page">
                 <div className="products-header">
                     <div className="container">

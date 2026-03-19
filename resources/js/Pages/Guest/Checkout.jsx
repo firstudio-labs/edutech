@@ -110,12 +110,12 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
     if (step === 3) {
         return (
             <MainLayout>
-                <Head title="Pembayaran Berhasil! - SAGA Academy" />
+                <Head title="Pembayaran Berhasil! - JAGGAD ACADEMY" />
                 <div className="checkout-success">
                     <div className="success-card">
                         <div className="success-icon"><CheckCircle2 size={64} /></div>
                         <h2>Pembayaran Berhasil!</h2>
-                        <p>Terima kasih telah berbelanja di SAGA Academy. Akses produk Anda kini tersedia.</p>
+                        <p>Terima kasih telah berbelanja di JAGGAD ACADEMY. Akses produk Anda kini tersedia.</p>
                         <div className="success-actions">
                             <Link href={route('dashboard')} className="btn-hero-primary">Lihat Dashboard Saya</Link>
                             <Link href={route('products')} className="btn-hero-secondary">Belanja Lagi</Link>
@@ -129,7 +129,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
     if (cartItems.length === 0 && step !== 3) {
         return (
             <MainLayout>
-                <Head title="Keranjang Kosong - SAGA Academy" />
+                <Head title="Keranjang Kosong - JAGGAD ACADEMY" />
                 <div className="checkout-empty">
                     <ShoppingBag size={64} className="empty-icon" />
                     <h2>Keranjang Kosong</h2>
@@ -142,7 +142,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
 
     return (
         <MainLayout>
-            <Head title="Checkout - SAGA Academy" />
+            <Head title="Checkout - JAGGAD ACADEMY" />
             <div className="checkout-page">
                 <div className="container checkout-inner">
                     <div className="checkout-steps">

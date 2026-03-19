@@ -23,7 +23,7 @@ class AdminUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'role' => 'required|string|in:user,admin',
+            'role' => 'required|string|in:customer,admin',
             'status' => 'required|string|in:Aktif,Nonaktif',
             'phone' => 'nullable|string|max:20',
         ]);
@@ -46,7 +46,7 @@ class AdminUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8',
-            'role' => 'required|string|in:user,admin',
+            'role' => 'required|string|in:customer,admin',
             'status' => 'required|string|in:Aktif,Nonaktif',
             'phone' => 'nullable|string|max:20',
         ]);

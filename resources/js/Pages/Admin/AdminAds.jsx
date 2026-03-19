@@ -71,7 +71,7 @@ export default function AdminAds({ dbAds, products = [] }) {
 
     return (
         <AdminLayout>
-            <Head title="Ads Builder - SAGA Academy" />
+            <Head title="Ads Builder - JAGGAD ACADEMY" />
             <div className="admin-cms-layout">
                 {/* CMS Sidebar */}
                 <aside className={`cms-sidebar ${hideSidebar ? 'collapsed' : ''}`}>

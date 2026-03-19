@@ -39,7 +39,7 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
 
     return (
         <MainLayout>
-            <Head title="Dashboard - SAGA Academy" />
+            <Head title="Dashboard - JAGGAD ACADEMY" />
             <div className="user-dashboard">
                 {/* Header */}
                 <div className="dashboard-header">

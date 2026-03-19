@@ -40,7 +40,7 @@ class GoogleController extends Controller
                     'avatar' => $user->avatar,
                     'password' => null, // Password is null for social login
                     'status' => 'Aktif',
-                    'role' => 'user',
+                    'role' => 'customer',
                 ]);
  
                 Auth::login($newUser);

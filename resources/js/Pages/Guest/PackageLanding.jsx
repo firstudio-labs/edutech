@@ -23,7 +23,7 @@ export default function PackageLanding({ slug }) {
 
     return (
         <MainLayout>
-            <Head title={`${pkg.title} - SAGA Academy`} />
+            <Head title={`${pkg.title} - JAGGAD ACADEMY`} />
             <div className="pkg-landing">
                 {/* Hero */}
                 <section className="pkg-hero">
@@ -120,7 +120,7 @@ export default function PackageLanding({ slug }) {
                     {/* CTA */}
                     <section className="pkg-cta">
                         <h2>Siap Memulai?</h2>
-                        <p>Bergabunglah dengan ribuan pelajar yang telah berhasil bersama SAGA Academy</p>
+                        <p>Bergabunglah dengan ribuan pelajar yang telah berhasil bersama JAGGAD ACADEMY</p>
                         <div className="pkg-cta__price">
                             <span>{formatCurrency(pkg.price)}</span>
                             <del>{formatCurrency(pkg.originalPrice)}</del>

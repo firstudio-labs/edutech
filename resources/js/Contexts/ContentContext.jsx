@@ -13,19 +13,19 @@ const defaultContent = {
         catTitleAccent: 'Pembelajaran',
         featuredTitlePrefix: 'Pilihan',
         featuredTitleAccent: 'Terbaik',
-        whySagaTitleLine1: 'Platform Pembelajaran',
-        whySagaTitleLine2: 'Terpercaya',
-        whySagaSubtitle: 'Ribuan pelajar telah mempercayakan pengembangan skill mereka kepada SAGA Academy.',
+        whyJaggadTitleLine1: 'Platform Pembelajaran',
+        whyJaggadTitleLine2: 'Terpercaya',
+        whyJaggadSubtitle: 'Ribuan pelajar telah mempercayakan pengembangan skill mereka kepada JAGGAD ACADEMY.',
         ctaBannerTitle: 'Siap Tingkatkan Skill Anda?',
-        ctaBannerDesc: 'Bergabunglah dengan ribuan pelajar yang telah mengubah karir mereka bersama SAGA Academy.',
+        ctaBannerDesc: 'Bergabunglah dengan ribuan pelajar yang telah mengubah karir mereka bersama JAGGAD ACADEMY.',
         ctaBannerBtn: 'Mulai Belajar Sekarang'
     },
     about: {
         heroTitle: 'Mencerdaskan Generasi Digital',
-        heroDesc: 'SAGA Academy adalah platform edukasi digital yang berfokus pada pengembangan skill praktis bagi mahasiswa, profesional, dan entrepreneur di Indonesia.',
-        storyTitle: 'Cerita di Balik SAGA',
+        heroDesc: 'JAGGAD ACADEMY adalah platform edukasi digital yang berfokus pada pengembangan skill praktis bagi mahasiswa, profesional, dan entrepreneur di Indonesia.',
+        storyTitle: 'Cerita di Balik JAGGAD',
         storyP1: 'Berawal dari keresahan akan tingginya kesenjangan antara kurikulum akademis dengan kebutuhan industri digital yang sangat cepat berubah.',
-        storyP2: 'SAGA Academy lahir untuk menjadi jembatan bagi mereka yang ingin belajar langsung dari praktisi, menggunakan materi yang up-to-date dan metode yang fleksibel.',
+        storyP2: 'JAGGAD ACADEMY lahir untuk menjadi jembatan bagi mereka yang ingin belajar langsung dari praktisi, menggunakan materi yang up-to-date dan metode yang fleksibel.',
         visionTitle: 'Visi',
         visionDesc: 'Menjadi platform pembelajaran digital terdepan di Indonesia yang melahirkan generasi profesional kompeten dan siap bersaing di era global.',
         missionTitle: 'Misi',
@@ -42,7 +42,7 @@ const defaultContent = {
             { label: 'Mentor Expert', value: '25+', icon: 'Award' }
         ],
         milestones: [
-            { year: '2021', text: 'SAGA Academy berdiri dengan 3 produk pertama' },
+            { year: '2021', text: 'JAGGAD ACADEMY berdiri dengan 3 produk pertama' },
             { year: '2022', text: 'Meraih 1.000 pelajar aktif pertama' },
             { year: '2023', text: 'Ekspansi ke kelas offline dan webinar live' },
             { year: '2024', text: '5.200+ pelajar aktif, 50+ produk tersedia' }
@@ -51,10 +51,10 @@ const defaultContent = {
     contact: {
         title: 'Ada Pertanyaan? Kami Siap Membantu',
         subtitle: 'Tim kami siap menjawab pertanyaan Anda seputar produk, metode pembelajaran, atau kerjasama strategis lainnya.',
-        email: 'halo@sagaacademy.id',
+        email: 'halo@jaggad.id',
         phone: '+62 812 3456 7890',
-        address: 'Gedung SAGA Digital Hub, Lt. 5, Jl. Sudirman No. 123, Jakarta Selatan',
-        mapsUrl: 'https://maps.app.goo.gl/saga-academy-example'
+        address: 'Gedung JAGGAD Digital Hub, Lt. 5, Jl. Sudirman No. 123, Jakarta Selatan',
+        mapsUrl: 'https://maps.app.goo.gl/jaggad.academy-example'
     },
     ads: {
         heroTitle: 'Bongkar Rahasia Bisnis Beromset Ratusan Juta',
@@ -63,9 +63,9 @@ const defaultContent = {
         selectedProductIds: [1]
     },
     social: {
-        instagram: 'https://instagram.com/sagaacademy',
-        youtube: 'https://youtube.com/@sagaacademy',
-        twitter: 'https://twitter.com/sagaacademy'
+        instagram: 'https://instagram.com/jaggad',
+        youtube: 'https://youtube.com/@jaggad',
+        twitter: 'https://twitter.com/jaggad'
     }
 };
 
@@ -88,7 +88,7 @@ export function ContentProvider({ children, initialData }) {
     const [content, setContent] = useState(() => {
         let source = initialData;
         if (!source) {
-            const saved = localStorage.getItem('saga_content');
+            const saved = localStorage.getItem('jaggad_content');
             if (saved) {
                 try {
                     source = JSON.parse(saved);
@@ -107,7 +107,7 @@ export function ContentProvider({ children, initialData }) {
     }, [initialData]);
 
     useEffect(() => {
-        localStorage.setItem('saga_content', JSON.stringify(content));
+        localStorage.setItem('jaggad_content', JSON.stringify(content));
     }, [content]);
 
     const updateContent = (page, key, value) => {

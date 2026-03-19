@@ -54,7 +54,7 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
         <aside className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
             <div className="admin-sidebar__header">
                 <Link href="/" className="admin-sidebar__brand">
-                    <span className="brand-logo">SAGA</span>
+                    <span className="brand-logo">JAGGAD</span>
                     {!isCollapsed && <span className="brand-sub">Admin</span>}
                 </Link>
                 <button className="admin-sidebar__toggle" onClick={toggleSidebar}>

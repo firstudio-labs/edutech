@@ -44,7 +44,7 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
 
     const PageContent = (
         <div className="home">
-            <Head title="SAGA Academy - Platform Digital Learning #1" />
+            <Head title="JAGGAD ACADEMY - Platform Digital Learning #1" />
             
             {/* Hero */}
             <section className="hero">
@@ -163,13 +163,13 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
                 <div className="container">
                     <div className="features-layout">
                         <div className="features-left">
-                            <p className="section-label"><Shield size={14} /> Mengapa SAGA?</p>
+                            <p className="section-label"><Shield size={14} /> Mengapa JAGGAD?</p>
                             <h2 className="section-title">
-                                {home.whySagaTitleLine1}<br />
-                                <span className="text-gradient">{home.whySagaTitleLine2}</span>
+                                {home.whyJaggadTitleLine1}<br />
+                                <span className="text-gradient">{home.whyJaggadTitleLine2}</span>
                             </h2>
                             <p className="section-subtitle">
-                                {home.whySagaSubtitle}
+                                {home.whyJaggadSubtitle}
                             </p>
                             <Link href={route('about')} className="learn-more-link">
                                 Pelajari Lebih Lanjut <ArrowRight size={16} />

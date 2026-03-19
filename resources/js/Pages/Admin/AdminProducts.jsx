@@ -40,7 +40,7 @@ export default function AdminProducts({ dbProducts = [] }) {
 
     return (
         <AdminLayout>
-            <Head title="Manajemen Produk - SAGA Academy" />
+            <Head title="Manajemen Produk - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <h1>Manajemen Produk</h1>

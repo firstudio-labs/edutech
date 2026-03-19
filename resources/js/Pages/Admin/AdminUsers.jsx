@@ -17,7 +17,7 @@ export default function AdminUsers({ dbUsers = [] }) {
         email: '',
         password: '',
         phone: '',
-        role: 'user',
+        role: 'customer',
         status: 'Aktif',
     });
 
@@ -105,7 +105,7 @@ export default function AdminUsers({ dbUsers = [] }) {
 
     return (
         <AdminLayout>
-            <Head title="Manajemen Pengguna - SAGA Academy" />
+            <Head title="Manajemen Pengguna - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -225,7 +225,7 @@ export default function AdminUsers({ dbUsers = [] }) {
                                     <div className="form-group">
                                         <label>Role</label>
                                         <select value={data.role} onChange={e => setData('role', e.target.value)}>
-                                            <option value="user">User / Customer</option>
+                                            <option value="customer">Customer / Pembeli</option>
                                             <option value="admin">Administrator</option>
                                         </select>
                                     </div>

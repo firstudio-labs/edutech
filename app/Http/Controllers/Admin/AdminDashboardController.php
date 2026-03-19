@@ -17,7 +17,7 @@ class AdminDashboardController extends Controller
         // Compute stats
         $totalRevenue = Transaction::where('status', 'success')->sum('total_amount');
         $totalSales = Transaction::where('status', 'success')->count();
-        $totalUsers = User::where('role', 'user')->count();
+        $totalUsers = User::where('role', 'customer')->count();
         $totalWaitingPayment = Transaction::where('status', 'pending')->count();
         $totalActiveProducts = Product::count();
 
@@ -37,8 +37,8 @@ class AdminDashboardController extends Controller
         $revenueLastMonth = Transaction::where('status', 'success')->whereYear('created_at', $lastMonth->year)->whereMonth('created_at', $lastMonth->month)->sum('total_amount');
         $revenueChange = $calcPerc($revenueThisMonth, $revenueLastMonth);
 
-        $usersThisMonth = User::where('role', 'user')->whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->count();
-        $usersLastMonth = User::where('role', 'user')->whereYear('created_at', $lastMonth->year)->whereMonth('created_at', $lastMonth->month)->count();
+        $usersThisMonth = User::where('role', 'customer')->whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->count();
+        $usersLastMonth = User::where('role', 'customer')->whereYear('created_at', $lastMonth->year)->whereMonth('created_at', $lastMonth->month)->count();
         $usersChange = $calcPerc($usersThisMonth, $usersLastMonth);
 
         $productsThisMonth = Product::whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->count();

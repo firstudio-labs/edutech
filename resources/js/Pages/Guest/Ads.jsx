@@ -59,11 +59,11 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
 
     return (
         <div className="ads-landing-min">
-            <Head title="Promo Spesial - SAGA Academy" />
+            <Head title="Promo Spesial - JAGGAD ACADEMY" />
             {/* Header minimal */}
             <header className="ads-header">
                 <div className="ads-container">
-                    <span className="ads-brand">SAGA Academy</span>
+                    <span className="ads-brand">JAGGAD ACADEMY</span>
                     <span className="ads-badge-top">Penawaran Terbatas</span>
                 </div>
             </header>
@@ -156,7 +156,7 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
             </main>
 
             <footer className="ads-footer">
-                <p>&copy; {new Date().getFullYear()} SAGA Academy. All rights reserved.</p>
+                <p>&copy; {new Date().getFullYear()} JAGGAD ACADEMY. All rights reserved.</p>
             </footer>
         </div>
     );

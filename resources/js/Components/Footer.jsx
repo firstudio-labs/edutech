@@ -31,8 +31,8 @@ export default function Footer() {
     const contactItems = [
         { 
             icon: Mail, 
-            text: contact.email || 'hello@sagaacademy.id',
-            href: `mailto:${contact.email || 'hello@sagaacademy.id'}`
+            text: contact.email || 'hello@jaggad.id',
+            href: `mailto:${contact.email || 'hello@jaggad.id'}`
         },
         { 
             icon: Phone, 
@@ -54,11 +54,11 @@ export default function Footer() {
                 <div className="footer__grid">
                     <div className="footer__brand">
                         <Link href="/" className="footer__logo">
-                            <span className="footer-logo-saga">SAGA</span>
+                            <span className="footer-logo-jaggad">JAGGAD</span>
                             <span className="footer-logo-academy">Academy</span>
                         </Link>
                         <p className="footer__tagline">
-                            {home.whySagaSubtitle || "Platform pembelajaran digital terpercaya untuk akselerasi karir dan bisnis Anda di era modern."}
+                            {home.whyJaggadSubtitle || "Platform pembelajaran digital terpercaya untuk akselerasi karir dan bisnis Anda di era modern."}
                         </p>
 
                         <div className="footer__newsletter">
@@ -119,7 +119,7 @@ export default function Footer() {
                 </div>
 
                 <div className="footer__bottom">
-                    <p>© 2025 SAGA Academy. All rights reserved. Made with ❤️ in Indonesia.</p>
+                    <p>© 2025 JAGGAD ACADEMY. All rights reserved. Made with ❤️ in Indonesia.</p>
                     <div className="footer__legal">
                         <a href="#">Kebijakan Privasi</a>
                         <span className="footer-divider-dot">·</span>

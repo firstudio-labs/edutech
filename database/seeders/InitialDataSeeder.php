@@ -14,8 +14,8 @@ class InitialDataSeeder extends Seeder
     {
         // 0. Default Users
         \App\Models\User::create([
-            'name' => 'Admin SAGA',
-            'email' => 'admin@saga.id',
+            'name' => 'Admin JAGGAD',
+            'email' => 'admin@jaggad.id',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
             'role' => 'admin',
             'status' => 'active',
@@ -33,14 +33,14 @@ class InitialDataSeeder extends Seeder
         \App\Models\PaymentMethod::create([
             'bank_name' => 'Bank Central Asia (BCA)',
             'account_number' => '1234567890',
-            'account_name' => 'SAGA ACADEMY',
+            'account_name' => 'JAGGAD ACADEMY',
             'status' => true,
         ]);
 
         \App\Models\PaymentMethod::create([
             'bank_name' => 'Bank Mandiri',
             'account_number' => '0987654321',
-            'account_name' => 'SAGA ACADEMY',
+            'account_name' => 'JAGGAD ACADEMY',
             'status' => true,
         ]);
 
@@ -185,18 +185,18 @@ class InitialDataSeeder extends Seeder
             ],
             'about' => [
                 'heroTitle' => 'Mencerdaskan Generasi Digital',
-                'heroDesc' => 'SAGA Academy adalah platform edukasi digital yang berfokus pada pengembangan skill praktis bagi mahasiswa, profesional, dan entrepreneur di Indonesia.',
-                'storyTitle' => 'Cerita di Balik SAGA',
+                'heroDesc' => 'JAGGAD ACADEMY adalah platform edukasi digital yang berfokus pada pengembangan skill praktis bagi mahasiswa, profesional, dan entrepreneur di Indonesia.',
+                'storyTitle' => 'Cerita di Balik JAGGAD',
                 'storyP1' => 'Berawal dari keresahan akan tingginya kesenjangan antara kurikulum akademis dengan kebutuhan industri digital yang sangat cepat berubah.',
-                'storyP2' => 'SAGA Academy lahir untuk menjadi jembatan bagi mereka yang ingin belajar langsung dari praktisi, menggunakan materi yang up-to-date dan metode yang fleksibel.'
+                'storyP2' => 'JAGGAD ACADEMY lahir untuk menjadi jembatan bagi mereka yang ingin belajar langsung dari praktisi, menggunakan materi yang up-to-date dan metode yang fleksibel.'
             ],
             'contact' => [
                 'title' => 'Ada Pertanyaan? Kami Siap Membantu',
                 'subtitle' => 'Tim kami siap menjawab pertanyaan Anda seputar produk, metode pembelajaran, atau kerjasama strategis lainnya.',
-                'email' => 'halo@sagaacademy.id',
+                'email' => 'halo@jaggad.id',
                 'phone' => '+62 812 3456 7890',
                 'whatsapp' => '+62 812 3456 7890', // In the DB structure earlier it uses whatsapp for the input, let's keep it here
-                'address' => 'Gedung SAGA Digital Hub, Lt. 5, Jl. Sudirman No. 123, Jakarta Selatan'
+                'address' => 'Gedung JAGGAD Digital Hub, Lt. 5, Jl. Sudirman No. 123, Jakarta Selatan'
             ]
         ];
 

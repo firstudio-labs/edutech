@@ -6,11 +6,11 @@ import './Admin.css';
 export default function AdminTestimonials() {
     return (
         <AdminLayout>
-            <Head title="Testimoni - SAGA Academy" />
+            <Head title="Testimoni - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <h1>Testimoni Pelanggan</h1>
-                    <p className="admin-page-subtitle">Kelola dan kurasi ulasan dari para alumni SAGA Academy</p>
+                    <p className="admin-page-subtitle">Kelola dan kurasi ulasan dari para alumni JAGGAD ACADEMY</p>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '400px', background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-xl)', border: '1px dashed var(--color-border)', color: 'var(--color-text-muted)' }}>

@@ -6,10 +6,10 @@ import './Admin.css';
 export default function AdminChatbot() {
     return (
         <AdminLayout>
-            <Head title="Chatbot & AI Management - SAGA Academy" />
+            <Head title="Chatbot & AI Management - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
-                    <h1>SAGA AI Chatbot</h1>
+                    <h1>JAGGAD AI Chatbot</h1>
                     <p className="admin-page-subtitle">Otomatisasi pelayanan pelanggan menggunakan teknologi Artificial Intelligence</p>
                 </div>
 

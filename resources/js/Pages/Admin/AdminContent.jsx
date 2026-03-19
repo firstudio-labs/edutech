@@ -63,7 +63,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
 
     return (
         <AdminLayout>
-            <Head title="Editor Konten - SAGA Academy" />
+            <Head title="Editor Konten - JAGGAD ACADEMY" />
 
             <div className="admin-page">
                 <div className="admin-page-header">
@@ -71,59 +71,6 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                     <p className="admin-page-subtitle">Kustomisasi teks dan visual landing page Academy Anda</p>
                 </div>
 
-                <div className="admin-table-card" style={{ 
-                    minHeight: '400px', 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    padding: 'var(--space-10)',
-                    background: 'linear-gradient(180deg, var(--color-bg-secondary) 0%, rgba(var(--color-bg-primary-rgb), 0) 100%)',
-                    border: '1px dashed var(--color-border)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                }}>
-                    {/* Decorative Background Icons */}
-                    <div style={{ position: 'absolute', top: '10%', left: '10%', opacity: 0.05, transform: 'rotate(-15deg)' }}><Layout size={120} /></div>
-                    <div style={{ position: 'absolute', bottom: '10%', right: '10%', opacity: 0.05, transform: 'rotate(15deg)' }}><Type size={120} /></div>
-                    
-                    <div style={{ 
-                        width: 80, 
-                        height: 80, 
-                        borderRadius: '24px', 
-                        background: 'var(--color-accent-dim)', 
-                        color: 'var(--color-accent-light)',
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        marginBottom: 'var(--space-6)',
-                        boxShadow: '0 0 40px rgba(var(--color-accent-rgb), 0.2)'
-                    }}>
-                        <Construction size={40} className="animate-pulse" />
-                    </div>
-
-                    <h2 style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: 'var(--space-2)' }}>
-                        Fitur Dalam Pengembangan 🛠️
-                    </h2>
-                    <p style={{ maxWidth: '450px', color: 'var(--color-text-muted)', lineHeight: 1.6, fontSize: 'var(--text-base)' }}>
-                        Halaman fitur <strong>Konten</strong> saat ini sedang dipersiapkan untuk memberikan pengalaman kustomisasi landing page yang lebih fleksibel dan instan.
-                    </p>
-
-                    <div style={{ marginTop: 'var(--space-8)' }}>
-                        <Link 
-                            href={route('admin.dashboard')}
-                            className="btn-admin-primary"
-                            style={{ textDecoration: 'none' }}
-                        >
-                            Kembali ke Dashboard
-                        </Link>
-                    </div>
-                </div>
-            </div>
-
-            {/* Fitur Utama sedang di-hide sementara (Under Development) */}
-            {/* 
             <div className="admin-cms-layout">
                 <aside className={`cms-sidebar ${hideSidebar ? 'collapsed' : ''}`}>
                     <div className="cms-sidebar-header">
@@ -183,11 +130,11 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 <div className="cms-form-group">
                                     <h4 className="cms-section-label">Why Us Section</h4>
                                     <label>Judul Baris 1</label>
-                                    <input value={content.home.whySagaTitleLine1} onChange={(e) => handleInputChange('home', 'whySagaTitleLine1', e.target.value)} />
+                                    <input value={content.home.whyJaggadTitleLine1} onChange={(e) => handleInputChange('home', 'whyJaggadTitleLine1', e.target.value)} />
                                     <label>Judul Gradien</label>
-                                    <input value={content.home.whySagaTitleLine2} onChange={(e) => handleInputChange('home', 'whySagaTitleLine2', e.target.value)} />
+                                    <input value={content.home.whyJaggadTitleLine2} onChange={(e) => handleInputChange('home', 'whyJaggadTitleLine2', e.target.value)} />
                                     <label>Sub-judul</label>
-                                    <textarea value={content.home.whySagaSubtitle} onChange={(e) => handleInputChange('home', 'whySagaSubtitle', e.target.value)} rows="3" />
+                                    <textarea value={content.home.whyJaggadSubtitle} onChange={(e) => handleInputChange('home', 'whyJaggadSubtitle', e.target.value)} rows="3" />
                                 </div>
 
                                 <div className="cms-form-group">
@@ -434,7 +381,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 {hideSidebar ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
                             </button>
 
-                            <div className="cms-url-bar">saga.academy/{activeTab === 'home' ? '' : activeTab}</div>
+                            <div className="cms-url-bar">jaggad.academy/{activeTab === 'home' ? '' : activeTab}</div>
 
                             <div style={{ display: 'flex', gap: 6 }}>
                                 <button className={`cms-toggle-btn ${previewMode === 'desktop' ? 'active' : ''}`} onClick={() => setPreviewMode('desktop')}>
@@ -456,7 +403,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                     </div>
                 </main>
             </div>
-            */}
-        </AdminLayout>
+        </div>
+    </AdminLayout>
     );
 }

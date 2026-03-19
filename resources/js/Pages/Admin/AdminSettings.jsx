@@ -35,7 +35,7 @@ export default function AdminSettings({ dbSettings }) {
 
     return (
         <AdminLayout>
-            <Head title="Pengaturan Sistem - SAGA Academy" />
+            <Head title="Pengaturan Sistem - JAGGAD ACADEMY" />
             
             <div className="admin-page">
                 <div className="admin-page-header">

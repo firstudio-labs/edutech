@@ -84,7 +84,7 @@ export default function AdminCategories({ dbCategories = [] }) {
 
     return (
         <AdminLayout>
-            <Head title="Kategori Produk - SAGA Academy" />
+            <Head title="Kategori Produk - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <h1>Kategori Produk</h1>

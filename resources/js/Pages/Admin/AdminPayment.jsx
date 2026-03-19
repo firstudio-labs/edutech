@@ -63,7 +63,7 @@ export default function AdminPayment({ dbBanks = [] }) {
 
     return (
         <AdminLayout>
-            <Head title="Pengaturan Pembayaran - SAGA Academy" />
+            <Head title="Pengaturan Pembayaran - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <h1>Pengaturan Pembayaran</h1>

@@ -59,7 +59,7 @@ export default function AdminTransactions({ dbTransactions }) {
 
     return (
         <AdminLayout>
-            <Head title="Riwayat Transaksi - SAGA Academy" />
+            <Head title="Riwayat Transaksi - JAGGAD ACADEMY" />
             <div className="admin-page">
                 <div className="admin-page-header">
                     <h1>Manajemen Transaksi</h1>

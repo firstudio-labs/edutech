@@ -18,7 +18,7 @@ export default function ForgotPassword({ status }) {
             
             <div className="auth-card">
                 <div className="auth-header">
-                    <Link href="/" className="auth-brand">SAGA<span>Academy</span></Link>
+                    <Link href="/" className="auth-brand">JAGGAD<span>Academy</span></Link>
                     <h1 className="auth-title">Lupa Password?</h1>
                     <p className="auth-subtitle">Masukkan email Anda untuk menerima link reset password.</p>
                 </div>

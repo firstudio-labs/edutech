@@ -29,7 +29,7 @@ export default function UserLearning({ id, product: dbProduct }) {
     };
 
     const materials = product.materials && product.materials.length > 0 ? product.materials : [
-        { title: 'Grup Komunitas Premium', duration: 'Akses Selamanya', link: 'https://t.me/saga_community_dummy' },
+        { title: 'Grup Komunitas Premium', duration: 'Akses Selamanya', link: 'https://t.me/jaggad_community_dummy' },
         { title: 'Link Download Modul PDF', duration: '12 MB', link: 'https://gdrive.link/dummy_modul' },
         { title: 'Rekaman Webinar Sesi 1', duration: '1h 45m', link: 'https://youtube.com/dummy_video_1' },
     ];
@@ -44,7 +44,7 @@ export default function UserLearning({ id, product: dbProduct }) {
 
     return (
         <div className="product-detail">
-            <Head title={`Belajar: ${product.title} - SAGA Academy`} />
+            <Head title={`Belajar: ${product.title} - JAGGAD ACADEMY`} />
             <div className="container product-detail__inner" style={{ paddingTop: 'calc(var(--navbar-height) + var(--space-4))' }}>
                 <Link href={route('dashboard')} className="back-link"><ArrowLeft size={16} /> Kembali ke Dashboard</Link>
 

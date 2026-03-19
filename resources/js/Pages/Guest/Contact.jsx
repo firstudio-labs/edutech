@@ -19,7 +19,7 @@ export default function Contact({ previewMode = false }) {
 
     const Content = (
         <div className="contact-page">
-            <Head title="Hubungi Kami - SAGA Academy" />
+            <Head title="Hubungi Kami - JAGGAD ACADEMY" />
             <div className="contact-header">
                 <div className="container">
                     <p className="section-label">Hubungi Kami</p>
