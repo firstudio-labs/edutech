@@ -118,24 +118,27 @@ export default function AdminPayment({ dbBanks = [] }) {
                     </div>
 
                     {/* Automatic Gateway */}
-                    <div className="admin-table-card" style={{ height: 'fit-content', border: '1px solid var(--color-border)', opacity: 0.7 }}>
+                    <div className="admin-table-card" style={{ height: 'fit-content', border: '1px solid var(--color-border)', boxShadow: '0 4px 20px rgba(16, 185, 129, 0.1)' }}>
                         <div className="admin-table-header" style={{ borderBottom: 'none' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                                 <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(16, 185, 129, 0.1)', color: 'var(--color-success)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><QrCode size={20} /></div>
                                 <div>
-                                    <h3 style={{ fontSize: 'var(--text-base)' }}>Payment Gateway (Xendit/Midtrans)</h3>
+                                    <h3 style={{ fontSize: 'var(--text-base)' }}>Midtrans Payment Gateway</h3>
                                     <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Otomatisasi pembayaran QRIS, VA, & Credit Card</p>
                                 </div>
                             </div>
-                            <button className="status-badge warning" style={{ border: 'none' }}>SOON</button>
+                            <button className="status-badge success" style={{ border: 'none' }}>AKTIF</button>
                         </div>
                         <div style={{ padding: '0 24px 24px' }}>
-                            <div style={{ padding: 'var(--space-4)', background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--color-border)', display: 'flex', gap: 12 }}>
-                                <AlertCircle size={20} style={{ color: 'var(--color-warning)', flexShrink: 0 }} />
+                            <div style={{ padding: 'var(--space-4)', background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--color-border)', display: 'flex', gap: 12, marginBottom: 16 }}>
+                                <Shield size={20} style={{ color: 'var(--color-success)', flexShrink: 0 }} />
                                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-                                    Integrasi payment gateway memungkinkan sistem mengonfirmasi pembayaran secara otomatis tanpa perlu cek manual. Hubungkan API Key Anda di sini.
+                                    Integrasi Midtrans telah aktif. Semua pembayaran melalui channel QRIS, Virtual Account, dan lainnya akan diverifikasi otomatis oleh sistem.
                                 </p>
                             </div>
+                            <button className="btn-auth w-full" style={{ padding: '10px', fontSize: '13px' }} onClick={() => router.get(route('admin.settings.index'))}>
+                                Kelola API Key & Credentials
+                            </button>
                         </div>
                     </div>
                 </div>
