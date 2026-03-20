@@ -91,9 +91,9 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                                         grandTotal,
                                         cartItems
                                     );
-                                    setProcessing(false);
                                     clearCart();
-                                    setStep(2);
+                                    toast.success('Pembayaran Berhasil! Selamat belajar 🎉');
+                                    router.visit(route('dashboard'));
                                 }
                             });
                         },
