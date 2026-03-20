@@ -43,8 +43,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
     }));
 
     const total = getTotal();
-    const tax = Math.round(total * 0.11);
-    const grandTotal = total + tax;
+    const grandTotal = total;
 
     const handleOrder = () => {
         if (!form.name || !form.email || !form.phone) return toast.error('Lengkapi data diri termasuk Nomor HP');
@@ -231,9 +230,6 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                                 <div className="order-totals">
                                     <div className="order-row">
                                         <span>Subtotal</span><span>{formatCurrency(total)}</span>
-                                    </div>
-                                    <div className="order-row">
-                                        <span>Pajak (11%)</span><span>{formatCurrency(tax)}</span>
                                     </div>
                                     <div className="order-row total-row">
                                         <span>Total</span><span>{formatCurrency(grandTotal)}</span>

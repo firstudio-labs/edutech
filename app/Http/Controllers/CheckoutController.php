@@ -69,16 +69,7 @@ class CheckoutController extends Controller
             ];
         }
 
-        $tax = round($totalAmount * 0.11);
-        $grandTotal = $totalAmount + $tax;
-
-        // Add tax as an item detail for Midtrans
-        $itemDetails[] = [
-            'id' => 'TAX',
-            'price' => $tax,
-            'quantity' => 1,
-            'name' => 'PPN 11%'
-        ];
+        $grandTotal = $totalAmount;
 
         $transaction = Transaction::create([
             'transaction_code' => 'TRX-' . strtoupper(Str::random(8)),
