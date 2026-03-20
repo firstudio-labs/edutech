@@ -31,7 +31,7 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
     };
     
     // Sync home stats with "JAGGAD dalam Angka" from About Page
-    const stats = (about.achievements || []).slice(0, 3).map(stat => ({
+    const stats = (about.achievements || []).map(stat => ({
         icon: iconMap[stat.icon] || Award,
         value: stat.value,
         label: stat.label
