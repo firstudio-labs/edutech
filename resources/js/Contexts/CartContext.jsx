@@ -1,18 +1,34 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
+    const { auth } = usePage().props;
+    const purchasedIds = auth?.purchased_products || [];
+
     const [cartItems, setCartItems] = useState(() => {
         const saved = localStorage.getItem('jaggad_cart');
-        return saved ? JSON.parse(saved) : [];
+        const items = saved ? JSON.parse(saved) : [];
+        // Filter out items already purchased on initial load
+        return items.filter(item => !purchasedIds.includes(item.id));
     });
 
     useEffect(() => {
         localStorage.setItem('jaggad_cart', JSON.stringify(cartItems));
     }, [cartItems]);
 
+    // Automatically remove items if user's purchase status changes
+    useEffect(() => {
+        if (purchasedIds.length > 0) {
+            setCartItems(prev => prev.filter(item => !purchasedIds.includes(item.id)));
+        }
+    }, [JSON.stringify(purchasedIds)]);
+
     const addToCart = (product) => {
+        // Prevent adding already purchased products
+        if (purchasedIds.includes(product.id)) return;
+
         setCartItems(prev => {
             if (prev.find(i => i.id === product.id)) return prev;
             return [...prev, { ...product, quantity: 1 }];
