@@ -14,6 +14,7 @@ export default function AdminSettings({ dbSettings }) {
         midtrans_client_key: dbSettings?.midtrans_client_key || '',
         midtrans_is_production: dbSettings?.midtrans_is_production ?? false,
         meta_pixel_id: dbSettings?.meta_pixel_id || '',
+        meta_access_token: dbSettings?.meta_access_token || '',
     });
 
     const [isSaving, setIsSaving] = useState(false);
@@ -172,6 +173,19 @@ export default function AdminSettings({ dbSettings }) {
                                 <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
                                     Temukan Pixel ID di <strong>Meta Business Manager → Events Manager → Data Sources</strong>.
                                     Kosongkan untuk menonaktifkan tracking.
+                                </p>
+                            </div>
+
+                            <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
+                                <label>Meta Conversions API Token</label>
+                                <input
+                                    type="password"
+                                    value={data.meta_access_token}
+                                    onChange={e => setData({...data, meta_access_token: e.target.value})}
+                                    placeholder="EAABxxxxx..."
+                                />
+                                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+                                    Digunakan untuk Server-Side Tracking. Generate token ini dari tab <strong>Settings</strong> di Meta Events Manager.
                                 </p>
                             </div>
 

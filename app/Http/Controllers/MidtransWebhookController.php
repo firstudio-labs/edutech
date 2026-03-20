@@ -89,6 +89,53 @@ class MidtransWebhookController extends Controller
                     $user = $transaction->user;
                     $user->increment('purchase_count', $transaction->items->count());
                     $user->increment('total_spent', $transaction->total_amount);
+
+                    // ==========================================
+                    // META CONVERSIONS API (Server-Side Tracking)
+                    // ==========================================
+                    $settings = \App\Models\SiteContent::where('key', 'site_settings')->first();
+                    $settingsData = $settings ? json_decode($settings->value, true) : [];
+                    $pixelId = $settingsData['meta_pixel_id'] ?? null;
+                    $accessToken = $settingsData['meta_access_token'] ?? null;
+
+                    if ($pixelId && $accessToken) {
+                        try {
+                            $contents = [];
+                            foreach ($transaction->items as $item) {
+                                $contents[] = [
+                                    'id' => (string) $item->product_id,
+                                    'quantity' => 1,
+                                    'item_price' => (float) $item->price
+                                ];
+                            }
+
+                            \Illuminate\Support\Facades\Http::post("https://graph.facebook.com/v19.0/{$pixelId}/events", [
+                                'data' => [
+                                    [
+                                        'event_name' => 'Purchase',
+                                        'event_time' => time(),
+                                        'action_source' => 'website',
+                                        'user_data' => [
+                                            'em' => hash('sha256', strtolower(trim($user->email))),
+                                            'ph' => $user->phone ? hash('sha256', preg_replace('/[^0-9]/', '', $user->phone)) : null,
+                                        ],
+                                        'custom_data' => [
+                                            'currency' => 'IDR',
+                                            'value' => (float) $transaction->total_amount,
+                                            'content_type' => 'product',
+                                            'content_ids' => array_column($contents, 'id'),
+                                            'contents' => $contents,
+                                            'order_id' => $transaction->transaction_code,
+                                        ],
+                                    ]
+                                ],
+                                'access_token' => $accessToken
+                            ]);
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error('Meta CAPI Error: ' . $e->getMessage());
+                        }
+                    }
+                    // ==========================================
                 }
             });
         }
