@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Star, ShoppingCart, Check, BookOpen, ArrowLeft, Zap, Shield, Award } from 'lucide-react';
 import { products } from '../../Data/products';
@@ -9,15 +9,21 @@ import { formatCurrency, getCategoryLabel, getStorageUrl } from '../../Utils/hel
 import { useCart } from '../../Contexts/CartContext';
 import MainLayout from '../../Layouts/MainLayout';
 import toast from 'react-hot-toast';
+import { useMetaPixel } from '../../Utils/useMetaPixel';
 import './ProductDetail.css';
 
 export default function ProductDetail({ product: dbProduct, similarProducts = [], id }) {
     const { auth } = usePage().props;
     const { addToCart, isInCart } = useCart();
+    const { trackViewContent } = useMetaPixel();
     // Fallback to imported mock if dbProduct is absent (for offline UI work)
     const productDef = products.find(p => p.slug === id || p.id === Number(id));
     const product = dbProduct || productDef;
     const [openSection, setOpenSection] = useState(null);
+
+    useEffect(() => {
+        if (product) trackViewContent(product);
+    }, [product?.id]);
     
     if (!product) {
         return (

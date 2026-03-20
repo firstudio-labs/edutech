@@ -51,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                 'client_key' => $siteSettings['midtrans_client_key'] ?? config('services.midtrans.client_key'),
                 'is_production' => $siteSettings['midtrans_is_production'] ?? config('services.midtrans.is_production'),
             ],
+            'meta_pixel_id' => $siteSettings['meta_pixel_id'] ?? null,
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),

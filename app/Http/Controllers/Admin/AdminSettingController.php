@@ -27,6 +27,7 @@ class AdminSettingController extends Controller
             'midtrans_server_key' => 'nullable|string',
             'midtrans_client_key' => 'nullable|string',
             'midtrans_is_production' => 'nullable|boolean',
+            'meta_pixel_id' => 'nullable|string',
         ]);
 
         SiteContent::updateOrCreate(

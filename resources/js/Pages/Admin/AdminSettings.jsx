@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import { Save, Loader2, Settings, ShieldCheck, Link2, AlertCircle, CreditCard } from 'lucide-react';
+import { Save, Loader2, Settings, ShieldCheck, Link2, AlertCircle, CreditCard, Activity } from 'lucide-react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import toast from 'react-hot-toast';
 import './Admin.css';
@@ -13,6 +13,7 @@ export default function AdminSettings({ dbSettings }) {
         midtrans_server_key: dbSettings?.midtrans_server_key || '',
         midtrans_client_key: dbSettings?.midtrans_client_key || '',
         midtrans_is_production: dbSettings?.midtrans_is_production ?? false,
+        meta_pixel_id: dbSettings?.meta_pixel_id || '',
     });
 
     const [isSaving, setIsSaving] = useState(false);
@@ -149,6 +150,46 @@ export default function AdminSettings({ dbSettings }) {
                                 onChange={e => setData({...data, midtrans_client_key: e.target.value})}
                                 placeholder="SB-Mid-client-..."
                             />
+                        </div>
+
+                        <div style={{ marginTop: 'var(--space-8)' }}>
+                            <hr style={{ border: 'none', borderTop: '1px solid var(--color-border)', margin: '0 0 var(--space-8) 0' }} />
+
+                            {/* Meta Pixel Section */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: 'var(--space-4)', color: '#3b82f6' }}>
+                                <Activity size={20} />
+                                <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>Meta Pixel (Facebook Ads)</h3>
+                            </div>
+
+                            <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
+                                <label>Meta Pixel ID</label>
+                                <input
+                                    type="text"
+                                    value={data.meta_pixel_id}
+                                    onChange={e => setData({...data, meta_pixel_id: e.target.value})}
+                                    placeholder="Contoh: 1234567890123456"
+                                />
+                                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+                                    Temukan Pixel ID di <strong>Meta Business Manager → Events Manager → Data Sources</strong>.
+                                    Kosongkan untuk menonaktifkan tracking.
+                                </p>
+                            </div>
+
+                            <div style={{ 
+                                padding: 'var(--space-4)', 
+                                background: 'rgba(59,130,246,0.08)', 
+                                border: '1px solid rgba(59,130,246,0.2)', 
+                                borderRadius: 'var(--radius-md)',
+                                fontSize: '12px',
+                                color: 'var(--color-text-secondary)',
+                                lineHeight: 1.6
+                            }}>
+                                📊 <strong>Event yang dilacak otomatis:</strong><br/>
+                                • <code>PageView</code> — setiap halaman dibuka<br/>
+                                • <code>ViewContent</code> — halaman detail produk (dengan harga & nama produk)<br/>
+                                • <code>InitiateCheckout</code> — saat user memulai checkout (dengan total nilai keranjang)<br/>
+                                • <code>Purchase</code> — setelah pembayaran berhasil (dengan revenue & item data asli)
+                            </div>
                         </div>
 
                         <div style={{ marginTop: 'var(--space-6)', display: 'flex', justifyContent: 'flex-end' }}>

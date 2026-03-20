@@ -11,25 +11,33 @@ class MidtransWebhookController extends Controller
     public function handle(Request $request)
     {
         $payload = $request->all();
-        $orderId = $payload['order_id'];
-        $statusCode = $payload['status_code'];
-        $grossAmount = $payload['gross_amount'];
+        $orderId = $request->input('order_id', '');
+        $statusCode = $request->input('status_code', '');
+        $grossAmount = $request->input('gross_amount', '');
+        $signatureKey = $request->input('signature_key', '');
+        
         $serverKey = config('services.midtrans.server_key');
         
+        // Return 200 for missing payloads (e.g. empty pings)
+        if (!$orderId || !$signatureKey) {
+            return response()->json(['message' => 'Invalid or empty payload'], 200);
+        }
+
         // Verify Signature
         $signature = hash("sha512", $orderId . $statusCode . $grossAmount . $serverKey);
-        if ($signature !== $payload['signature_key']) {
+        if ($signature !== $signatureKey) {
             return response()->json(['message' => 'Invalid signature'], 403);
         }
 
         $transaction = Transaction::where('transaction_code', $orderId)->first();
         if (!$transaction) {
-            return response()->json(['message' => 'Transaction not found'], 404);
+            // Midtrans test webhook might use a dummy order_id
+            return response()->json(['message' => 'Transaction not found, but ping received'], 200);
         }
 
-        $transactionStatus = $payload['transaction_status'];
-        $type = $payload['payment_type'];
-        $fraud = $payload['fraud_status'] ?? '';
+        $transactionStatus = $request->input('transaction_status', '');
+        $type = $request->input('payment_type', '');
+        $fraud = $request->input('fraud_status', '');
 
         $status = null;
         if ($transactionStatus == 'capture') {

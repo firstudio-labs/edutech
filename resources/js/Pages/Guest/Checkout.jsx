@@ -5,11 +5,13 @@ import { useCart } from '../../Contexts/CartContext';
 import { formatCurrency } from '../../Utils/helpers';
 import MainLayout from '../../Layouts/MainLayout';
 import toast from 'react-hot-toast';
+import { useMetaPixel } from '../../Utils/useMetaPixel';
 import './Checkout.css';
 
 export default function Checkout({ auth, dbPaymentMethods = [] }) {
     const { midtrans } = usePage().props;
     const { cartItems, getTotal, clearCart, removeFromCart } = useCart();
+    const { trackInitiateCheckout, trackPurchase } = useMetaPixel();
     const [step, setStep] = useState(1); // 1=form, 2=success
     const [form, setForm] = useState({ name: auth.user?.name || '', email: auth.user?.email || '', phone: auth.user?.phone || '' });
     const [processing, setProcessing] = useState(false);
@@ -53,7 +55,10 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
         // 2. Check if Payment Method record exists
         const midtransMethod = activeMethods.find(m => !m.isManual);
         if (!midtransMethod) return toast.error('Metode Pembayaran Midtrans tidak ditemukan di Database!');
-        
+
+        // 3. Track InitiateCheckout
+        trackInitiateCheckout(cartItems, grandTotal);
+
         handlePay(midtransMethod.id);
     };
 
@@ -81,6 +86,12 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                         onSuccess: (result) => {
                             router.post(route('checkout.verify', page.props.flash.trx_code), {}, {
                                 onSuccess: () => {
+                                    // Track Purchase with real transaction data
+                                    trackPurchase(
+                                        page.props.flash.trx_code,
+                                        grandTotal,
+                                        cartItems
+                                    );
                                     setProcessing(false);
                                     clearCart();
                                     setStep(2);

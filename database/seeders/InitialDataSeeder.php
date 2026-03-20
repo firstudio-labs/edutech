@@ -245,6 +245,7 @@ class InitialDataSeeder extends Seeder
             'midtrans_server_key' => '',
             'midtrans_client_key' => '',
             'midtrans_is_production' => false,
+            'meta_pixel_id' => '',
         ];
 
         \App\Models\SiteContent::updateOrCreate(
