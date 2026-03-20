@@ -1,6 +1,9 @@
 import { useState, useRef } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, BookOpen, Video, Mic, MapPin, Users, Star, Zap, Shield, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+    ArrowRight, BookOpen, Video, Mic, MapPin, Users, Star, Zap, Shield, Award, ChevronLeft, ChevronRight,
+    Target, Eye, CheckCircle, MessageSquare, Globe, Heart, Rocket, Trophy, Lightbulb, TrendingUp 
+} from 'lucide-react';
 import { products as initialProducts } from '../../Data/products';
 import { testimonials } from '../../Data/testimonials';
 import ProductCard from '../../Components/ProductCard';
@@ -19,14 +22,29 @@ const features = [
 export default function Welcome({ products = [], categories = [], dbStats = {}, previewMode = false }) {
     const { content } = useContent();
     const home = content?.home || {};
+    const about = content?.about || {};
     const sliderRef = useRef(null);
+
+    const iconMap = {
+        Users, Target, Eye, BookOpen, Award, Zap, Shield, CheckCircle,
+        Video, Mic, MessageSquare, Globe, Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp
+    };
     
-    // Dynamic stats based on database
-    const stats = [
-        { icon: Users, value: `${(dbStats.users || 0) + 1000}+`, label: 'Pelajar Aktif' }, // Base + real
-        { icon: Award, value: `${dbStats.sales || 0}`, label: 'Alumni Sukses' },
-        { icon: BookOpen, value: `${dbStats.products || 0}+`, label: 'Program Tersedia' },
-    ];
+    // Sync home stats with "JAGGAD dalam Angka" from About Page
+    const stats = (about.achievements || []).slice(0, 3).map(stat => ({
+        icon: iconMap[stat.icon] || Award,
+        value: stat.value,
+        label: stat.label
+    }));
+
+    // Fallback if no achievements defined yet
+    if (stats.length === 0) {
+        stats.push(
+            { icon: Users, value: `${(dbStats.users || 0) + 1000}+`, label: 'Pelajar Aktif' },
+            { icon: Award, value: `${dbStats.sales || 0}`, label: 'Alumni Sukses' },
+            { icon: BookOpen, value: `${dbStats.products || 0}+`, label: 'Program Tersedia' }
+        );
+    }
     
     // Fallback to initial products if backend didn't send anything
     const featuredProducts = products.length > 0 
