@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Star, Check, ArrowLeft, ExternalLink, Link as LinkIcon, Download, PlayCircle, FileText } from 'lucide-react';
 import { products } from '../../Data/products';
-import { getCategoryLabel } from '../../Utils/helpers';
+import { getCategoryLabel, getStorageUrl } from '../../Utils/helpers';
 import toast from 'react-hot-toast';
 import '../Guest/ProductDetail.css'; // Reusing the exact same ProductDetail CSS
 import './UserLearning.css';
@@ -22,7 +22,7 @@ export default function UserLearning({ id, product: dbProduct }) {
         title: rawProduct.name || rawProduct.title,
         description: rawProduct.short_description || rawProduct.description,
         longDescription: rawProduct.description || rawProduct.longDescription,
-        thumbnail: rawProduct.image || rawProduct.thumbnail,
+        thumbnail: getStorageUrl(rawProduct.image || rawProduct.thumbnail),
         category: rawProduct.category?.slug || rawProduct.category || 'ebook',
         benefits: parseList(rawProduct.benefits),
         materials: parseList(rawProduct.materials)
