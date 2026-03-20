@@ -1,5 +1,6 @@
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
+import CartSync from '../Components/CartSync';
 import { useContent } from '../Contexts/ContentContext';
 
 export default function MainLayout({ children, hideNavbar = false, hideFooter = false }) {
@@ -8,6 +9,7 @@ export default function MainLayout({ children, hideNavbar = false, hideFooter = 
 
     return (
         <div className="min-h-screen bg-zinc-950 flex flex-col">
+            <CartSync />
             {!hideNavbar && <Navbar />}
             <main className="flex-grow">
                 {children}

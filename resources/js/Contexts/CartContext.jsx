@@ -1,29 +1,27 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { usePage } from '@inertiajs/react';
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
-    const { auth } = usePage().props;
-    const purchasedIds = auth?.purchased_products || [];
-
+    const [purchasedIds, setPurchasedIds] = useState([]);
     const [cartItems, setCartItems] = useState(() => {
         const saved = localStorage.getItem('jaggad_cart');
-        const items = saved ? JSON.parse(saved) : [];
-        // Filter out items already purchased on initial load
-        return items.filter(item => !purchasedIds.includes(item.id));
+        return saved ? JSON.parse(saved) : [];
     });
 
     useEffect(() => {
         localStorage.setItem('jaggad_cart', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    // Automatically remove items if user's purchase status changes
+    // Filter cart items whenever purchasedIds changes
     useEffect(() => {
         if (purchasedIds.length > 0) {
-            setCartItems(prev => prev.filter(item => !purchasedIds.includes(item.id)));
+            setCartItems(prev => {
+                const filtered = prev.filter(item => !purchasedIds.includes(item.id));
+                return filtered.length !== prev.length ? filtered : prev;
+            });
         }
-    }, [JSON.stringify(purchasedIds)]);
+    }, [purchasedIds]);
 
     const addToCart = (product) => {
         // Prevent adding already purchased products
@@ -41,7 +39,16 @@ export function CartProvider({ children }) {
     const isInCart = (id) => cartItems.some(i => i.id === id);
 
     return (
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, getTotal, isInCart, count: cartItems.length }}>
+        <CartContext.Provider value={{ 
+            cartItems, 
+            addToCart, 
+            removeFromCart, 
+            clearCart, 
+            getTotal, 
+            isInCart, 
+            count: cartItems.length,
+            setPurchasedIds // Expose this to sync with page props
+        }}>
             {children}
         </CartContext.Provider>
     );
