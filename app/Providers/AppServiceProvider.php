@@ -53,6 +53,33 @@ class AppServiceProvider extends ServiceProvider
                     \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
                     \Midtrans\Config::$isSanitized = config('services.midtrans.is_sanitized');
                     \Midtrans\Config::$is3ds = config('services.midtrans.is_3ds');
+
+                    // Dynamically set Mail config from database
+                    if (!empty($json['mail_host'])) {
+                        config(['mail.mailers.smtp.host' => $json['mail_host']]);
+                    }
+                    if (!empty($json['mail_port'])) {
+                        config(['mail.mailers.smtp.port' => $json['mail_port']]);
+                    }
+                    if (!empty($json['mail_username'])) {
+                        config(['mail.mailers.smtp.username' => $json['mail_username']]);
+                    }
+                    if (!empty($json['mail_password'])) {
+                        config(['mail.mailers.smtp.password' => $json['mail_password']]);
+                    }
+                    if (isset($json['mail_encryption'])) {
+                        config(['mail.mailers.smtp.encryption' => $json['mail_encryption'] ?: null]);
+                    }
+                    if (!empty($json['mail_from_address'])) {
+                        config(['mail.from.address' => $json['mail_from_address']]);
+                    }
+                    if (!empty($json['mail_from_name'])) {
+                        config(['mail.from.name' => $json['mail_from_name']]);
+                    }
+                    // Switch mailer to smtp if host is configured
+                    if (!empty($json['mail_host'])) {
+                        config(['mail.default' => 'smtp']);
+                    }
                 }
             }
         } catch (\Exception $e) {

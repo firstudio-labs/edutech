@@ -29,6 +29,14 @@ class AdminSettingController extends Controller
             'midtrans_is_production' => 'nullable|boolean',
             'meta_pixel_id' => 'nullable|string',
             'meta_access_token' => 'nullable|string',
+            'mail_mailer' => 'nullable|string',
+            'mail_host' => 'nullable|string',
+            'mail_port' => 'nullable|string',
+            'mail_username' => 'nullable|string',
+            'mail_password' => 'nullable|string',
+            'mail_encryption' => 'nullable|string',
+            'mail_from_address' => 'nullable|email',
+            'mail_from_name' => 'nullable|string',
         ]);
 
         SiteContent::updateOrCreate(

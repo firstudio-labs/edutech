@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import { Save, Loader2, Settings, ShieldCheck, Link2, AlertCircle, CreditCard, Activity } from 'lucide-react';
+import { Save, Loader2, Settings, ShieldCheck, Link2, AlertCircle, CreditCard, Activity, Mail } from 'lucide-react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import toast from 'react-hot-toast';
 import './Admin.css';
@@ -15,6 +15,14 @@ export default function AdminSettings({ dbSettings }) {
         midtrans_is_production: dbSettings?.midtrans_is_production ?? false,
         meta_pixel_id: dbSettings?.meta_pixel_id || '',
         meta_access_token: dbSettings?.meta_access_token || '',
+        mail_mailer: dbSettings?.mail_mailer || 'smtp',
+        mail_host: dbSettings?.mail_host || '',
+        mail_port: dbSettings?.mail_port || '587',
+        mail_username: dbSettings?.mail_username || '',
+        mail_password: dbSettings?.mail_password || '',
+        mail_encryption: dbSettings?.mail_encryption || 'tls',
+        mail_from_address: dbSettings?.mail_from_address || '',
+        mail_from_name: dbSettings?.mail_from_name || 'JAGGAD ACADEMY',
     });
 
     const [isSaving, setIsSaving] = useState(false);
@@ -204,6 +212,96 @@ export default function AdminSettings({ dbSettings }) {
                                 • <code>InitiateCheckout</code> — saat user memulai checkout (dengan total nilai keranjang)<br/>
                                 • <code>Purchase</code> — setelah pembayaran berhasil (dengan revenue & item data asli)
                             </div>
+                        </div>
+
+                        <hr style={{ border: 'none', borderTop: '1px solid var(--color-border)', margin: 'var(--space-8) 0' }} />
+
+                        {/* Mail / SMTP Section */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: 'var(--space-4)', color: '#f59e0b' }}>
+                            <Mail size={20} />
+                            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>Pengaturan Email (SMTP)</h3>
+                        </div>
+                        <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: 'var(--space-5)', lineHeight: 1.6 }}>
+                            Konfigurasi ini digunakan untuk mengirim struk pembelian ke email pembeli. Isi dengan kredensial SMTP dari Hostinger, Gmail, atau provider email lainnya.
+                        </p>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-2)' }}>
+                            <div className="form-group">
+                                <label>SMTP Host</label>
+                                <input
+                                    type="text"
+                                    value={data.mail_host}
+                                    onChange={e => setData({...data, mail_host: e.target.value})}
+                                    placeholder="smtp.hostinger.com"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>SMTP Port</label>
+                                <input
+                                    type="text"
+                                    value={data.mail_port}
+                                    onChange={e => setData({...data, mail_port: e.target.value})}
+                                    placeholder="587"
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-2)' }}>
+                            <div className="form-group">
+                                <label>Username Email</label>
+                                <input
+                                    type="text"
+                                    value={data.mail_username}
+                                    onChange={e => setData({...data, mail_username: e.target.value})}
+                                    placeholder="no-reply@jaggadacademy.com"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Password Email</label>
+                                <input
+                                    type="password"
+                                    value={data.mail_password}
+                                    onChange={e => setData({...data, mail_password: e.target.value})}
+                                    placeholder="••••••••••••"
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-2)' }}>
+                            <div className="form-group">
+                                <label>Enkripsi</label>
+                                <select
+                                    value={data.mail_encryption}
+                                    onChange={e => setData({...data, mail_encryption: e.target.value})}
+                                    style={{ width: '100%', padding: '10px 12px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', color: 'var(--color-text-primary)', fontSize: '14px' }}
+                                >
+                                    <option value="tls">TLS (port 587)</option>
+                                    <option value="ssl">SSL (port 465)</option>
+                                    <option value="">Tanpa Enkripsi</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Nama Pengirim</label>
+                                <input
+                                    type="text"
+                                    value={data.mail_from_name}
+                                    onChange={e => setData({...data, mail_from_name: e.target.value})}
+                                    placeholder="JAGGAD ACADEMY"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
+                            <label>Alamat Email Pengirim (From)</label>
+                            <input
+                                type="email"
+                                value={data.mail_from_address}
+                                onChange={e => setData({...data, mail_from_address: e.target.value})}
+                                placeholder="no-reply@jaggadacademy.com"
+                            />
+                            <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+                                Alamat ini akan tampil sebagai pengirim di inbox penerima.
+                            </p>
                         </div>
 
                         <div style={{ marginTop: 'var(--space-6)', display: 'flex', justifyContent: 'flex-end' }}>
