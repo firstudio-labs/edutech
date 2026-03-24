@@ -40,25 +40,7 @@ export default function Login({ status, canResetPassword }) {
                     </div>
                 )}
 
-                <div className="demo-credentials">
-                    <p className="demo-title">Demo Akun:</p>
-                    <div className="demo-accounts">
-                        <button 
-                            type="button"
-                            onClick={() => setData({ ...data, email: 'user@jaggad.id', password: 'password' })} 
-                            className="demo-btn"
-                        >
-                            👤 User Demo
-                        </button>
-                        <button 
-                            type="button"
-                            onClick={() => setData({ ...data, email: 'admin@jaggad.id', password: 'password' })} 
-                            className="demo-btn"
-                        >
-                            🛡️ Admin Demo
-                        </button>
-                    </div>
-                </div>
+
 
                 <form className="auth-form" onSubmit={submit}>
                     <div className="form-group">
