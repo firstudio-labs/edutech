@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PurchaseReceiptMail;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class MidtransWebhookController extends Controller
 {
@@ -89,6 +91,17 @@ class MidtransWebhookController extends Controller
                     $user = $transaction->user;
                     $user->increment('purchase_count', $transaction->items->count());
                     $user->increment('total_spent', $transaction->total_amount);
+
+                    // ==========================================
+                    // SEND PURCHASE RECEIPT EMAIL
+                    // ==========================================
+                    try {
+                        $transaction->load('items.product.category');
+                        Mail::to($user->email)->send(new PurchaseReceiptMail($transaction));
+                    } catch (\Exception $e) {
+                        Log::error('Purchase Receipt Email Error: ' . $e->getMessage());
+                    }
+                    // ==========================================
 
                     // ==========================================
                     // META CONVERSIONS API (Server-Side Tracking)
