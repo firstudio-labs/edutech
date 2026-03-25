@@ -25,13 +25,11 @@
             text-align: center;
         }
         .brand {
-            font-size: 22px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #dc2626, #f87171);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 0.5px;
+            font-size: 24px;
+            font-weight: 900;
+            color: #ff4d4d;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 18px rgba(220, 38, 38, 0.5);
         }
         .header-subtitle {
             color: rgba(197, 197, 216, 0.7);
@@ -109,39 +107,45 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 24px;
+            table-layout: fixed;
         }
         thead th {
             background: rgba(220, 38, 38, 0.08);
-            color: rgba(197, 197, 216, 0.6);
+            color: rgba(197, 197, 216, 0.7);
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             padding: 10px 14px;
             text-align: left;
-            font-weight: 600;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.2);
         }
-        thead th:last-child { text-align: right; }
+        thead th:first-child { width: 70%; }
+        thead th:last-child { width: 30%; text-align: right; }
         tbody td {
-            padding: 14px;
+            padding: 12px 14px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 14px;
             color: #c5c5d8;
-            vertical-align: top;
+            vertical-align: middle;
+            word-break: break-word;
         }
         tbody td:last-child {
             text-align: right;
             font-weight: 600;
             color: #f0f0f8;
             white-space: nowrap;
+            width: 30%;
         }
         .product-name {
             color: #f0f0f8;
             font-weight: 600;
+            line-height: 1.4;
         }
         .product-category {
             font-size: 12px;
             color: rgba(197, 197, 216, 0.5);
-            margin-top: 2px;
+            margin-top: 3px;
         }
         /* Total Row */
         .total-row {
@@ -162,10 +166,8 @@
         .total-amount {
             font-size: 20px;
             font-weight: 800;
-            background: linear-gradient(135deg, #dc2626, #f87171);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ff4d4d;
+            text-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
         }
         /* CTA Button */
         .cta {
