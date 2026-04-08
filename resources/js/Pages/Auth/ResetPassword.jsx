@@ -86,7 +86,7 @@ export default function ResetPassword({ token, email }) {
                     <div className="flex items-center justify-end mb-4">
                         <button 
                             type="button" 
-                            className="text-xs text-zinc-400 hover:text-red-400"
+                            className="text-xs text-zinc-600 hover:text-[var(--color-accent)]"
                             onClick={() => setShowPass(!showPass)}
                         >
                             {showPass ? 'Sembunyikan Password' : 'Lihat Password'}

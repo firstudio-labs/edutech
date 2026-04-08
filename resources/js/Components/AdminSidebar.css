@@ -4,12 +4,13 @@
     position: fixed;
     left: 0;
     top: 0;
-    background: var(--color-bg-secondary);
+    background: #ffffff; /* Contrast against beige content */
     border-right: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
     z-index: 40;
     transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 4px 0 20px rgba(102, 8, 16, 0.03);
 }
 
 .admin-sidebar.collapsed {
@@ -110,8 +111,8 @@
 }
 
 .admin-sidebar__link:hover {
-    background: var(--color-bg-card-hover);
-    color: var(--color-text-primary);
+    background: var(--color-accent-dim);
+    color: var(--color-accent-light);
 }
 
 .admin-sidebar__link.active {
@@ -203,5 +204,5 @@
 
 .admin-sidebar__logout:hover {
     color: var(--color-error);
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(102, 8, 16, 0.2);
 }

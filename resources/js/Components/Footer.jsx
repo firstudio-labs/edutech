@@ -31,17 +31,17 @@ export default function Footer() {
     const contactItems = [
         { 
             icon: Mail, 
-            text: contact.email || 'hello@jaggad.id',
-            href: `mailto:${contact.email || 'hello@jaggad.id'}`
+            text: contact.email || 'halo@jaggad.id',
+            href: `mailto:${contact.email || 'halo@jaggad.id'}`
         },
         { 
             icon: Phone, 
-            text: contact.phone || '+62 812-3456-7890',
-            href: `https://wa.me/${(contact.phone || '').replace(/[^0-9]/g, '')}`
+            text: contact.phone || '+62 812 3456 7890',
+            href: `https://wa.me/${(contact.phone || '6281234567890').replace(/[^0-9]/g, '')}`
         },
         { 
             icon: MapPin, 
-            text: contact.address || 'Jakarta Selatan, Indonesia',
+            text: contact.address || 'Gedung JAGGAD Digital Hub, Lt. 5, Jl. Sudirman No. 123, Jakarta Selatan',
             href: contact.mapsUrl || '#'
         },
     ];
@@ -65,14 +65,14 @@ export default function Footer() {
                             <p className="newsletter-label">Dapatkan tips gratis setiap minggu</p>
                             <div className="newsletter-row">
                                 <input type="email" placeholder="Email kamu..." className="newsletter-input" />
-                                <button className="newsletter-btn"><ArrowRight size={16} /></button>
+                                <button className="newsletter-btn"><ArrowRight size={18} /></button>
                             </div>
                         </div>
 
                         <div className="footer__socials">
                             {dynamicSocialLinks.map(({ icon: Icon, href, label }) => (
                                 <a key={label} href={href} className="footer-social" aria-label={label} target="_blank" rel="noreferrer">
-                                    <Icon size={17} />
+                                    <Icon size={20} />
                                 </a>
                             ))}
                         </div>
@@ -105,21 +105,21 @@ export default function Footer() {
                         <ul className="footer__contact-list">
                             {contactItems.map(({ icon: Icon, text, href }) => (
                                 <li key={text}>
-                                    <a href={href} target={href?.startsWith('http') ? "_blank" : "_self"} rel="noreferrer" className="footer-contact-link footer-contact-item">
-                                        <Icon size={14} className="contact-icon" />
+                                    <a href={href} target={href?.startsWith('http') ? "_blank" : "_self"} rel="noreferrer" className="footer__contact-item">
+                                        <Icon size={18} className="footer__contact-icon" />
                                         <span>{text}</span>
                                     </a>
                                 </li>
                             ))}
                         </ul>
                         <Link href={route('products')} className="footer__cta-btn">
-                            <Zap size={14} /> Mulai Belajar Sekarang
+                            <Zap size={16} /> {home.ctaBannerBtn || "Mulai Belajar Sekarang"}
                         </Link>
                     </div>
                 </div>
 
                 <div className="footer__bottom">
-                    <p>© 2025 JAGGAD ACADEMY. All rights reserved. Made with ❤️ in Indonesia.</p>
+                    <p>© 2025 JAGGAD ACADEMY. All rights reserved.</p>
                     <div className="footer__legal">
                         <a href="#">Kebijakan Privasi</a>
                         <span className="footer-divider-dot">·</span>

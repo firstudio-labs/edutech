@@ -131,7 +131,7 @@ export default function AdminAds({ dbAds, products = [] }) {
                                 }}
                                 value=""
                                 className="form-input"
-                                style={{ marginBottom: 15, width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: 'var(--color-bg)' }}
+                                style={{ marginBottom: 15, width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: '#ffffff' }}
                             >
                                 <option value="" disabled>-- Tambah Produk ke Ads --</option>
                                 {unselectedProducts.map(p => (
@@ -143,7 +143,7 @@ export default function AdminAds({ dbAds, products = [] }) {
                                 {selectedProducts.map(p => (
                                     <div key={p.id} style={{
                                         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                        padding: '10px 12px', background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+                                        padding: '10px 12px', background: '#ffffff', border: '1px solid var(--color-border)',
                                         borderRadius: 'var(--radius-md)'
                                     }}>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>

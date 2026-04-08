@@ -69,7 +69,7 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
             </header>
 
             <main>
-                <section className="ads-hero section-dark">
+                <section className="ads-hero ads-section-dark">
                     <div className="ads-container">
                         <div className="ads-hero-content">
                             <h1 className="ads-title-main">{title}</h1>
@@ -98,14 +98,14 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
                     <div className="ads-container">
 
                         {featuredProducts.length === 0 ? (
-                            <div className="ads-card">
+                            <div className="ads-card card-red">
                                 <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>Produk penawaran belum dikonfigurasi.</p>
                             </div>
                         ) : (
                             featuredProducts.map((product, index) => (
-                                <div key={product.id} className="ads-card" style={{ marginTop: index === 0 ? '-40px' : '30px' }}>
-                                    <h2 className="ads-section-title" style={{ fontSize: '1.25rem', color: '#0f4c81', marginBottom: 10 }}>PENAWARAN SPESIAL</h2>
-                                    <h3 style={{ textAlign: 'center', fontSize: '1.4rem', fontWeight: 800, marginBottom: 25, lineHeight: 1.3 }}>{product.name || product.title}</h3>
+                                <div key={product.id} className="ads-card" style={{ marginTop: '40px' }}>
+                                    <h2 className="ads-section-title" style={{ fontSize: '1.25rem', color: '#660810', marginBottom: 10 }}>PENAWARAN SPESIAL</h2>
+                                    <h3 style={{ textAlign: 'center', fontSize: '1.4rem', fontWeight: 800, marginBottom: 25, lineHeight: 1.3, color: '#1a1a2e' }}>{product.name || product.title}</h3>
 
                                     <p style={{ textAlign: 'center', color: '#4a5568', marginBottom: 20, fontSize: '0.95rem' }}>
                                         {product.short_description || product.description}
@@ -114,7 +114,7 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
                                     {/* Benefits Section */}
                                     {parseList(product.benefits).length > 0 && (
                                         <>
-                                            <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 15, borderBottom: '1px solid #eee', paddingBottom: 10 }}>Apa yang Akan Anda Dapatkan:</h4>
+                                            <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 15, borderBottom: '1px solid #eee', paddingBottom: 10, color: '#1a1a2e' }}>Apa yang Akan Anda Dapatkan:</h4>
                                             <ul className="ads-materi-list">
                                                 {parseList(product.benefits).map((item, i) => (
                                                     <li key={i}><CheckCircle2 size={18} className="icon-check" /> {item}</li>

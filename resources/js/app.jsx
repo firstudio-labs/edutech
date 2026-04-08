@@ -62,9 +62,9 @@ createInertiaApp({
                     <Toaster
                         position="top-right"
                         toastOptions={{
-                            style: { background: '#0f0f1a', color: '#f0f0f8', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', fontSize: '14px' },
-                            success: { iconTheme: { primary: '#10b981', secondary: '#0f0f1a' } },
-                            error: { iconTheme: { primary: '#ef4444', secondary: '#0f0f1a' } },
+                            style: { background: 'var(--color-bg-card)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)', borderRadius: '12px', fontSize: '14px', boxShadow: '0 8px 30px rgba(0,0,0,0.08)' },
+                            success: { iconTheme: { primary: 'var(--color-success)', secondary: 'white' } },
+                            error: { iconTheme: { primary: 'var(--color-error)', secondary: 'white' } },
                         }}
                     />
                     <App {...props} />

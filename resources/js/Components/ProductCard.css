@@ -68,9 +68,9 @@
     border-radius: var(--radius-full);
     font-size: 11px;
     font-weight: var(--font-bold);
-    background: #ef4444; /* Solid Red */
+    background: var(--color-accent); /* Solid Santander Red */
     color: white;
-    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 2px 6px rgba(102, 8, 16, 0.2);
 }
 
 .product-card__discount {
@@ -197,6 +197,6 @@
 }
 
 .product-card__btn-detail:hover {
-    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.45);
+    box-shadow: 0 4px 14px rgba(102, 8, 16, 0.2);
     transform: translateY(-1px);
 }

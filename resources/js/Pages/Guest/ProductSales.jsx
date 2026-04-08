@@ -86,7 +86,7 @@ export default function ProductSales({ id, product: dbProduct }) {
             <Head title={`${product.title} - JAGGAD ACADEMY`} />
             <div className="product-sales">
                 {/* Progress bar */}
-                <div className="sales-progress-bar">
+                <div className="sales-progress-bar section-dark">
                     <div className="sales-progress-inner">
                         <div className="sales-steps">
                             {STEPS.map((s, i) => (

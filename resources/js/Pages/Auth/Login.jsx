@@ -93,15 +93,15 @@ export default function Login({ status, canResetPassword }) {
                                 name="remember" 
                                 checked={data.remember} 
                                 onChange={(e) => setData('remember', e.target.checked)}
-                                className="rounded bg-zinc-900 border-zinc-700 text-red-600 focus:ring-red-600 mr-2"
+                                className="rounded bg-white border-zinc-300 text-red-600 focus:ring-red-600 mr-2"
                             />
-                            <span className="text-xs text-zinc-400">Ingat Saya</span>
+                            <span className="text-xs text-zinc-600">Ingat Saya</span>
                         </label>
                         
                         {canResetPassword && (
                             <Link
                                 href={route('password.request')}
-                                className="text-xs text-zinc-400 hover:text-red-400"
+                                className="text-xs text-zinc-600 hover:text-[var(--color-accent)]"
                             >
                                 Lupa password?
                             </Link>

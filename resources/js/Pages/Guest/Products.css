@@ -66,7 +66,22 @@
 .categories-tabs {
     display: flex;
     gap: var(--space-2);
-    flex-wrap: wrap;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    padding: var(--space-1) 0;
+    max-width: 700px; /* Limiting to roughly 5-6 items while ensuring it scrolls */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    /* Fade out at the end */
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+
+.categories-tabs::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }
 
 .cat-tab {
@@ -132,7 +147,7 @@
     color: var(--color-accent-light);
     padding: 2px var(--space-2);
     border-radius: var(--radius-sm);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    border: 1px solid rgba(102, 8, 16, 0.2);
     background: var(--color-accent-dim);
 }
 
@@ -157,7 +172,7 @@
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-full);
     background: var(--color-accent-dim);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    border: 1px solid rgba(102, 8, 16, 0.2);
     color: var(--color-accent-light);
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);

@@ -65,7 +65,7 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
             <Head title="JAGGAD ACADEMY - Platform Digital Learning #1" />
             
             {/* Hero */}
-            <section className="hero">
+            <section className="hero section-dark">
                 <div className="hero__bg-glow" />
                 <div className="container hero__content">
                     <div className="hero__badge badge badge-accent">
@@ -101,7 +101,7 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
             </section>
 
             {/* Stats */}
-            <section className="stats-bar">
+            <section className="stats-bar section-light-red">
                 <div className="container stats-bar__grid">
                     {stats.map(({ icon: Icon, value, label }) => (
                         <div key={label} className="stats-bar__item">
@@ -135,7 +135,7 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
                     <div className="categories-wrapper">
                         <div className="categories-slider" ref={sliderRef}>
                             {categories.length > 0 ? categories.map((cat) => (
-                                <Link href={route('products', { category: cat.slug })} key={cat.id} className="category-card">
+                                <Link href={route('products', { category: cat.slug })} key={cat.id} className="category-card card-red">
                                     <div className="category-card__image">
                                         <img src={getStorageUrl(cat.image)} alt={cat.name} />
                                     </div>
@@ -170,14 +170,14 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
                     </div>
                     <div className="grid-3">
                         {featuredProducts.map(product => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} className="card-red" />
                         ))}
                     </div>
                 </div>
             </section>
 
             {/* Features */}
-            <section className="section">
+            <section className="section section-light-red">
                 <div className="container">
                     <div className="features-layout">
                         <div className="features-left">
@@ -228,9 +228,9 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
             */}
 
             {/* CTA */}
-            <section className="section cta-section">
+            <section className="section cta-section section-dark">
                 <div className="container">
-                    <div className="cta-card">
+                    <div className="cta-card card-red">
                         <div className="cta-glow" />
                         <p className="section-label" style={{ justifyContent: 'center' }}><Zap size={14} /> Mulai Sekarang</p>
                         <h2 className="cta-title">{home.ctaBannerTitle}</h2>

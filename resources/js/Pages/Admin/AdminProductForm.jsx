@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Head, router, usePage, useForm } from '@inertiajs/react';
-import { Upload, X, ArrowLeft, Plus, Trash2, FileText, Video, Link as LinkIcon } from 'lucide-react';
+import { Upload, X, ArrowLeft, Plus, Trash2, FileText, Video, Link as LinkIcon, CheckCircle2 } from 'lucide-react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import toast from 'react-hot-toast';
 import { getStorageUrl } from '../../Utils/helpers';
@@ -245,11 +245,16 @@ export default function AdminProductForm({ dbCategories = [], product }) {
                                 <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={addBenefit}>+ Tambah</button>
                             </div>
                             {form.benefits.length > 0 && (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12 }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
                                     {form.benefits.map((b, i) => (
-                                        <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)' }}>
-                                            <span>✓ {b}</span>
-                                            <button type="button" onClick={() => setForm(prev => ({ ...prev, benefits: prev.benefits.filter((_, idx) => idx !== i) }))} style={{ color: 'var(--color-error)', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={14} /></button>
+                                        <div key={i} className="form-added-item">
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                <CheckCircle2 size={14} className="color-accent" style={{ color: 'var(--color-accent)' }} />
+                                                <span style={{ fontWeight: 500 }}>{b}</span>
+                                            </div>
+                                            <button type="button" className="btn-remove" onClick={() => setForm(prev => ({ ...prev, benefits: prev.benefits.filter((_, idx) => idx !== i) }))}>
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     ))}
                                 </div>
@@ -274,26 +279,30 @@ export default function AdminProductForm({ dbCategories = [], product }) {
                             </div>
 
                             {form.materials.length > 0 && (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12 }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
                                     {form.materials.map((m, i) => (
-                                        <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                                <span style={{ fontWeight: 600, color: 'var(--color-text-muted)' }}>{String(i + 1).padStart(2, '0')}</span>
-                                                {m.link ? <LinkIcon size={14} color="var(--color-accent)" /> : <FileText size={14} color="var(--color-text-muted)" />}
-                                                <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                                    <span>{m.title}</span>
-                                                    {m.link && <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>{m.link}</span>}
-                                                </span>
-                                                {(m.duration || m.pages || m.videos) && (
-                                                    <span style={{ color: 'var(--color-accent)', fontSize: '11px', padding: '2px 6px', background: 'var(--color-accent-dim)', borderRadius: 4 }}>
-                                                        {m.duration || m.pages || m.videos}
-                                                    </span>
-                                                )}
+                                        <div key={i} className="form-added-item">
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                <span className="item-index">{String(i + 1).padStart(2, '0')}</span>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                        <span style={{ fontWeight: 600 }}>{m.title}</span>
+                                                        {m.duration && (
+                                                            <span style={{ color: 'var(--color-accent)', fontSize: '10px', padding: '1px 6px', background: 'var(--color-accent-dim)', borderRadius: 4, fontWeight: 700 }}>
+                                                                {m.duration}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    {m.link && (
+                                                        <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                                            <LinkIcon size={10} /> {m.link}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <button type="button" onClick={() => setForm(prev => ({
-                                                ...prev,
-                                                materials: prev.materials.filter((_, idx) => idx !== i)
-                                            }))} style={{ color: 'var(--color-error)', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={14} /></button>
+                                            <button type="button" className="btn-remove" onClick={() => setForm(prev => ({ ...prev, materials: prev.materials.filter((_, idx) => idx !== i) }))}>
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     ))}
                                 </div>

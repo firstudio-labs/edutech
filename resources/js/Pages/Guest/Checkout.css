@@ -80,41 +80,6 @@
     margin-bottom: var(--space-2);
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-}
-
-.form-group label {
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
-    color: var(--color-text-secondary);
-}
-
-.form-input {
-    padding: var(--space-3) var(--space-4);
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    color: var(--color-text-primary);
-    font-size: var(--text-sm);
-    outline: none;
-    transition: border-color var(--transition-fast);
-}
-
-.form-input:focus {
-    border-color: var(--color-accent);
-}
-
-.form-input::placeholder {
-    color: var(--color-text-muted);
-}
-
-.w-full {
-    width: 100%;
-    justify-content: center;
-}
 
 .btn-hero-primary.loading {
     opacity: 0.7;
@@ -258,7 +223,7 @@
 
 .btn-remove-item:hover {
     color: var(--color-error);
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(102, 8, 16, 0.2);
 }
 
 .order-divider {
@@ -464,7 +429,7 @@
     justify-content: center;
     gap: var(--space-3);
     padding: var(--space-4) var(--space-6);
-    background: #ef4444; /* Solid Red */
+    background: var(--color-accent); /* Santander Red */
     color: white;
     font-size: var(--text-base);
     font-weight: var(--font-bold);
@@ -472,20 +437,20 @@
     border-radius: var(--radius-xl);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 8, 16, 0.2);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .btn-checkout-action:hover {
-    background: #dc2626; /* Darker Red on hover */
+    background: var(--color-accent-light);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 8px 25px rgba(102, 8, 16, 0.2);
 }
 
 .btn-checkout-action:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 2px 10px rgba(102, 8, 16, 0.2);
 }
 
 .btn-checkout-action.loading {

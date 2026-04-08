@@ -7,9 +7,9 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #0f0f1a;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #c5c5d8;
+            background-color: #ffffff; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            color: #660810; /* Deep red text */
             padding: 32px 16px;
         }
         .wrapper {
@@ -18,8 +18,8 @@
         }
         /* Header */
         .header {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(220, 38, 38, 0.3);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 16px 16px 0 0;
             padding: 32px;
             text-align: center;
@@ -27,12 +27,11 @@
         .brand {
             font-size: 24px;
             font-weight: 900;
-            color: #ff4d4d;
+            color: #660810;
             letter-spacing: 1.5px;
-            text-shadow: 0 0 18px rgba(220, 38, 38, 0.5);
         }
         .header-subtitle {
-            color: rgba(197, 197, 216, 0.7);
+            color: #64748b;
             font-size: 13px;
             margin-top: 6px;
         }
@@ -40,36 +39,36 @@
             display: inline-block;
             margin-top: 20px;
             padding: 8px 20px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(102, 8, 16, 0.05);
+            border: 1px solid rgba(102, 8, 16, 0.15);
             border-radius: 100px;
-            color: #10b981;
+            color: #660810;
             font-size: 13px;
             font-weight: 600;
         }
         /* Body */
         .body {
-            background: #13131f;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-top: none;
             padding: 32px;
         }
         .greeting {
             font-size: 18px;
             font-weight: 700;
-            color: #f0f0f8;
+            color: #660810;
             margin-bottom: 8px;
         }
         .greeting-sub {
             font-size: 14px;
-            color: rgba(197, 197, 216, 0.7);
+            color: #374151;
             line-height: 1.6;
             margin-bottom: 28px;
         }
         /* Info Box */
         .info-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 24px;
@@ -83,7 +82,7 @@
         }
         .info-label {
             font-size: 11px;
-            color: rgba(197, 197, 216, 0.5);
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             margin-bottom: 4px;
@@ -91,13 +90,13 @@
         .info-value {
             font-size: 14px;
             font-weight: 600;
-            color: #f0f0f8;
+            color: #660810;
         }
         /* Section Title */
         .section-title {
             font-size: 13px;
             font-weight: 700;
-            color: rgba(197, 197, 216, 0.6);
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             margin-bottom: 12px;
@@ -110,41 +109,41 @@
             table-layout: fixed;
         }
         thead th {
-            background: rgba(220, 38, 38, 0.08);
-            color: rgba(197, 197, 216, 0.7);
+            background: #ffffff;
+            color: #660810;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             padding: 10px 14px;
             text-align: left;
             font-weight: 700;
-            border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+            border-bottom: 1px solid #e2e8f0;
         }
         thead th:first-child { width: 70%; }
         thead th:last-child { width: 30%; text-align: right; }
         tbody td {
             padding: 12px 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid #e2e8f0;
             font-size: 14px;
-            color: #c5c5d8;
+            color: #7a1d25;
             vertical-align: middle;
             word-break: break-word;
         }
         tbody td:last-child {
             text-align: right;
             font-weight: 600;
-            color: #f0f0f8;
+            color: #660810;
             white-space: nowrap;
             width: 30%;
         }
         .product-name {
-            color: #f0f0f8;
+            color: #660810;
             font-weight: 600;
             line-height: 1.4;
         }
         .product-category {
             font-size: 12px;
-            color: rgba(197, 197, 216, 0.5);
+            color: #64748b;
             margin-top: 3px;
         }
         /* Total Row */
@@ -152,8 +151,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, rgba(220,38,38,0.08), rgba(220,38,38,0.04));
-            border: 1px solid rgba(220, 38, 38, 0.2);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 16px 20px;
             margin-bottom: 28px;
@@ -161,13 +160,12 @@
         .total-label {
             font-size: 15px;
             font-weight: 700;
-            color: #f0f0f8;
+            color: #660810;
         }
         .total-amount {
             font-size: 20px;
             font-weight: 800;
-            color: #ff4d4d;
-            text-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
+            color: #660810;
         }
         /* CTA Button */
         .cta {
@@ -177,7 +175,7 @@
         .cta a {
             display: inline-block;
             padding: 14px 36px;
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            background: #660810;
             color: white;
             text-decoration: none;
             border-radius: 100px;
@@ -187,8 +185,8 @@
         }
         /* Footer */
         .footer {
-            background: #0d0d1a;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-top: none;
             border-radius: 0 0 16px 16px;
             padding: 24px 32px;
@@ -196,10 +194,10 @@
         }
         .footer p {
             font-size: 12px;
-            color: rgba(197, 197, 216, 0.4);
+            color: #914d53;
             line-height: 1.7;
         }
-        .footer a { color: #f87171; text-decoration: none; }
+        .footer a { color: #660810; text-decoration: none; }
 
         @media (max-width: 480px) {
             .body, .header, .footer { padding: 24px 16px; }
@@ -210,8 +208,8 @@
 <body>
 <div class="wrapper">
     <!-- HEADER -->
-    <div class="header">
-        <div class="brand">⚡ JAGGAD ACADEMY</div>
+    <div class="header" style="border-bottom: none;">
+        <div class="brand">JAGGAD ACADEMY</div>
         <div class="header-subtitle">Platform Digital Learning #1 Indonesia</div>
         <div class="success-badge">✓ &nbsp;Pembayaran Berhasil</div>
     </div>

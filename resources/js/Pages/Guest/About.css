@@ -15,7 +15,7 @@
     transform: translateX(-50%);
     width: 80%;
     height: 100%;
-    background: radial-gradient(ellipse, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(102, 8, 16, 0.12) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -45,7 +45,7 @@
     gap: var(--space-12);
 }
 
-.about-section {}
+
 
 .about-section-title {
     font-size: var(--text-2xl);
@@ -89,16 +89,24 @@
 
 .story-card {
     padding: var(--space-4);
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    background: var(--color-accent); /* Deep Red */
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-lg);
+    color: white;
+    transition: all var(--transition-base);
+}
+
+.story-card:hover {
+    background: var(--color-accent-hover);
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(102, 8, 16, 0.2);
 }
 
 .story-card__year {
     font-size: var(--text-sm);
     font-weight: var(--font-bold);
-    color: var(--color-accent-light);
-    background: var(--color-accent-dim);
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
     padding: 2px 10px;
     border-radius: var(--radius-full);
     display: inline-block;
@@ -107,7 +115,7 @@
 
 .story-card p {
     font-size: var(--text-sm);
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .vm-section {
@@ -121,18 +129,26 @@
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
+    color: var(--color-text-primary);
+    transition: all var(--transition-base);
+}
+
+.vm-card:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 8, 16, 0.25);
 }
 
 .vm-icon {
     width: 52px;
     height: 52px;
     border-radius: var(--radius-lg);
-    background: var(--color-accent-dim);
-    border: 1px solid rgba(124, 58, 237, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-accent-light);
+    color: white;
     margin-bottom: var(--space-4);
 }
 
@@ -140,10 +156,11 @@
     font-size: var(--text-xl);
     font-weight: var(--font-bold);
     margin-bottom: var(--space-3);
+    color: white;
 }
 
 .vm-card p {
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.7;
 }
 
@@ -154,7 +171,7 @@
 }
 
 .vm-card li {
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.85);
     font-size: var(--text-sm);
     padding-left: var(--space-4);
     position: relative;
@@ -163,7 +180,7 @@
 
 .vm-card li::before {
     content: '•';
-    color: var(--color-accent-light);
+    color: white;
     position: absolute;
     left: 0;
 }
@@ -178,35 +195,40 @@
 .achievement-card {
     text-align: center;
     padding: var(--space-6);
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    background: var(--color-accent); /* Deep Red */
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-xl);
+    color: white;
+    transition: all var(--transition-base);
+}
+
+.achievement-card:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 8, 16, 0.25);
 }
 
 .achievement-icon {
     width: 52px;
     height: 52px;
     border-radius: var(--radius-lg);
-    background: var(--color-accent-dim);
+    background: rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-accent-light);
+    color: white;
     margin: 0 auto var(--space-4);
 }
 
 .achievement-value {
     font-size: var(--text-3xl);
     font-weight: var(--font-extrabold);
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white;
 }
 
 .achievement-label {
     font-size: var(--text-sm);
-    color: var(--color-text-secondary);
+    color: rgba(255, 255, 255, 0.8);
     margin-top: var(--space-1);
 }
 
@@ -283,4 +305,48 @@
     .about-title {
         font-size: var(--text-2xl);
     }
+}
+
+/* Mission List Refined */
+.mission-list-refined {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-6);
+}
+
+.mission-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.08); 
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 4px solid white;
+    color: white;
+    transition: all var(--transition-fast);
+}
+
+.mission-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+}
+
+.mission-check-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+}
+
+.mission-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(241, 235, 235, 0.9);
+    font-weight: 500;
 }

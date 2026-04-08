@@ -65,12 +65,6 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
         <AdminLayout>
             <Head title="Editor Konten - JAGGAD ACADEMY" />
 
-            <div className="admin-page">
-                <div className="admin-page-header">
-                    <h1>Editor Konten</h1>
-                    <p className="admin-page-subtitle">Kustomisasi teks dan visual landing page Academy Anda</p>
-                </div>
-
             <div className="admin-cms-layout">
                 <aside className={`cms-sidebar ${hideSidebar ? 'collapsed' : ''}`}>
                     <div className="cms-sidebar-header">
@@ -177,7 +171,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                     <textarea value={content.about.visionDesc} onChange={(e) => handleInputChange('about', 'visionDesc', e.target.value)} rows="3" />
                                 </div>
                                     
-                                <div className="cms-form-group" style={{ padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+                                <div className="cms-form-group" style={{ padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                         <h4 className="cms-section-label" style={{ marginBottom: 0, color: 'var(--color-accent)' }}>Poin-poin Misi</h4>
                                         <button className="btn-icon" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
@@ -191,7 +185,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                             <div key={idx} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                                                 <div style={{ color: 'var(--color-text-muted)', fontSize: '11px', width: '20px' }}>#{idx+1}</div>
                                                 <input 
-                                                    style={{ flex: 1, width: '100%', height: '44px', fontSize: '14px', padding: '0 12px' }}
+                                                    style={{ flex: 1, width: '100%', height: '44px', fontSize: '14px', padding: '0 12px', color: 'var(--color-text-primary)', background: 'var(--color-bg)' }}
                                                     value={m} 
                                                     onChange={(e) => {
                                                         const newMissions = [...content.about.missions];
@@ -208,7 +202,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                     </div>
                                 </div>
 
-                                <div className="cms-form-group" style={{ padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+                                <div className="cms-form-group" style={{ padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                         <h4 className="cms-section-label" style={{ marginBottom: 0, color: 'var(--color-accent)' }}>Pencapaian (Achievements)</h4>
                                         <button className="btn-icon" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
@@ -217,79 +211,100 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                         }}><Plus size={14} /> Tambah</button>
                                     </div>
 
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
-                                        {(content.about.achievements || []).map((ach, idx) => (
-                                            <div key={idx} style={{ padding: 12, background: 'rgba(0,0,0,0.2)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.05)' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, alignItems: 'center' }}>
-                                                    <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Card #{idx + 1}</span>
-                                                    <button style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }} onClick={() => {
-                                                        const newAch = content.about.achievements.filter((_, i) => i !== idx);
-                                                        handleInputChange('about', 'achievements', newAch);
-                                                    }}><Trash2 size={14} /></button>
-                                                </div>
-                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
-                                                    <div>
-                                                        <label style={{ fontSize: 11, marginBottom: 6, display: 'block', fontWeight: 600 }}>Label</label>
-                                                        <input style={{ width: '100%', fontSize: 14, height: '40px', padding: '0 12px' }} value={ach.label} onChange={e => {
-                                                            const newAch = [...content.about.achievements];
-                                                            newAch[idx].label = e.target.value;
-                                                            handleInputChange('about', 'achievements', newAch);
-                                                        }} />
-                                                    </div>
-                                                    <div>
-                                                        <label style={{ fontSize: 11, marginBottom: 6, display: 'block', fontWeight: 600 }}>Value</label>
-                                                        <input style={{ width: '100%', fontSize: 14, height: '40px', padding: '0 12px' }} value={ach.value} onChange={e => {
-                                                            const newAch = [...content.about.achievements];
-                                                            newAch[idx].value = e.target.value;
-                                                            handleInputChange('about', 'achievements', newAch);
-                                                        }} />
-                                                    </div>
-                                                </div>
-                                                <div style={{ marginTop: 12 }}>
-                                                    <label style={{ fontSize: 11, marginBottom: 8, display: 'block', fontWeight: 600 }}>Pilih Ikon</label>
-                                                    <div style={{ 
-                                                        display: 'grid', 
-                                                        gridTemplateColumns: 'repeat(6, 1fr)', 
-                                                        gap: 8,
-                                                        background: 'rgba(0,0,0,0.2)',
-                                                        padding: 10,
-                                                        borderRadius: 8,
-                                                        border: '1px solid rgba(255,255,255,0.05)'
-                                                    }}>
-                                                        {Object.entries(availableIcons).map(([name, IconComp]) => (
-                                                            <button 
-                                                                key={name}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    const newAch = [...content.about.achievements];
-                                                                    newAch[idx].icon = name;
-                                                                    handleInputChange('about', 'achievements', newAch);
-                                                                }}
-                                                                style={{
-                                                                    padding: 8,
-                                                                    background: ach.icon === name ? 'var(--color-accent)' : 'transparent',
-                                                                    border: '1px solid',
-                                                                    borderColor: ach.icon === name ? 'var(--color-accent)' : 'rgba(255,255,255,0.1)',
-                                                                    borderRadius: 6,
-                                                                    cursor: 'pointer',
-                                                                    color: ach.icon === name ? 'white' : 'var(--color-text-muted)',
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'center',
-                                                                    transition: 'all 0.2s'
-                                                                }}
-                                                                title={name}
-                                                            >
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }}>
+                                        {(content.about.achievements || []).map((ach, idx) => {
+                                            const IconComp = availableIcons[ach.icon] || Trophy;
+                                            return (
+                                                <div key={idx} style={{ padding: 16, background: 'var(--color-accent)', borderRadius: 16, border: '1px solid rgba(255,255,255,0.1)', color: 'white', position: 'relative', overflow: 'hidden' }}>
+                                                    {/* Decorative background circle */}
+                                                    <div style={{ position: 'absolute', right: -20, top: -20, width: 80, height: 80, background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}></div>
+                                                    
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 15, alignItems: 'center', position: 'relative', zIndex: 1 }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                            <div style={{ padding: 8, background: 'rgba(255,255,255,0.1)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.2)' }}>
                                                                 <IconComp size={16} />
-                                                            </button>
-                                                        ))}
+                                                            </div>
+                                                            <span style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.8 }}>Statistik #{idx + 1}</span>
+                                                        </div>
+                                                        <button style={{ color: 'rgba(255,255,255,0.6)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }} onClick={() => {
+                                                            const newAch = content.about.achievements.filter((_, i) => i !== idx);
+                                                            handleInputChange('about', 'achievements', newAch);
+                                                        }}><X size={16} /></button>
+                                                    </div>
+
+                                                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 12, position: 'relative', zIndex: 1 }}>
+                                                        <div>
+                                                            <label style={{ fontSize: 10, marginBottom: 4, display: 'block', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>Label</label>
+                                                            <input 
+                                                                style={{ width: '100%', fontSize: 13, height: '36px', padding: '0 10px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: 8 }} 
+                                                                value={ach.label} 
+                                                                onChange={e => {
+                                                                    const newAch = [...content.about.achievements];
+                                                                    newAch[idx].label = e.target.value;
+                                                                    handleInputChange('about', 'achievements', newAch);
+                                                                }} 
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label style={{ fontSize: 10, marginBottom: 4, display: 'block', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>Nilai (Value)</label>
+                                                            <input 
+                                                                style={{ width: '100%', fontSize: 13, height: '36px', padding: '0 10px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: 8 }} 
+                                                                value={ach.value} 
+                                                                onChange={e => {
+                                                                    const newAch = [...content.about.achievements];
+                                                                    newAch[idx].value = e.target.value;
+                                                                    handleInputChange('about', 'achievements', newAch);
+                                                                }} 
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div style={{ marginTop: 15, position: 'relative', zIndex: 1 }}>
+                                                        <label style={{ fontSize: 10, marginBottom: 8, display: 'block', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>Ganti Ikon</label>
+                                                        <div style={{ 
+                                                            display: 'grid', 
+                                                            gridTemplateColumns: 'repeat(6, 1fr)', 
+                                                            gap: 6,
+                                                            background: 'rgba(0,0,0,0.15)',
+                                                            padding: 8,
+                                                            borderRadius: 12,
+                                                            border: '1px solid rgba(255,255,255,0.1)'
+                                                        }}>
+                                                            {Object.entries(availableIcons).map(([name, IconComp]) => (
+                                                                <button 
+                                                                    key={name}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newAch = [...content.about.achievements];
+                                                                        newAch[idx].icon = name;
+                                                                        handleInputChange('about', 'achievements', newAch);
+                                                                    }}
+                                                                    style={{
+                                                                        padding: 6,
+                                                                        background: ach.icon === name ? 'white' : 'transparent',
+                                                                        border: '1px solid',
+                                                                        borderColor: ach.icon === name ? 'white' : 'transparent',
+                                                                        borderRadius: 6,
+                                                                        cursor: 'pointer',
+                                                                        color: ach.icon === name ? 'var(--color-accent)' : 'rgba(255,255,255,0.4)',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center',
+                                                                        transition: 'all 0.2s'
+                                                                    }}
+                                                                    title={name}
+                                                                >
+                                                                    <IconComp size={14} />
+                                                                </button>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
-                                <div className="cms-form-group" style={{ padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+                                <div className="cms-form-group" style={{ padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                         <h4 className="cms-section-label" style={{ marginBottom: 0, color: 'var(--color-accent)' }}>Perjalanan Tahunan (Milestones)</h4>
                                         <button className="btn-icon" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
@@ -300,7 +315,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
 
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
                                         {(content.about.milestones || []).map((ms, idx) => (
-                                            <div key={idx} style={{ padding: 12, background: 'rgba(0,0,0,0.2)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 8, border: '1px solid var(--color-border)' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, alignItems: 'center' }}>
                                                     <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Milestone #{idx + 1}</span>
                                                     <button style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }} onClick={() => {
@@ -396,14 +411,13 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                         </header>
 
                         <div className="cms-preview-frame">
-                            <div className="cms-preview-content" style={{ zoom: hideSidebar ? (previewMode === 'mobile' ? 1 : 0.8) : (previewMode === 'mobile' ? 0.9 : 0.6) }}>
+                            <div className="cms-preview-content guest-theme" style={{ zoom: hideSidebar ? (previewMode === 'mobile' ? 1 : 0.8) : (previewMode === 'mobile' ? 0.9 : 0.6), backgroundColor: 'var(--color-bg)' }}>
                                 {renderPreview()}
                             </div>
                         </div>
                     </div>
                 </main>
             </div>
-        </div>
-    </AdminLayout>
+        </AdminLayout>
     );
 }

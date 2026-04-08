@@ -8,7 +8,7 @@ export default function MainLayout({ children, hideNavbar = false, hideFooter = 
     const whatsappNumber = (content?.contact?.phone || '').replace(/[^0-9]/g, '');
 
     return (
-        <div className="min-h-screen bg-zinc-950 flex flex-col">
+        <div className="guest-theme min-h-screen bg-[var(--color-bg)] flex flex-col">
             <CartSync />
             {!hideNavbar && <Navbar />}
             <main className="flex-grow">

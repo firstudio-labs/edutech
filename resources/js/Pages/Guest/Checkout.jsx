@@ -166,7 +166,7 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
             <Head title="Checkout - JAGGAD ACADEMY" />
             <div className="checkout-page">
                 <div className="container checkout-inner">
-                    <div className="checkout-steps">
+                    <div className="checkout-steps section-dark" style={{ padding: 'var(--space-6)', borderRadius: 'var(--radius-lg)' }}>
                         {['Data Diri', 'Selesai'].map((s, i) => (
                             <div key={s} className={`step-item ${step > i + 1 ? 'done' : step === i + 1 ? 'active' : ''}`}>
                                 <div className="step-circle">{step > i + 1 ? '✓' : i + 1}</div>

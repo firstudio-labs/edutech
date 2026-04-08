@@ -1,8 +1,8 @@
 /* src/pages/guest/Ads.css */
 .ads-landing-min {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #1a1a2e;
-    background: #f8f9fa;
+    font-family: var(--font-sans);
+    color: var(--color-text-primary);
+    background: var(--color-bg);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -33,7 +33,7 @@
 .ads-brand {
     font-weight: 800;
     font-size: 1.25rem;
-    color: #0f4c81;
+    color: var(--color-accent);
     letter-spacing: -0.5px;
 }
 
@@ -48,10 +48,10 @@
     letter-spacing: 0.5px;
 }
 
-.section-dark {
-    background: linear-gradient(135deg, #0f4c81 0%, #0a2e4f 100%);
+.ads-section-dark {
+    background: var(--gradient-accent);
     color: white;
-    padding: 40px 0 60px;
+    padding: 60px 0 80px;
     text-align: center;
 }
 

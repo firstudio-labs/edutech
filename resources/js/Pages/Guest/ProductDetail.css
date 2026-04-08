@@ -52,11 +52,11 @@
     left: 16px;
     padding: 6px 14px;
     border-radius: var(--radius-full);
-    background: #ef4444; /* Solid red to match Bestseller style from User screenshot */
+    background: var(--color-accent); /* Santander Red */
     color: white;
     font-size: var(--text-xs);
     font-weight: var(--font-bold);
-    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 10px rgba(102, 8, 16, 0.2);
 }
 
 .detail-section {
@@ -184,7 +184,7 @@
     background: var(--color-accent-dim);
     padding: 4px 12px;
     border-radius: var(--radius-full);
-    border: 1px solid rgba(124, 58, 237, 0.2);
+    border: 1px solid rgba(102, 8, 16, 0.2);
 }
 
 .detail-card__title {
@@ -286,11 +286,11 @@
     color: white;
     transition: all var(--transition-base);
     text-align: center;
-    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 4px 16px rgba(102, 8, 16, 0.2);
 }
 
 .btn-buy:hover {
-    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5);
+    box-shadow: 0 8px 30px rgba(102, 8, 16, 0.2);
     transform: translateY(-1px);
 }
 

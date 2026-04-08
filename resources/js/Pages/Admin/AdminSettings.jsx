@@ -112,7 +112,7 @@ export default function AdminSettings({ dbSettings }) {
 
                         <div style={{ 
                             padding: 'var(--space-6)', 
-                            background: 'rgba(0,0,0,0.1)', 
+                            background: 'var(--color-bg-secondary)', 
                             borderRadius: 'var(--radius-xl)',
                             border: '1px solid var(--color-border)',
                             marginBottom: 'var(--space-6)',
@@ -199,7 +199,7 @@ export default function AdminSettings({ dbSettings }) {
 
                             <div style={{ 
                                 padding: 'var(--space-4)', 
-                                background: 'rgba(59,130,246,0.08)', 
+                                background: 'rgba(59,130,246,0.1)', 
                                 border: '1px solid rgba(59,130,246,0.2)', 
                                 borderRadius: 'var(--radius-md)',
                                 fontSize: '12px',

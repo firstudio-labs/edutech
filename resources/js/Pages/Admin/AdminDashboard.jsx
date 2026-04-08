@@ -46,14 +46,14 @@ export default function AdminDashboard({ stats = {}, recentTransactions = [], sa
                 {/* Stats */}
                 <div className="admin-stats-grid" style={{ gap: '20px' }}>
                     {dashboardStats.map(({ icon: Icon, label, value, changeVal, isPerc }) => (
-                        <div key={label} className="admin-stat-card" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', padding: '24px', background: '#121212', borderRadius: '16px', border: '1px solid #1f1f2e' }}>
-                            <div className="admin-stat-icon" style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#362121', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ff7a7a', marginRight: '16px', flexShrink: 0 }}>
+                        <div key={label} className="admin-stat-card" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', padding: '24px', background: 'var(--color-bg-card)', borderRadius: '16px', border: '1px solid var(--color-border)' }}>
+                            <div className="admin-stat-icon" style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--color-accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent-light)', marginRight: '16px', flexShrink: 0 }}>
                                 <Icon size={20} strokeWidth={1.5} />
                             </div>
                             <div className="admin-stat-body" style={{ display: 'flex', flexDirection: 'column' }}>
-                                <p className="admin-stat-label" style={{ fontSize: '13px', color: '#6b7280', marginBottom: '8px', fontWeight: 500 }}>{label}</p>
-                                <p className="admin-stat-value" style={{ fontSize: '24px', fontWeight: 700, color: 'white', letterSpacing: '-0.5px', marginBottom: '4px', lineHeight: 1 }}>{value}</p>
-                                <p className="admin-stat-change" style={{ fontSize: '11px', color: changeVal > 0 ? '#10b981' : (changeVal < 0 ? '#ef4444' : '#6b7280'), fontWeight: 500, margin: 0 }}>
+                                <p className="admin-stat-label" style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '8px', fontWeight: 500 }}>{label}</p>
+                                <p className="admin-stat-value" style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-text-primary)', letterSpacing: '-0.5px', marginBottom: '4px', lineHeight: 1 }}>{value}</p>
+                                <p className="admin-stat-change" style={{ fontSize: '11px', color: changeVal > 0 ? 'var(--color-success)' : (changeVal < 0 ? 'var(--color-error)' : 'var(--color-text-muted)'), fontWeight: 500, margin: 0 }}>
                                     {formatChange(changeVal, isPerc)}
                                 </p>
                             </div>
@@ -73,11 +73,11 @@ export default function AdminDashboard({ stats = {}, recentTransactions = [], sa
                                         <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                                <XAxis dataKey="month" tick={{ fill: '#9090a8', fontSize: 12 }} />
-                                <YAxis tickFormatter={formatJt} tick={{ fill: '#9090a8', fontSize: 12 }} />
-                                <Tooltip formatter={(v) => [`Rp${v.toLocaleString('id-ID')}`, 'Pendapatan']} contentStyle={{ background: '#0f0f1a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px' }} />
-                                <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" fill="url(#colorRevenue)" strokeWidth={2} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+                                <XAxis dataKey="month" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+                                <YAxis tickFormatter={formatJt} tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+                                <Tooltip formatter={(v) => [`Rp${v.toLocaleString('id-ID')}`, 'Pendapatan']} contentStyle={{ background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '10px' }} />
+                                <Area type="monotone" dataKey="revenue" stroke="var(--color-accent)" fill="url(#colorRevenue)" strokeWidth={2} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -86,11 +86,11 @@ export default function AdminDashboard({ stats = {}, recentTransactions = [], sa
                         <h3 className="admin-chart-title">Pesanan per Bulan</h3>
                         <ResponsiveContainer width="100%" height={220}>
                             <BarChart data={salesData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                                <XAxis dataKey="month" tick={{ fill: '#9090a8', fontSize: 12 }} />
-                                <YAxis tick={{ fill: '#9090a8', fontSize: 12 }} />
-                                <Tooltip contentStyle={{ background: '#0f0f1a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px' }} />
-                                <Bar dataKey="orders" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+                                <XAxis dataKey="month" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+                                <YAxis tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+                                <Tooltip contentStyle={{ background: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '10px' }} />
+                                <Bar dataKey="orders" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

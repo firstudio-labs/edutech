@@ -26,7 +26,7 @@ export default function PackageLanding({ slug }) {
             <Head title={`${pkg.title} - JAGGAD ACADEMY`} />
             <div className="pkg-landing">
                 {/* Hero */}
-                <section className="pkg-hero">
+                <section className="pkg-hero section-dark">
                     <div className="pkg-hero__glow" />
                     <div className="container pkg-hero__content">
                         {pkg.badge && <span className="pkg-landing-badge">{pkg.badge}</span>}
@@ -58,7 +58,7 @@ export default function PackageLanding({ slug }) {
                     </section>
 
                     {/* Benefits */}
-                    <section className="pkg-section">
+                    <section className="pkg-section section-dark" style={{ padding: 'var(--space-12) var(--space-6)', margin: 'var(--space-6) calc(-1 * var(--space-6))', borderRadius: 'var(--radius-xl)' }}>
                         <h2 className="pkg-section-title">Apa yang Anda Dapatkan</h2>
                         <div className="benefits-grid">
                             {pkg.benefits.map((b, i) => (
@@ -104,7 +104,7 @@ export default function PackageLanding({ slug }) {
                     </section>
 
                     {/* Other Packages */}
-                    <section className="pkg-section">
+                    <section className="pkg-section section-dark" style={{ padding: 'var(--space-12) var(--space-6)', margin: 'var(--space-6) calc(-1 * var(--space-6))', borderRadius: 'var(--radius-xl)' }}>
                         <h2 className="pkg-section-title">Paket Lainnya</h2>
                         <div className="other-packages">
                             {packages.filter(p => p.slug !== pkg.slug).map(p => (

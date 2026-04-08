@@ -15,11 +15,14 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    const { url } = usePage();
     useEffect(() => {
         const handler = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handler);
+        // Sync scroll state on navigation
+        handler();
         return () => window.removeEventListener('scroll', handler);
-    }, []);
+    }, [url]);
 
     const handleLogout = (e) => {
         if (e) e.preventDefault();
@@ -28,7 +31,7 @@ export default function Navbar() {
             text: 'Apakah Anda yakin ingin keluar dari halaman sistem?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444',
+            confirmButtonColor: '#660810',
             cancelButtonColor: '#4b5563',
             confirmButtonText: 'Ya, Keluar!',
             cancelButtonText: 'Batal',

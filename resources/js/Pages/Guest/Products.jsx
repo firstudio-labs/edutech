@@ -43,7 +43,7 @@ export default function Products({ products = [], categories: categoriesData = [
         <MainLayout>
             <Head title="Katalog Produk - JAGGAD ACADEMY" />
             <div className="products-page">
-                <div className="products-header">
+                <div className="products-header section-dark">
                     <div className="container">
                         <p className="section-label" style={{ marginBottom: 'var(--space-3)' }}>
                             <BookOpen size={14} /> Katalog Produk
@@ -101,7 +101,7 @@ export default function Products({ products = [], categories: categoriesData = [
                     {filtered.length > 0 ? (
                         <div className="products-grid">
                             {filtered.map(product => (
-                                <ProductCard key={product.id} product={product} />
+                                <ProductCard key={product.id} product={product} className="card-red" />
                             ))}
                         </div>
                     ) : (

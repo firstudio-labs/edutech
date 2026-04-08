@@ -214,12 +214,14 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
 
                     {/* Related Products */}
                     {related.length > 0 && (
-                        <section className="related-section">
-                            <h2 className="related-title">Produk Terkait</h2>
-                            <div className="grid-3">
-                                {related.map(p => (
-                                    <ProductCard key={p.id} product={p} />
-                                ))}
+                        <section className="related-section section-dark" style={{ padding: 'var(--space-12) 0', margin: 'var(--space-12) calc(-50vw + 50%) 0', width: '100vw' }}>
+                            <div className="container">
+                                <h2 className="related-title">Produk Terkait</h2>
+                                <div className="grid-3">
+                                    {related.map(p => (
+                                        <ProductCard key={p.id} product={p} />
+                                    ))}
+                                </div>
                             </div>
                         </section>
                     )}

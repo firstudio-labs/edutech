@@ -19,7 +19,7 @@ export default function About({ previewMode = false }) {
     const PageContent = (
         <div className="about-page">
             <Head title="Tentang Kami - JAGGAD ACADEMY" />
-            <div className="about-hero">
+            <div className="about-hero section-dark">
                 <div className="about-hero__glow" />
                 <div className="container">
                     <div className="about-hero__content">
@@ -49,7 +49,7 @@ export default function About({ previewMode = false }) {
                 </section>
 
                 {/* Vision & Mission */}
-                <section className="about-section vm-section">
+                <section className="about-section vm-section section-light-red" style={{ padding: 'var(--space-12) var(--space-6)', margin: '0 calc(-1 * var(--space-6))', borderRadius: 'var(--radius-xl)' }}>
                     <div className="vm-card">
                         <div className="vm-icon"><Eye size={28} /></div>
                         <h3>{about.visionTitle}</h3>
@@ -58,32 +58,13 @@ export default function About({ previewMode = false }) {
                     <div className="vm-card">
                         <div className="vm-icon"><Target size={28} /></div>
                         <h3>{about.missionTitle}</h3>
-                        <ul className="mission-list-refined" style={{ listStyle: 'none', padding: 0 }}>
+                        <ul className="mission-list-refined">
                             {about.missions?.map((m, idx) => (
-                                <li key={idx} style={{ 
-                                    display: 'flex', 
-                                    gap: '16px', 
-                                    marginBottom: '12px', 
-                                    padding: '16px 20px', 
-                                    background: 'rgba(255,255,255,0.02)', 
-                                    borderRadius: '12px',
-                                    border: '1px solid rgba(255,255,255,0.05)',
-                                    borderLeft: '4px solid var(--color-accent)',
-                                    backdropFilter: 'blur(10px)'
-                                }}>
-                                    <div style={{ 
-                                        width: '28px', 
-                                        height: '28px', 
-                                        borderRadius: '50%', 
-                                        background: 'rgba(220, 38, 38, 0.1)', 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        justifyContent: 'center',
-                                        flexShrink: 0
-                                    }}>
-                                        <CheckCircle size={16} style={{ color: 'var(--color-accent)' }} />
+                                <li key={idx} className="mission-item">
+                                    <div className="mission-check-icon">
+                                        <CheckCircle size={16} />
                                     </div>
-                                    <span style={{ fontSize: '14px', lineHeight: '1.6', color: 'rgba(255,255,255,0.95)', fontWeight: 500 }}>{m}</span>
+                                    <span className="mission-text">{m}</span>
                                 </li>
                             ))}
                         </ul>

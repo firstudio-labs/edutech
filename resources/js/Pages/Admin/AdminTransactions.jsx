@@ -8,8 +8,10 @@ import './Admin.css';
 
 export default function AdminTransactions({ dbTransactions }) {
     const [search, setSearch] = useState('');
-    const [filter, setFilter] = useState('Semua');
+    const [statusFilter, setStatusFilter] = useState('Semua');
     const [selectedTrx, setSelectedTrx] = useState(null);
+    const [showStatusFilter, setShowStatusFilter] = useState(false);
+    const statusOptions = ['Semua', 'Berhasil', 'Pending', 'Gagal'];
 
     const rawTransactions = dbTransactions?.data || [];
     
@@ -30,7 +32,7 @@ export default function AdminTransactions({ dbTransactions }) {
 
     const filtered = transactions.filter(t => {
         const matchSearch = t.customer.toLowerCase().includes(search.toLowerCase()) || t.id.toLowerCase().includes(search.toLowerCase());
-        const matchFilter = filter === 'Semua' || t.status === filter;
+        const matchFilter = statusFilter === 'Semua' || t.status === statusFilter;
         return matchSearch && matchFilter;
     });
 
@@ -67,18 +69,45 @@ export default function AdminTransactions({ dbTransactions }) {
                     <p className="admin-page-subtitle">Monitor semua transaksi yang terjadi di platform</p>
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-                    <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '6px 16px', borderRadius: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(255, 255, 255, 0.05)', color: 'var(--color-text-muted)' }}>
-                        <strong style={{ color: '#ef4444' }}>{transactions.length}</strong> Total
+                <div className="trx-stats-grid">
+                    <div className={`trx-stat-card ${statusFilter === 'Semua' ? 'active' : ''}`} onClick={() => setStatusFilter('Semua')}>
+                        <div className="trx-stat-icon total">
+                            <CreditCard size={22} />
+                        </div>
+                        <div className="trx-stat-info">
+                            <span className="trx-stat-value">{transactions.length}</span>
+                            <span className="trx-stat-label">Total Transaksi</span>
+                        </div>
                     </div>
-                    <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '6px 16px', borderRadius: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(16, 185, 129, 0.1)', color: 'var(--color-text-muted)' }}>
-                        <strong style={{ color: '#10b981' }}>{countBerhasil}</strong> Berhasil
+                    
+                    <div className={`trx-stat-card ${statusFilter === 'Berhasil' ? 'active' : ''}`} onClick={() => setStatusFilter('Berhasil')}>
+                        <div className="trx-stat-icon success">
+                            <CheckCircle size={22} />
+                        </div>
+                        <div className="trx-stat-info">
+                            <span className="trx-stat-value">{countBerhasil}</span>
+                            <span className="trx-stat-label">Terverifikasi</span>
+                        </div>
                     </div>
-                    <div style={{ background: 'rgba(245, 158, 11, 0.08)', padding: '6px 16px', borderRadius: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(245, 158, 11, 0.1)', color: 'var(--color-text-muted)' }}>
-                        <strong style={{ color: '#f59e0b' }}>{countPending}</strong> Pending
+
+                    <div className={`trx-stat-card ${statusFilter === 'Pending' ? 'active' : ''}`} onClick={() => setStatusFilter('Pending')}>
+                        <div className="trx-stat-icon pending">
+                            <Clock size={22} />
+                        </div>
+                        <div className="trx-stat-info">
+                            <span className="trx-stat-value">{countPending}</span>
+                            <span className="trx-stat-label">Menunggu</span>
+                        </div>
                     </div>
-                    <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '6px 16px', borderRadius: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(239, 68, 68, 0.1)', color: 'var(--color-text-muted)' }}>
-                        <strong style={{ color: '#ef4444' }}>{countGagal}</strong> Gagal
+
+                    <div className={`trx-stat-card ${statusFilter === 'Gagal' ? 'active' : ''}`} onClick={() => setStatusFilter('Gagal')}>
+                        <div className="trx-stat-icon failed">
+                            <XCircle size={22} />
+                        </div>
+                        <div className="trx-stat-info">
+                            <span className="trx-stat-value">{countGagal}</span>
+                            <span className="trx-stat-label">Gagal / Batal</span>
+                        </div>
                     </div>
                 </div>
 
@@ -88,19 +117,32 @@ export default function AdminTransactions({ dbTransactions }) {
                         <input placeholder="Cari ID atau nama pelanggan..." value={search} onChange={e => setSearch(e.target.value)} />
                     </div>
                     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                        <div style={{ position: 'relative', width: 150 }}>
-                            <select 
-                                className="form-input" 
-                                style={{ width: '100%', padding: '8px 32px 8px 16px', fontSize: 13, appearance: 'none', borderRadius: '24px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)', color: 'var(--color-text)', cursor: 'pointer' }} 
-                                value={filter} 
-                                onChange={e => setFilter(e.target.value)}
+                        <div className={`custom-dropdown ${showStatusFilter ? 'open' : ''}`}>
+                            <div 
+                                className="custom-dropdown-trigger" 
+                                onClick={() => setShowStatusFilter(!showStatusFilter)}
                             >
-                                <option value="Semua">Semua Status</option>
-                                <option value="Berhasil">Berhasil</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Gagal">Gagal</option>
-                            </select>
-                            <ChevronDown size={14} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--color-text-muted)' }} />
+                                <span>{statusFilter === 'Semua' ? 'Semua Status' : statusFilter}</span>
+                                <ChevronDown size={16} className="custom-dropdown-chevron" />
+                            </div>
+                            
+                            {showStatusFilter && (
+                                <div className="custom-dropdown-menu">
+                                    {statusOptions.map(opt => (
+                                        <div 
+                                            key={opt}
+                                            className={`custom-dropdown-item ${statusFilter === opt ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setStatusFilter(opt);
+                                                setShowStatusFilter(false);
+                                            }}
+                                        >
+                                            {opt === 'Semua' ? 'Semua Status' : opt}
+                                            {statusFilter === opt && <CheckCircle size={14} />}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <button 
                             className="pulse-anim" 
@@ -151,7 +193,7 @@ export default function AdminTransactions({ dbTransactions }) {
                         <div className="modal modal-detail" onClick={e => e.stopPropagation()}>
                             <div className="modal-detail-header">
                                 <div className={`modal-detail-status-icon ${selectedTrx.status === 'Berhasil' ? 'success' : selectedTrx.status === 'Pending' ? 'warning' : 'error'}`} style={{
-                                    background: selectedTrx.status === 'Berhasil' ? 'rgba(16, 185, 129, 0.1)' : selectedTrx.status === 'Pending' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                    background: selectedTrx.status === 'Berhasil' ? 'rgba(16, 185, 129, 0.1)' : selectedTrx.status === 'Pending' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(255, 77, 48, 0.1)',
                                     color: selectedTrx.status === 'Berhasil' ? 'var(--color-success)' : selectedTrx.status === 'Pending' ? 'var(--color-warning)' : 'var(--color-error)'
                                 }}>
                                     {selectedTrx.status === 'Berhasil' ? <CheckCircle size={24} /> : selectedTrx.status === 'Pending' ? <Clock size={24} /> : <XCircle size={24} />}
@@ -206,19 +248,19 @@ export default function AdminTransactions({ dbTransactions }) {
                                     ) : selectedTrx.proof ? (
                                         <div style={{ marginTop: 'var(--space-2)' }}>
                                             <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)' }}>Bukti Pembayaran Manual:</span>
-                                            <div style={{ background: '#000', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                <div style={{ width: '100%', height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%)' }}>
+                                            <div style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                                <div style={{ width: '100%', height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle, rgba(255, 77, 48, 0.05) 0%, transparent 70%)' }}>
                                                     <img src={selectedTrx.proof} alt="Proof" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                                 </div>
-                                                <div style={{ width: '100%', padding: '8px', background: 'rgba(255,255,255,0.03)', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                                                    <a href={selectedTrx.proof} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: 'var(--color-accent-light)', textDecoration: 'none', fontWeight: 600 }}>Lihat Gambar Penuh</a>
+                                                <div style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.02)', borderTop: '1px solid var(--color-border)', textAlign: 'center' }}>
+                                                    <a href={selectedTrx.proof} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: 'var(--color-accent)', textDecoration: 'none', fontWeight: 600 }}>Lihat Gambar Penuh</a>
                                                 </div>
                                             </div>
                                         </div>
                                     ) : (
                                         <div style={{ marginTop: 'var(--space-2)' }}>
                                             <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', display: 'block', marginBottom: 'var(--space-2)' }}>Bukti Pembayaran:</span>
-                                            <div style={{ padding: 'var(--space-3)', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '4px', color: 'var(--color-text-muted)', fontSize: 12, textAlign: 'center', border: '1px dashed var(--color-border)' }}>
+                                            <div style={{ padding: 'var(--space-3)', background: 'var(--color-bg-secondary)', borderRadius: '4px', color: 'var(--color-text-muted)', fontSize: 12, textAlign: 'center', border: '1px dashed var(--color-border)' }}>
                                                 Menunggu pembayaran otomatis via Midtrans
                                             </div>
                                         </div>

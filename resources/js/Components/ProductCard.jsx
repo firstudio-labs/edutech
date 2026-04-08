@@ -10,7 +10,7 @@ const categoryIcons = {
     offline: MapPin,
 };
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, className = '' }) {
     // Determine properties securely (compatible with DB fields & Mock data)
     const categorySlug = product.category?.slug || product.category || 'ebook';
     const CatIcon = categoryIcons[categorySlug] || BookOpen;
@@ -27,7 +27,7 @@ export default function ProductCard({ product }) {
 
     return (
         <div 
-            className="product-card" 
+            className={`product-card ${className}`} 
             onClick={goToDetail} 
             role="button" 
             tabIndex={0} 
