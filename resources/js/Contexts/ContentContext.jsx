@@ -66,6 +66,12 @@ const defaultContent = {
         instagram: 'https://instagram.com/jaggad',
         youtube: 'https://youtube.com/@jaggad',
         twitter: 'https://twitter.com/jaggad'
+    },
+    branding: {
+        siteName: 'JAGGAD',
+        siteTagline: 'Academy',
+        favicon: '',
+        logo: '',
     }
 };
 

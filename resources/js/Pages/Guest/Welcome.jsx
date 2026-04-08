@@ -62,7 +62,7 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
 
     const PageContent = (
         <div className="home">
-            <Head title="JAGGAD ACADEMY - Platform Digital Learning #1" />
+            <Head title={`${content.branding?.siteName || "JAGGAD"} ${content.branding?.siteTagline || "ACADEMY"} - ${home.heroBadge}`} />
             
             {/* Hero */}
             <section className="hero section-dark">

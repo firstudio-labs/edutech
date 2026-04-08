@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import { ShoppingCart, Menu, X, User, LogOut, LayoutDashboard, Shield } from 'lucide-react';
 import { useCart } from '../Contexts/CartContext';
+import { useContent } from '../Contexts/ContentContext';
+import { getStorageUrl } from '../Utils/helpers';
 import Swal from 'sweetalert2';
 import './Navbar.css';
 
@@ -49,12 +51,20 @@ export default function Navbar() {
         { name: 'contact', href: route('contact'), label: 'Kontak' },
     ];
 
+    const { content } = useContent();
+
     return (
         <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
             <div className="navbar__inner container">
                 <Link href={route('home')} className="navbar__brand">
-                    <span className="navbar__logo">JAGGAD</span>
-                    <span className="navbar__tagline">Academy</span>
+                    {content.branding?.logo ? (
+                        <img src={getStorageUrl(content.branding.logo)} alt={content.branding.siteName} style={{ height: '32px' }} />
+                    ) : (
+                        <>
+                            <span className="navbar__logo">{content.branding.siteName}</span>
+                            <span className="navbar__tagline">{content.branding.siteTagline}</span>
+                        </>
+                    )}
                 </Link>
 
                 <ul className="navbar__links">

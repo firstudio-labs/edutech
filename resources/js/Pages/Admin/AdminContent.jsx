@@ -28,14 +28,37 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
     const [hideSidebar, setHideSidebar] = useState(false);
     const [previewMode, setPreviewMode] = useState('desktop');
 
+    // File Upload States
+    const [logoFile, setLogoFile] = useState(null);
+    const [logoPreview, setLogoPreview] = useState(null);
+    const [faviconFile, setFaviconFile] = useState(null);
+    const [faviconPreview, setFaviconPreview] = useState(null);
+
+    const handleFileChange = (e, type) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (type === 'logo') {
+            setLogoFile(file);
+            setLogoPreview(URL.createObjectURL(file));
+        } else {
+            setFaviconFile(file);
+            setFaviconPreview(URL.createObjectURL(file));
+        }
+    };
+
     const handleSave = () => {
         setIsSaving(true);
         router.post(route('admin.content.store'), { 
             home: content.home, 
             about: content.about, 
             contact: content.contact,
-            social: content.social
+            social: content.social,
+            branding: content.branding,
+            logoFile: logoFile,
+            faviconFile: faviconFile
         }, {
+            forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
                 setIsSaving(false);
@@ -81,6 +104,9 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                         </button>
                         <button className={`cms-tab-btn ${activeTab === 'contact' ? 'active' : ''}`} onClick={() => setActiveTab('contact')}>
                             <Phone size={18} /> <span>Contact</span>
+                        </button>
+                        <button className={`cms-tab-btn ${activeTab === 'branding' ? 'active' : ''}`} onClick={() => setActiveTab('branding')}>
+                            <Target size={18} /> <span>Branding</span>
                         </button>
                     </div>
 
@@ -378,6 +404,107 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 <input value={content.social.twitter} onChange={(e) => handleInputChange('social', 'twitter', e.target.value)} placeholder="https://twitter.com/..." />
                             </div>
                         </>
+                        )}
+
+                        {activeTab === 'branding' && (
+                            <>
+                                <div className="cms-form-group">
+                                    <h4 className="cms-section-label">Identitas Visual</h4>
+                                    <label>Nama Website (Utama)</label>
+                                    <input value={content.branding.siteName} onChange={(e) => handleInputChange('branding', 'siteName', e.target.value)} placeholder="Contoh: JAGGAD" />
+                                    
+                                    <label>Tagline / Sub Nama</label>
+                                    <input value={content.branding.siteTagline} onChange={(e) => handleInputChange('branding', 'siteTagline', e.target.value)} placeholder="Contoh: Academy" />
+                                    
+                                    <div style={{ marginTop: '20px', padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px dotted var(--color-border)' }}>
+                                        <h5 style={{ fontSize: '13px', marginBottom: '10px' }}>Unggah File Brand</h5>
+                                        
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                                            <div>
+                                                <label>Logo Website</label>
+                                                <div 
+                                                    className="image-upload-zone small"
+                                                    onClick={() => document.getElementById('logo-upload').click()}
+                                                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }}
+                                                    onDragLeave={(e) => e.currentTarget.classList.remove('drag-over')}
+                                                    onDrop={(e) => {
+                                                        e.preventDefault();
+                                                        e.currentTarget.classList.remove('drag-over');
+                                                        handleFileChange({ target: { files: e.dataTransfer.files } }, 'logo');
+                                                    }}
+                                                >
+                                                    <input type="file" id="logo-upload" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'logo')} />
+                                                    {logoPreview || (content.branding.logo && !logoFile) ? (
+                                                        <div className="image-preview-wrap">
+                                                            <img src={logoPreview || (content.branding.logo.startsWith('http') ? content.branding.logo : `/storage/${content.branding.logo}`)} className="image-preview" alt="Logo" />
+                                                            <div style={{ fontSize: '10px', marginTop: '5px' }}>Klik/Drop untuk ganti</div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="upload-placeholder">
+                                                            <ImageIcon size={20} />
+                                                            <span style={{ fontSize: '12px' }}>Logo</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label>Favicon</label>
+                                                <div 
+                                                    className="image-upload-zone small"
+                                                    onClick={() => document.getElementById('favicon-upload').click()}
+                                                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }}
+                                                    onDragLeave={(e) => e.currentTarget.classList.remove('drag-over')}
+                                                    onDrop={(e) => {
+                                                        e.preventDefault();
+                                                        e.currentTarget.classList.remove('drag-over');
+                                                        handleFileChange({ target: { files: e.dataTransfer.files } }, 'favicon');
+                                                    }}
+                                                >
+                                                    <input type="file" id="favicon-upload" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'favicon')} />
+                                                    {faviconPreview || (content.branding.favicon && !faviconFile) ? (
+                                                        <div className="image-preview-wrap">
+                                                            <img src={faviconPreview || (content.branding.favicon.startsWith('http') ? content.branding.favicon : `/storage/${content.branding.favicon}`)} style={{ width: '32px', height: '32px', objectFit: 'contain' }} alt="Fav" />
+                                                            <div style={{ fontSize: '10px', marginTop: '5px' }}>Klik/Drop</div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="upload-placeholder">
+                                                            <Globe size={20} />
+                                                            <span style={{ fontSize: '12px' }}>Icon</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style={{ marginTop: '15px' }}>
+                                            <label>URL Logo (Manual)</label>
+                                            <input value={content.branding.logo} onChange={(e) => handleInputChange('branding', 'logo', e.target.value)} style={{ fontSize: '12px' }} />
+                                            <label style={{ marginTop: '8px' }}>URL Favicon (Manual)</label>
+                                            <input value={content.branding.favicon} onChange={(e) => handleInputChange('branding', 'favicon', e.target.value)} style={{ fontSize: '12px' }} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="cms-form-group">
+                                    <h4 className="cms-section-label">Preview Branding</h4>
+                                    <div style={{ padding: '20px', background: 'var(--color-bg)', borderRadius: '12px', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', width: '60px' }}>Navbar:</span>
+                                            <div style={{ fontWeight: '800', fontSize: '18px', display: 'flex', gap: '4px' }}>
+                                                <span style={{ color: 'var(--color-accent)' }}>{content.branding.siteName}</span>
+                                                <span style={{ color: 'var(--color-text-primary)' }}>{content.branding.siteTagline}</span>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', width: '60px' }}>Browser:</span>
+                                            <div style={{ padding: '4px 12px', background: 'var(--color-bg-secondary)', borderRadius: '6px', fontSize: '12px', border: '1px solid var(--color-border)' }}>
+                                                {content.branding.siteName} {content.branding.siteTagline} | Home
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
 

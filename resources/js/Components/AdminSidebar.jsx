@@ -3,6 +3,8 @@ import {
     LayoutDashboard, Package, FileBox, Receipt, Users,
     MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight, Menu, Megaphone, Settings
 } from 'lucide-react';
+import { useContent } from '../Contexts/ContentContext';
+import { getStorageUrl } from '../Utils/helpers';
 import Swal from 'sweetalert2';
 import './AdminSidebar.css';
 
@@ -22,6 +24,7 @@ const menuItems = [
 
 export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
     const { auth } = usePage().props;
+    const { content } = useContent();
     const user = auth?.user;
 
     const isActive = (href) => {
@@ -54,7 +57,11 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
         <aside className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
             <div className="admin-sidebar__header">
                 <Link href="/" className="admin-sidebar__brand">
-                    <span className="brand-logo">JAGGAD</span>
+                    {content.branding?.logo ? (
+                        <img src={getStorageUrl(content.branding.logo)} alt="Logo" className="brand-logo" style={{ height: '24px', width: '24px', objectFit: 'contain' }} />
+                    ) : (
+                        <span className="brand-logo">{content.branding?.siteName || "JAGGAD"}</span>
+                    )}
                     {!isCollapsed && <span className="brand-sub">Admin</span>}
                 </Link>
                 <button className="admin-sidebar__toggle" onClick={toggleSidebar}>

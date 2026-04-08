@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { Instagram, Youtube, Twitter, Mail, Phone, MapPin, ArrowRight, Zap } from 'lucide-react';
 import { useContent } from '../Contexts/ContentContext';
+import { getStorageUrl } from '../Utils/helpers';
 import './Footer.css';
 
 const productLinks = [
@@ -54,8 +55,14 @@ export default function Footer() {
                 <div className="footer__grid">
                     <div className="footer__brand">
                         <Link href="/" className="footer__logo">
-                            <span className="footer-logo-jaggad">JAGGAD</span>
-                            <span className="footer-logo-academy">Academy</span>
+                            {content.branding?.logo ? (
+                                <img src={getStorageUrl(content.branding.logo)} alt={content.branding.siteName} style={{ height: '32px' }} />
+                            ) : (
+                                <>
+                                    <span className="footer-logo-jaggad">{content.branding?.siteName || "JAGGAD"}</span>
+                                    <span className="footer-logo-academy">{content.branding?.siteTagline || "Academy"}</span>
+                                </>
+                            )}
                         </Link>
                         <p className="footer__tagline">
                             {home.whyJaggadSubtitle || "Platform pembelajaran digital terpercaya untuk akselerasi karir dan bisnis Anda di era modern."}
@@ -119,7 +126,7 @@ export default function Footer() {
                 </div>
 
                 <div className="footer__bottom">
-                    <p>© 2025 JAGGAD ACADEMY. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} {content.branding?.siteName || "JAGGAD"} {content.branding?.siteTagline || "ACADEMY"}. All rights reserved.</p>
                     <div className="footer__legal">
                         <a href="#">Kebijakan Privasi</a>
                         <span className="footer-divider-dot">·</span>

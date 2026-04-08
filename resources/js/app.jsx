@@ -43,7 +43,12 @@ function initMetaPixel(pixelId) {
 }
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => {
+        const branding = window.window.__inertia_props?.siteContent?.branding;
+        const siteName = branding?.siteName || appName;
+        const tagline = branding?.siteTagline || '';
+        return title ? `${title} - ${siteName} ${tagline}` : `${siteName} ${tagline}`;
+    },
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,

@@ -99,11 +99,32 @@ class AdminSettingController extends Controller
             'about' => 'required|array',
             'contact' => 'required|array',
             'social' => 'required|array',
+            'branding' => 'required|array',
+            'logoFile' => 'nullable|file|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'faviconFile' => 'nullable|file|mimes:png,jpg,jpeg,ico,svg|max:1024',
         ]);
+
+        $branding = $request->input('branding');
+
+        if ($request->hasFile('logoFile')) {
+            $branding['logo'] = $request->file('logoFile')->store('branding', 'public');
+        }
+        
+        if ($request->hasFile('faviconFile')) {
+            $branding['favicon'] = $request->file('faviconFile')->store('branding', 'public');
+        }
+
+        $allContent = [
+            'home' => $request->input('home'),
+            'about' => $request->input('about'),
+            'contact' => $request->input('contact'),
+            'social' => $request->input('social'),
+            'branding' => $branding,
+        ];
 
         SiteContent::updateOrCreate(
             ['key' => 'site_content'],
-            ['value' => json_encode($request->all())]
+            ['value' => json_encode($allContent)]
         );
 
         return back()->with('success', 'Konten berhasil disimpan dan dipublikasikan!');
