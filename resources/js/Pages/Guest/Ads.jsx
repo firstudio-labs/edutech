@@ -2,7 +2,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { CheckCircle2, PlayCircle, ShieldCheck, Zap } from 'lucide-react';
 import { useContent } from '../../Contexts/ContentContext';
 import { useCart } from '../../Contexts/CartContext';
-import { formatCurrency } from '../../Utils/helpers';
+import { formatCurrency, getStorageUrl } from '../../Utils/helpers';
 import toast from 'react-hot-toast';
 import './Ads.css';
 
@@ -63,7 +63,11 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
             {/* Header minimal */}
             <header className="ads-header">
                 <div className="ads-container">
-                    <span className="ads-brand">JAGGAD ACADEMY</span>
+                    {content?.branding?.logo ? (
+                        <img src={getStorageUrl(content.branding.logo)} alt="Logo" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+                    ) : (
+                        <span className="ads-brand">{content?.branding?.siteName || "JAGGAD ACADEMY"}</span>
+                    )}
                     <span className="ads-badge-top">Penawaran Terbatas</span>
                 </div>
             </header>
@@ -156,7 +160,7 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
             </main>
 
             <footer className="ads-footer">
-                <p>&copy; {new Date().getFullYear()} JAGGAD ACADEMY. All rights reserved.</p>
+                <p>&copy; {new Date().getFullYear()} {content?.branding?.siteName || "JAGGAD ACADEMY"}. All rights reserved.</p>
             </footer>
         </div>
     );

@@ -66,7 +66,6 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
             
             {/* Hero */}
             <section className="hero section-dark">
-                <div className="hero__bg-glow" />
                 <div className="container hero__content">
                     <div className="hero__badge badge badge-accent">
                         <Zap size={12} />

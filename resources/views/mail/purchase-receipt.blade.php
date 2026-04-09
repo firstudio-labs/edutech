@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    @php
+        $siteContent = \App\Models\SiteContent::where('key', 'site_content')->first();
+        $content = $siteContent ? json_decode($siteContent->value, true) : [];
+        $branding = $content['branding'] ?? [];
+        $contact = $content['contact'] ?? [];
+        $siteName = $branding['siteName'] ?? 'JAGGAD ACADEMY';
+        $siteTagline = $branding['siteTagline'] ?? 'Platform Digital Learning #1 Indonesia';
+        $contactEmail = $contact['email'] ?? 'halo@jaggad.id';
+    @endphp
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Struk Pembelian - JAGGAD ACADEMY</title>
+    <title>Struk Pembelian - {{ $siteName }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -209,8 +218,8 @@
 <div class="wrapper">
     <!-- HEADER -->
     <div class="header" style="border-bottom: none;">
-        <div class="brand">JAGGAD ACADEMY</div>
-        <div class="header-subtitle">Platform Digital Learning #1 Indonesia</div>
+        <div class="brand">{{ $siteName }}</div>
+        <div class="header-subtitle">{{ $siteTagline }}</div>
         <div class="success-badge">✓ &nbsp;Pembayaran Berhasil</div>
     </div>
 
@@ -218,7 +227,7 @@
     <div class="body">
         <p class="greeting">Halo, {{ $transaction->user->name }}! 🎉</p>
         <p class="greeting-sub">
-            Terima kasih telah berbelanja di JAGGAD ACADEMY. Pembayaran Anda telah kami terima dan produk berikut sudah aktif di akun Anda. Selamat belajar!
+            Terima kasih telah berbelanja di {{ $siteName }}. Pembayaran Anda telah kami terima dan produk berikut sudah aktif di akun Anda. Selamat belajar!
         </p>
 
         <!-- Order Info -->
@@ -283,9 +292,9 @@
     <!-- FOOTER -->
     <div class="footer">
         <p>
-            Email ini dikirim otomatis oleh sistem JAGGAD ACADEMY.<br />
-            Jika ada pertanyaan, hubungi kami di <a href="mailto:halo@jaggad.id">halo@jaggad.id</a>.<br /><br />
-            &copy; {{ date('Y') }} JAGGAD ACADEMY · Semua Hak Dilindungi
+            Email ini dikirim otomatis oleh sistem {{ $siteName }}.<br />
+            Jika ada pertanyaan, hubungi kami di <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a>.<br /><br />
+            &copy; {{ date('Y') }} {{ $siteName }} · Semua Hak Dilindungi
         </p>
     </div>
 </div>

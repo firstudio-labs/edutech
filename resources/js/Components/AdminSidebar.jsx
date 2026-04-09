@@ -58,11 +58,10 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
             <div className="admin-sidebar__header">
                 <Link href="/" className="admin-sidebar__brand">
                     {content.branding?.logo ? (
-                        <img src={getStorageUrl(content.branding.logo)} alt="Logo" className="brand-logo" style={{ height: '24px', width: '24px', objectFit: 'contain' }} />
+                        <img src={getStorageUrl(content.branding.logo)} alt="Logo" className="brand-logo" style={{ height: '40px', width: 'auto', objectFit: 'contain' }} />
                     ) : (
                         <span className="brand-logo">{content.branding?.siteName || "JAGGAD"}</span>
                     )}
-                    {!isCollapsed && <span className="brand-sub">Admin</span>}
                 </Link>
                 <button className="admin-sidebar__toggle" onClick={toggleSidebar}>
                     <Menu size={20} />

@@ -12,15 +12,6 @@
     padding-top: var(--navbar-height);
 }
 
-.hero__bg-glow {
-    position: absolute;
-    top: -20%;
-    right: -10%;
-    width: 60%;
-    height: 80%;
-    background: var(--gradient-hero);
-    pointer-events: none;
-}
 
 .hero__content {
     position: relative;

@@ -58,7 +58,7 @@ export default function Navbar() {
             <div className="navbar__inner container">
                 <Link href={route('home')} className="navbar__brand">
                     {content.branding?.logo ? (
-                        <img src={getStorageUrl(content.branding.logo)} alt={content.branding.siteName} style={{ height: '32px' }} />
+                        <img src={getStorageUrl(content.branding.logo)} alt={content.branding.siteName} style={{ height: '44px', width: 'auto', objectFit: 'contain' }} />
                     ) : (
                         <>
                             <span className="navbar__logo">{content.branding.siteName}</span>
