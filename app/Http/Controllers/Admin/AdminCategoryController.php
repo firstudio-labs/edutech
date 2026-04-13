@@ -12,6 +12,12 @@ class AdminCategoryController extends Controller
 {
     public function index()
     {
+        // Ensure all categories have slugs
+        \App\Models\Category::whereNull('slug')->orWhere('slug', '')->get()->each(function($c) {
+            $c->slug = \Illuminate\Support\Str::slug($c->name);
+            $c->save();
+        });
+
         // Get all categories with product count
         $categories = Category::withCount('products')->latest()->get();
         return Inertia::render('Admin/AdminCategories', [

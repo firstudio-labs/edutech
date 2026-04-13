@@ -88,7 +88,7 @@ export default function AdminProductForm({ dbCategories = [], product }) {
             return toast.error('Waktu selesai tidak boleh mendahului waktu mulai');
         }
 
-        post(isEdit ? route('admin.products.update', product.id) : route('admin.products.store'), {
+        post(isEdit ? route('admin.products.update', product.slug) : route('admin.products.store'), {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success(isEdit ? 'Produk berhasil diperbarui' : 'Produk baru berhasil ditambahkan');

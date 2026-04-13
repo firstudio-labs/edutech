@@ -11,6 +11,12 @@ class AdminUserController extends Controller
 {
     public function index()
     {
+        // Ensure all users have slugs
+        User::whereNull('slug')->orWhere('slug', '')->get()->each(function($u) {
+            $u->slug = \Illuminate\Support\Str::slug($u->name) . '-' . uniqid();
+            $u->save();
+        });
+
         $users = User::latest()->get();
         return Inertia::render('Admin/AdminUsers', [
             'dbUsers' => $users

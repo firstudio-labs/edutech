@@ -66,7 +66,7 @@ export default function AdminUsers({ dbUsers = [] }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editingUser) {
-            put(route('admin.users.update', editingUser.slug || editingUser.id), {
+            put(route('admin.users.update', editingUser.slug), {
                 onSuccess: () => {
                     closeFormModal();
                     toast.success('Pengguna berhasil diperbarui');
@@ -155,8 +155,8 @@ export default function AdminUsers({ dbUsers = [] }) {
                                             <div className="actions-col">
                                                 <button className="btn-icon" onClick={() => setSelectedUser(u)} title="Lihat Detail"><Eye size={15} /></button>
                                                 <button className="btn-icon" onClick={() => openEditModal(u)} title="Edit Pengguna"><Pencil size={15} /></button>
-                                                <button className={`btn-icon ${u.status === 'Aktif' ? 'delete' : ''}`} onClick={() => handleToggleStatus(u.slug || u.id)} title={u.status === 'Aktif' ? 'Nonaktifkan' : 'Aktifkan'}><Ban size={15} /></button>
-                                                <button className="btn-icon delete" onClick={() => handleDelete(u.slug || u.id)} title="Hapus Permanen"><Trash2 size={15} /></button>
+                                                <button className={`btn-icon ${u.status === 'Aktif' ? 'delete' : ''}`} onClick={() => handleToggleStatus(u.slug)} title={u.status === 'Aktif' ? 'Nonaktifkan' : 'Aktifkan'}><Ban size={15} /></button>
+                                                <button className="btn-icon delete" onClick={() => handleDelete(u.slug)} title="Hapus Permanen"><Trash2 size={15} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -297,7 +297,7 @@ export default function AdminUsers({ dbUsers = [] }) {
 
                             <div className="modal-actions">
                                 <button className="btn-modal-cancel" style={{ flex: 1 }} onClick={() => setSelectedUser(null)}>Tutup</button>
-                                <button className="btn-modal-save" style={{ flex: 1, background: selectedUser.status === 'Aktif' ? 'var(--color-error)' : 'var(--color-success)' }} onClick={() => handleToggleStatus(selectedUser.slug || selectedUser.id)}>
+                                <button className="btn-modal-save" style={{ flex: 1, background: selectedUser.status === 'Aktif' ? 'var(--color-error)' : 'var(--color-success)' }} onClick={() => handleToggleStatus(selectedUser.slug)}>
                                     {selectedUser.status === 'Aktif' ? 'Nonaktifkan Akun' : 'Aktifkan Akun'}
                                 </button>
                             </div>

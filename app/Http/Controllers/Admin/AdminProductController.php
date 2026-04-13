@@ -13,6 +13,12 @@ class AdminProductController extends Controller
 {
     public function index(Request $request)
     {
+        // Ensure all products have slugs
+        Product::whereNull('slug')->orWhere('slug', '')->get()->each(function($p) {
+            $p->slug = \Illuminate\Support\Str::slug($p->name) . '-' . uniqid();
+            $p->save();
+        });
+
         $products = Product::with('category')->latest()->get();
         return Inertia::render('Admin/AdminProducts', [
             'dbProducts' => $products,

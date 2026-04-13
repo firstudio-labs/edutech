@@ -24,7 +24,7 @@ export default function AdminPayment({ dbBanks = [] }) {
         if (!form.bank_name || !form.account_number || !form.account_holder) return toast.error('Lengkapi data bank');
         
         if (editingBank) {
-            router.put(route('admin.payment.update', editingBank.slug || editingBank.id), form, {
+            router.put(route('admin.payment.update', editingBank.slug), form, {
                 preserveScroll: true,
                 onSuccess: () => {
                     toast.success('Bank berhasil diperbarui');
@@ -99,7 +99,7 @@ export default function AdminPayment({ dbBanks = [] }) {
                                             </td>
                                             <td className="trx-id">{b.account_number}</td>
                                             <td>
-                                                <button onClick={() => toggleBank(b.slug || b.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: isActive ? 'var(--color-success)' : 'var(--color-text-muted)' }}>
+                                                <button onClick={() => toggleBank(b.slug)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: isActive ? 'var(--color-success)' : 'var(--color-text-muted)' }}>
                                                     {isActive ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
                                                 </button>
                                             </td>
@@ -107,7 +107,7 @@ export default function AdminPayment({ dbBanks = [] }) {
                                                 <div className="actions-col">
                                                     <button className="btn-icon" onClick={() => setSelectedBank(b)} title="Lihat Detail"><Eye size={15} /></button>
                                                     <button className="btn-icon edit" onClick={() => openEdit(b)}><Pencil size={15} /></button>
-                                                    <button className="btn-icon delete" onClick={() => deleteBank(b.slug || b.id)}><Trash2 size={14} /></button>
+                                                    <button className="btn-icon delete" onClick={() => deleteBank(b.slug)}><Trash2 size={14} /></button>
                                                 </div>
                                             </td>
                                         </tr>

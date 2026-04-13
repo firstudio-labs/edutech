@@ -11,6 +11,12 @@ class AdminPaymentController extends Controller
 {
     public function index()
     {
+        // Ensure all payment methods have slugs
+        PaymentMethod::whereNull('slug')->orWhere('slug', '')->get()->each(function($pm) {
+            $pm->slug = \Illuminate\Support\Str::slug($pm->bank_name) . '-' . uniqid();
+            $pm->save();
+        });
+
         $banks = PaymentMethod::orderBy('id')->get();
 
         return Inertia::render('Admin/AdminPayment', [

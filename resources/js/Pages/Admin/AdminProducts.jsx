@@ -24,7 +24,7 @@ export default function AdminProducts({ dbProducts = [] }) {
     const filtered = items.filter(p => p.title.toLowerCase().includes(search.toLowerCase()));
 
     const openAdd = () => router.get(route('admin.products.create'));
-    const openEdit = (p) => router.get(route('admin.products.edit', p.slug || p.id));
+    const openEdit = (p) => router.get(route('admin.products.edit', p.slug));
 
     const confirmDelete = (slug) => setDeleteConfirm(slug);
     const handleDelete = () => {
@@ -78,7 +78,7 @@ export default function AdminProducts({ dbProducts = [] }) {
                                         <td>
                                             <div className="actions-col">
                                                 <button className="btn-icon edit" onClick={() => openEdit(p)} title="Edit"><Pencil size={15} /></button>
-                                                <button className="btn-icon delete" onClick={() => confirmDelete(p.slug || p.id)} title="Hapus"><Trash2 size={15} /></button>
+                                                <button className="btn-icon delete" onClick={() => confirmDelete(p.slug)} title="Hapus"><Trash2 size={15} /></button>
                                             </div>
                                         </td>
                                     </tr>

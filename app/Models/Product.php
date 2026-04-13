@@ -47,13 +47,13 @@ class Product extends Model
     {
         static::creating(function ($product) {
             if (empty($product->slug)) {
-                $product->slug = \Illuminate\Support\Str::slug($product->name);
+                $product->slug = \Illuminate\Support\Str::slug($product->name) . '-' . uniqid();
             }
         });
 
         static::updating(function ($product) {
             if ($product->isDirty('name') || empty($product->slug)) {
-                $product->slug = \Illuminate\Support\Str::slug($product->name);
+                $product->slug = \Illuminate\Support\Str::slug($product->name) . '-' . uniqid();
             }
         });
     }
