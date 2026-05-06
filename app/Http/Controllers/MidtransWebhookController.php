@@ -96,7 +96,7 @@ class MidtransWebhookController extends Controller
                     // SEND PURCHASE RECEIPT EMAIL
                     // ==========================================
                     try {
-                        $transaction->load('items.product.category');
+                        $transaction->load(['items.product.category', 'payment.paymentMethod']);
                         Mail::to($user->email)->send(new PurchaseReceiptMail($transaction));
                     } catch (\Exception $e) {
                         Log::error('Purchase Receipt Email Error: ' . $e->getMessage());

@@ -248,7 +248,11 @@
             <div class="info-item">
                 <div class="info-label">Metode Pembayaran</div>
                 <div class="info-value">
-                    {{ strtoupper(str_replace('_', ' ', $transaction->payment_type ?? 'Midtrans')) }}
+                    @if($transaction->payment && $transaction->payment->paymentMethod)
+                        {{ strtoupper($transaction->payment->paymentMethod->bank_name) }}
+                    @else
+                        {{ strtoupper(str_replace('_', ' ', $transaction->payment_type ?? 'Midtrans')) }}
+                    @endif
                 </div>
             </div>
         </div>

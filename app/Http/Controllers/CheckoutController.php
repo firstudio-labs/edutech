@@ -44,7 +44,7 @@ class CheckoutController extends Controller
             'cart' => 'required|array',
             'cart.*.id' => 'required|exists:products,id',
             'cart.*.price' => 'required|numeric',
-            'proof' => 'nullable|mimes:jpg,jpeg,png,pdf|max:5120',
+            'proof' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $pm = PaymentMethod::find($request->payment_method_id);

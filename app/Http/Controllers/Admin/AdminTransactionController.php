@@ -51,7 +51,7 @@ class AdminTransactionController extends Controller
             // SEND PURCHASE RECEIPT EMAIL
             // ==========================================
             try {
-                $transaction->load('items.product.category');
+                $transaction->load(['items.product.category', 'payment.paymentMethod']);
                 \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\PurchaseReceiptMail($transaction));
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Purchase Receipt Email Error: ' . $e->getMessage());

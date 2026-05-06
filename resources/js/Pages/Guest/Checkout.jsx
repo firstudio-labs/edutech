@@ -264,12 +264,12 @@ export default function Checkout({ auth, dbPaymentMethods = [] }) {
                                                     <>
                                                         <Upload size={32} className="proof-upload-icon" />
                                                         <span className="proof-upload-text">Pilih File Bukti Transfer</span>
-                                                        <span className="proof-upload-hint">JPG, PNG, atau PDF (Max 5MB)</span>
+                                                        <span className="proof-upload-hint">JPG, JPEG, atau PNG (Max 5MB)</span>
                                                     </>
                                                 )}
                                                 <input
                                                     type="file"
-                                                    accept="image/*,.pdf"
+                                                    accept="image/*"
                                                     style={{ display: 'none' }}
                                                     onChange={(e) => {
                                                         if (e.target.files && e.target.files[0]) {
