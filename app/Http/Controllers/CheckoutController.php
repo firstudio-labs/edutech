@@ -71,12 +71,28 @@ class CheckoutController extends Controller
 
         $grandTotal = $totalAmount;
 
-        $transaction = Transaction::create([
-            'transaction_code' => 'TRX-' . strtoupper(Str::random(8)),
-            'user_id' => $user->id,
-            'total_amount' => $grandTotal,
-            'status' => 'pending',
-        ]);
+        $transaction = null;
+        if ($request->filled('active_trx')) {
+            $transaction = Transaction::where('transaction_code', $request->active_trx)
+                                      ->where('user_id', $user->id)
+                                      ->where('status', 'pending')
+                                      ->first();
+        }
+
+        if ($transaction) {
+            $transaction->update(['total_amount' => $grandTotal]);
+            $transaction->items()->delete();
+            if ($transaction->payment) {
+                $transaction->payment()->delete();
+            }
+        } else {
+            $transaction = Transaction::create([
+                'transaction_code' => 'TRX-' . strtoupper(Str::random(8)),
+                'user_id' => $user->id,
+                'total_amount' => $grandTotal,
+                'status' => 'pending',
+            ]);
+        }
 
         foreach ($request->cart as $item) {
             TransactionItem::create([
@@ -98,7 +114,10 @@ class CheckoutController extends Controller
                     'status' => 'pending',
                 ]);
             }
-            return back()->with('success', 'Pesanan berhasil dibuat, silakan tunggu konfirmasi admin!');
+            return back()->with([
+                'success' => 'Pesanan berhasil dibuat, silakan tunggu konfirmasi admin!',
+                'trx_code' => $transaction->transaction_code
+            ]);
         } else {
             // Midtrans Automated Payment
             try {

@@ -217,11 +217,17 @@
 }
 
 .card-red .product-card__btn-detail {
-  background: #ffffff;
-  color: #660810;
+  background: #ffffff !important;
+  color: #660810 !important;
 }
 
 .card-red .product-card__btn-detail:hover {
-  background: white;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  background: #f8fafc !important;
+  color: #660810 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.card-red .overlay-text {
+  background: #ffffff !important;
+  color: #660810 !important;
 }

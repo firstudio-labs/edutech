@@ -19,9 +19,12 @@ class UserController extends Controller
             ->take(5)
             ->get();
 
+        $paymentMethods = \App\Models\PaymentMethod::where('status', 1)->get();
+
         return Inertia::render('User/UserDashboard', [
             'purchasedProducts' => $purchasedProducts,
             'transactions' => $transactions,
+            'dbPaymentMethods' => $paymentMethods,
         ]);
     }
 

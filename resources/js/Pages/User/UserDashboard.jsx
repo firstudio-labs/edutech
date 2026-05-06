@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { BookOpen, Video, Receipt, User, Download, ExternalLink, Plus, Eye, XCircle, CheckCircle, Clock, Package, CreditCard } from 'lucide-react';
+import { BookOpen, Video, Receipt, User, Download, ExternalLink, Plus, Eye, XCircle, CheckCircle, Clock, Package, CreditCard, Building2, Upload } from 'lucide-react';
 import { products } from '../../Data/products';
 import { packages } from '../../Data/packages';
 import { formatCurrency, getCategoryLabel, getStorageUrl } from '../../Utils/helpers';
@@ -16,10 +16,14 @@ const transactions = [
     { id: 'TRX-085', date: '2025-02-26', products: 'Webinar: Financial Planning', amount: 99000, status: 'Gagal' },
 ];
 
-export default function UserDashboard({ auth, purchasedProducts = [], transactions = [] }) {
+export default function UserDashboard({ auth, purchasedProducts = [], transactions = [], dbPaymentMethods = [] }) {
     const { midtrans } = usePage().props;
     const user = auth.user;
     const [selectedTrx, setSelectedTrx] = useState(null);
+    const [changingPaymentTrx, setChangingPaymentTrx] = useState(null);
+    const [selectedMethod, setSelectedMethod] = useState(null);
+    const [proofFile, setProofFile] = useState(null);
+    const [processing, setProcessing] = useState(false);
 
     useEffect(() => {
         if (!midtrans.client_key) return;
@@ -56,6 +60,76 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
         });
     };
 
+    const activeMethods = (dbPaymentMethods || []).map(m => ({ 
+        id: m.id, 
+        label: m.bank_name, 
+        accNo: m.account_number, 
+        accName: m.account_name, 
+        isManual: m.account_number !== '-',
+        icon: m.account_number === '-' ? CreditCard : Building2 
+    }));
+
+    const handleChangePayment = () => {
+        if (!selectedMethod) return toast.error('Pilih metode pembayaran');
+        const pm = activeMethods.find(m => m.id === selectedMethod);
+        
+        if (pm.isManual && !proofFile) {
+            return toast.error('Silakan upload bukti pembayaran terlebih dahulu');
+        }
+
+        setProcessing(true);
+        
+        const payload = {
+            phone: user.phone || '080000000000',
+            payment_method_id: selectedMethod,
+            cart: changingPaymentTrx.rawItems.map(item => ({ id: item.product_id, price: item.price, name: item.product?.name })),
+            active_trx: changingPaymentTrx.id,
+            _method: 'post',
+        };
+        
+        if (pm.isManual && proofFile) {
+            payload.proof = proofFile;
+        }
+
+        router.post(route('checkout.process'), payload, {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                const { snap_token } = page.props.flash || {};
+                
+                if (snap_token && !pm.isManual) {
+                    window.snap.pay(snap_token, {
+                        onSuccess: () => {
+                            router.reload();
+                            toast.success('Pembayaran Berhasil!');
+                            setChangingPaymentTrx(null);
+                        },
+                        onPending: () => {
+                            router.reload();
+                            toast.success('Pembayaran Diproses');
+                            setChangingPaymentTrx(null);
+                        },
+                        onError: () => {
+                            toast.error('Pembayaran Gagal!');
+                        },
+                        onClose: () => {
+                            setProcessing(false);
+                            toast('Pintu pembayaran ditutup. Anda masih dapat menyelesaikannya nanti.');
+                        }
+                    });
+                } else {
+                    setProcessing(false);
+                    setChangingPaymentTrx(null);
+                    toast.success('Metode pembayaran berhasil diubah!');
+                }
+            },
+            onError: (errors) => {
+                setProcessing(false);
+                Object.values(errors).forEach(err => toast.error(err));
+            }
+        });
+    };
+
     const myProducts = purchasedProducts.map(p => ({
         id: p.id,
         slug: p.slug,
@@ -73,7 +147,8 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
         proof: getStorageUrl(t.payment?.proof_image),
         bank: t.payment_type ? t.payment_type.toUpperCase() : (t.payment?.payment_method?.bank_name || 'Pembayaran Otomatis'),
         snapToken: t.snap_token,
-        payload: t.payment_payload ? JSON.parse(t.payment_payload) : null
+        payload: t.payment_payload ? JSON.parse(t.payment_payload) : null,
+        rawItems: t.items || []
     }));
 
     return (
@@ -176,10 +251,20 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
                                                     <button onClick={() => setSelectedTrx(t)} style={{ background: 'none', border: 'none', color: 'var(--color-accent-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
                                                         <Eye size={14} /> Lihat
                                                     </button>
-                                                    {t.status === 'Pending' && t.snapToken && (
-                                                        <button onClick={() => handleRePay(t.snapToken)} style={{ border: '1px solid #f59e0b', borderRadius: 8, padding: '2px 8px', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.05)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
-                                                            Bayar Sekarang
-                                                        </button>
+                                                    {t.status === 'Pending' && !t.proof && (
+                                                        <>
+                                                            {t.snapToken && (
+                                                                <button onClick={() => handleRePay(t.snapToken)} style={{ border: '1px solid #f59e0b', borderRadius: 8, padding: '2px 8px', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.05)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                                                                    Bayar Sekarang
+                                                                </button>
+                                                            )}
+                                                            <button onClick={() => setChangingPaymentTrx(t)} style={{ border: '1px solid var(--color-border)', borderRadius: 8, padding: '2px 8px', color: 'var(--color-text-secondary)', background: 'transparent', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                                                                Ubah Metode
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                    {t.status === 'Pending' && t.proof && (
+                                                        <span style={{ fontSize: 11, color: 'var(--color-text-muted)', fontStyle: 'italic', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: 8 }}>Sedang Direview</span>
                                                     )}
                                                 </div>
                                             </td>
@@ -265,6 +350,94 @@ export default function UserDashboard({ auth, purchasedProducts = [], transactio
                                 </div>
                                 <div style={{ padding: '16px 24px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderTop: '1px solid var(--color-border)' }}>
                                     <button onClick={() => setSelectedTrx(null)} style={{ width: '100%', padding: '10px', borderRadius: 10, background: 'var(--color-border)', border: 'none', color: 'var(--color-text-primary)', fontWeight: 600, cursor: 'pointer' }}>Tutup</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Change Payment Modal */}
+                    {changingPaymentTrx && (
+                        <div className="modal-overlay" onClick={() => setChangingPaymentTrx(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+                            <div className="modal-detail" onClick={e => e.stopPropagation()} style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, animation: 'fadeIn 0.2s ease' }}>
+                                <h3 style={{ marginBottom: 8 }}>Ubah Metode Pembayaran</h3>
+                                <p style={{ fontSize: 13, color: 'var(--color-text-muted)', marginBottom: 20 }}>
+                                    Pilih metode pembayaran baru untuk transaksi <strong>{changingPaymentTrx.id}</strong>
+                                </p>
+                                
+                                <div className="payment-methods-grid" style={{ display: 'grid', gap: 12, marginBottom: 20 }}>
+                                    {activeMethods.map(method => (
+                                        <div 
+                                            key={method.id} 
+                                            style={{ 
+                                                padding: 16, 
+                                                border: `1px solid ${selectedMethod === method.id ? 'var(--color-accent)' : 'var(--color-border)'}`, 
+                                                borderRadius: 12, 
+                                                cursor: 'pointer',
+                                                background: selectedMethod === method.id ? 'rgba(var(--color-accent-rgb), 0.05)' : 'transparent'
+                                            }}
+                                            onClick={() => setSelectedMethod(method.id)}
+                                        >
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                <div style={{ color: selectedMethod === method.id ? 'var(--color-accent)' : 'var(--color-text-muted)' }}>
+                                                    {method.icon ? <method.icon size={20} /> : <Building2 size={20} />}
+                                                </div>
+                                                <span style={{ fontWeight: 600, fontSize: 14 }}>{method.label}</span>
+                                            </div>
+                                            {selectedMethod === method.id && method.isManual && (
+                                                <div style={{ marginTop: 12, padding: 12, background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid var(--color-border)' }}>
+                                                    <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Nomor Rekening</p>
+                                                    <p style={{ fontSize: 16, fontWeight: 600, fontFamily: 'monospace', letterSpacing: 1 }}>{method.accNo}</p>
+                                                    <p style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginTop: 4 }}>Atas Nama: <strong>{method.accName}</strong></p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {selectedMethod && activeMethods.find(m => m.id === selectedMethod)?.isManual && (
+                                    <div style={{ marginBottom: 20 }}>
+                                        <h4 style={{ fontSize: 13, marginBottom: 8 }}>Upload Bukti Pembayaran</h4>
+                                        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, border: '1px dashed var(--color-border)', borderRadius: 12, cursor: 'pointer', background: proofFile ? 'rgba(16, 185, 129, 0.05)' : 'rgba(255,255,255,0.02)' }}>
+                                            {proofFile ? (
+                                                <>
+                                                    {proofFile.type.startsWith('image/') ? (
+                                                        <img 
+                                                            src={URL.createObjectURL(proofFile)} 
+                                                            alt="Preview" 
+                                                            style={{ maxWidth: '100%', maxHeight: 150, borderRadius: 8, objectFit: 'contain', marginBottom: 12 }} 
+                                                        />
+                                                    ) : (
+                                                        <CheckCircle size={32} color="#10b981" style={{ marginBottom: 8 }} />
+                                                    )}
+                                                    <span style={{ fontSize: 13, fontWeight: 600 }}>{proofFile.name}</span>
+                                                    <span style={{ fontSize: 11, color: 'var(--color-text-muted)', marginTop: 4 }}>(Klik untuk mengganti)</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Upload size={32} color="var(--color-text-muted)" style={{ marginBottom: 8 }} />
+                                                    <span style={{ fontSize: 13, fontWeight: 600 }}>Pilih File Bukti Transfer</span>
+                                                    <span style={{ fontSize: 11, color: 'var(--color-text-muted)', marginTop: 4 }}>JPG, PNG, atau PDF</span>
+                                                </>
+                                            )}
+                                            <input
+                                                type="file"
+                                                accept="image/*,.pdf"
+                                                style={{ display: 'none' }}
+                                                onChange={(e) => {
+                                                    if (e.target.files && e.target.files[0]) {
+                                                        setProofFile(e.target.files[0]);
+                                                    }
+                                                }}
+                                            />
+                                        </label>
+                                    </div>
+                                )}
+
+                                <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+                                    <button onClick={() => setChangingPaymentTrx(null)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid var(--color-border)', background: 'transparent', color: 'var(--color-text)', cursor: 'pointer', fontWeight: 600 }}>Batal</button>
+                                    <button onClick={handleChangePayment} disabled={processing} style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: 'var(--color-accent)', color: 'white', fontWeight: 600, cursor: processing ? 'not-allowed' : 'pointer', opacity: processing ? 0.7 : 1 }}>
+                                        {processing ? 'Memproses...' : 'Simpan Perubahan'}
+                                    </button>
                                 </div>
                             </div>
                         </div>
