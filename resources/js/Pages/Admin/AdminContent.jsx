@@ -4,7 +4,8 @@ import {
     Save, Eye, EyeOff, Layout, Type, Image as ImageIcon, MessageSquare, Phone, MapPin, Globe, 
     Loader2, Monitor, Smartphone, PanelLeftClose, PanelLeftOpen, Target, Shield, BookOpen, 
     UserCheck, Zap, ArrowRight, Trash2, Plus, X, Users, Award, CheckCircle, Video, Mic, 
-    Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp, Construction 
+    Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp, Construction, ShoppingCart,
+    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle
 } from 'lucide-react';
 import { useContent } from '../../Contexts/ContentContext';
 import AdminLayout from '../../Layouts/AdminLayout';
@@ -15,15 +16,18 @@ import './Admin.css';
 import Welcome from '../Guest/Welcome';
 import About from '../Guest/About';
 import Contact from '../Guest/Contact';
+import ProductSales from '../Guest/ProductSales';
 
 const availableIcons = {
     Users, Target, Eye, BookOpen, Award, Zap, Shield, CheckCircle,
-    Video, Mic, MessageSquare, Globe, Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp
+    Video, Mic, MessageSquare, Globe, Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp,
+    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle
 };
 
 export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [] }) {
     const { content, updateContent } = useContent();
     const [activeTab, setActiveTab] = useState('home');
+    const [activeCheckoutStep, setActiveCheckoutStep] = useState(0);
     const [isSaving, setIsSaving] = useState(false);
     const [hideSidebar, setHideSidebar] = useState(false);
     const [previewMode, setPreviewMode] = useState('desktop');
@@ -55,6 +59,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
             contact: content.contact,
             social: content.social,
             branding: content.branding,
+            checkout: content.checkout,
             logoFile: logoFile,
             faviconFile: faviconFile
         }, {
@@ -80,6 +85,13 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
             case 'home': return <Welcome previewMode={true} products={dbFeaturedProducts} categories={dbCategories} />;
             case 'about': return <About previewMode={true} />;
             case 'contact': return <Contact previewMode={true} />;
+            case 'checkout': return (
+                <ProductSales 
+                    previewMode={true} 
+                    activeStep={activeCheckoutStep} 
+                    product={dbFeaturedProducts[0] || { id: 1, title: 'Produk Demo', price: 500000, description: 'Deskripsi produk demo untuk preview CMS.' }}
+                />
+            );
             default: return null;
         }
     };
@@ -97,16 +109,19 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
 
                     <div className="cms-tabs">
                         <button className={`cms-tab-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
-                            <Layout size={18} /> <span>Home</span>
+                            <Layout size={18} /> <span>Halaman Utama</span>
                         </button>
                         <button className={`cms-tab-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
-                            <Type size={18} /> <span>About</span>
+                            <Type size={18} /> <span>Tentang Kami</span>
                         </button>
                         <button className={`cms-tab-btn ${activeTab === 'contact' ? 'active' : ''}`} onClick={() => setActiveTab('contact')}>
-                            <Phone size={18} /> <span>Contact</span>
+                            <Phone size={18} /> <span>Kontak</span>
+                        </button>
+                        <button className={`cms-tab-btn ${activeTab === 'checkout' ? 'active' : ''}`} onClick={() => setActiveTab('checkout')}>
+                            <ShoppingCart size={18} /> <span>Checkout</span>
                         </button>
                         <button className={`cms-tab-btn ${activeTab === 'branding' ? 'active' : ''}`} onClick={() => setActiveTab('branding')}>
-                            <Target size={18} /> <span>Branding</span>
+                            <Target size={18} /> <span>Branding & Logo</span>
                         </button>
                     </div>
 
@@ -156,6 +171,104 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                     <label>Sub-judul</label>
                                     <textarea value={content.home.whyJaggadSubtitle} onChange={(e) => handleInputChange('home', 'whyJaggadSubtitle', e.target.value)} rows="3" />
                                 </div>
+                                
+                                <div className="cms-form-group" style={{ padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+                                        <h4 className="cms-section-label" style={{ marginBottom: 0, color: 'var(--color-accent)' }}>Fitur Unggulan (Cards)</h4>
+                                        <button className="btn-cms-action" onClick={() => {
+                                            const newFeatures = [...(content.home.features || []), { icon: 'Zap', title: 'Fitur Baru', desc: 'Deskripsi fitur baru Anda di sini.' }];
+                                            handleInputChange('home', 'features', newFeatures);
+                                        }}><Plus size={14} /> Tambah</button>
+                                    </div>
+                                    
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                                        {(content.home.features || []).map((feat, idx) => {
+                                            const IconComp = availableIcons[feat.icon] || Zap;
+                                            return (
+                                                <div key={idx} style={{ padding: 15, background: 'var(--color-bg)', borderRadius: 12, border: '1px solid var(--color-border)' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, alignItems: 'center' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                            <div style={{ padding: 6, background: 'var(--color-accent)', borderRadius: 8, color: 'white' }}>
+                                                                <IconComp size={14} />
+                                                            </div>
+                                                            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-text-primary)' }}>Fitur #{idx + 1}</span>
+                                                        </div>
+                                                        <button style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }} onClick={() => {
+                                                            const newFeatures = (content.home.features || []).filter((_, i) => i !== idx);
+                                                            handleInputChange('home', 'features', newFeatures);
+                                                        }}><Trash2 size={14} /></button>
+                                                    </div>
+                                                    
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                                        <div>
+                                                            <label style={{ fontSize: 10, marginBottom: 4, display: 'block', fontWeight: 600 }}>Judul Fitur</label>
+                                                            <input 
+                                                                style={{ width: '100%', fontSize: 13, height: '36px', padding: '0 10px' }} 
+                                                                value={feat.title} 
+                                                                onChange={e => {
+                                                                    const newFeatures = [...content.home.features];
+                                                                    newFeatures[idx].title = e.target.value;
+                                                                    handleInputChange('home', 'features', newFeatures);
+                                                                }} 
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label style={{ fontSize: 10, marginBottom: 4, display: 'block', fontWeight: 600 }}>Deskripsi</label>
+                                                            <textarea 
+                                                                style={{ width: '100%', fontSize: 12, minHeight: '60px', padding: '8px 10px', resize: 'vertical' }} 
+                                                                value={feat.desc} 
+                                                                onChange={e => {
+                                                                    const newFeatures = [...content.home.features];
+                                                                    newFeatures[idx].desc = e.target.value;
+                                                                    handleInputChange('home', 'features', newFeatures);
+                                                                }} 
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label style={{ fontSize: 10, marginBottom: 6, display: 'block', fontWeight: 600 }}>Ikon</label>
+                                                            <div style={{ 
+                                                                display: 'grid', 
+                                                                gridTemplateColumns: 'repeat(9, 1fr)', 
+                                                                gap: 4,
+                                                                background: 'var(--color-bg-secondary)',
+                                                                padding: 6,
+                                                                borderRadius: 8,
+                                                                border: '1px solid var(--color-border)'
+                                                            }}>
+                                                                {Object.entries(availableIcons).map(([name, IconItem]) => (
+                                                                    <button 
+                                                                        key={name}
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            const newFeatures = [...content.home.features];
+                                                                            newFeatures[idx].icon = name;
+                                                                            handleInputChange('home', 'features', newFeatures);
+                                                                        }}
+                                                                        style={{
+                                                                            padding: 5,
+                                                                            background: feat.icon === name ? 'var(--color-accent)' : 'transparent',
+                                                                            border: 'none',
+                                                                            borderRadius: 4,
+                                                                            cursor: 'pointer',
+                                                                            color: feat.icon === name ? 'white' : 'var(--color-text-muted)',
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'center',
+                                                                            transition: 'all 0.2s'
+                                                                        }}
+                                                                        title={name}
+                                                                    >
+                                                                        <IconItem size={12} />
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
 
                                 <div className="cms-form-group">
                                     <h4 className="cms-section-label">CTA Banner (Bottom)</h4>
@@ -200,7 +313,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 <div className="cms-form-group" style={{ padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                         <h4 className="cms-section-label" style={{ marginBottom: 0, color: 'var(--color-accent)' }}>Poin-poin Misi</h4>
-                                        <button className="btn-icon" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
+                                        <button className="btn-cms-action" onClick={() => {
                                             const newMissions = [...(content.about.missions || []), 'Point Misi Baru'];
                                             handleInputChange('about', 'missions', newMissions);
                                         }}><Plus size={14} /> Tambah</button>
@@ -231,7 +344,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 <div className="cms-form-group" style={{ padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                         <h4 className="cms-section-label" style={{ marginBottom: 0, color: 'var(--color-accent)' }}>Pencapaian (Achievements)</h4>
-                                        <button className="btn-icon" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
+                                        <button className="btn-cms-action" onClick={() => {
                                             const newAch = [...(content.about.achievements || []), { label: 'Label', value: '0+', icon: 'Award' }];
                                             handleInputChange('about', 'achievements', newAch);
                                         }}><Plus size={14} /> Tambah</button>
@@ -333,7 +446,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 <div className="cms-form-group" style={{ padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                         <h4 className="cms-section-label" style={{ marginBottom: 0, color: 'var(--color-accent)' }}>Perjalanan Tahunan (Milestones)</h4>
-                                        <button className="btn-icon" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => {
+                                        <button className="btn-cms-action" onClick={() => {
                                             const newMS = [...(content.about.milestones || []), { year: '2025', text: 'Pencapaian baru' }];
                                             handleInputChange('about', 'milestones', newMS);
                                         }}><Plus size={14} /> Tambah</button>
@@ -404,6 +517,399 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 <input value={content.social.twitter} onChange={(e) => handleInputChange('social', 'twitter', e.target.value)} placeholder="https://twitter.com/..." />
                             </div>
                         </>
+                        )}
+
+                        {activeTab === 'checkout' && (
+                            <>
+                                <div style={{ 
+                                    display: 'grid', 
+                                    gridTemplateColumns: 'repeat(4, 1fr)', 
+                                    gap: 6, 
+                                    marginBottom: 20, 
+                                    padding: 6, 
+                                    background: 'var(--color-bg-secondary)', 
+                                    borderRadius: 14,
+                                    border: '1px solid var(--color-border)'
+                                }}>
+                                    {['Pengantar', 'Produk', 'Penjelasan', 'Checkout'].map((s, i) => (
+                                        <button 
+                                            key={s} 
+                                            onClick={() => setActiveCheckoutStep(i)}
+                                            className={`cms-tab-btn ${activeCheckoutStep === i ? 'active' : ''}`}
+                                            style={{
+                                                padding: '8px 4px',
+                                                fontSize: 11,
+                                                fontWeight: 800,
+                                                borderRadius: 10,
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                justifyContent: 'center',
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.5px',
+                                                transition: 'all 0.2s',
+                                                background: activeCheckoutStep === i ? 'var(--color-accent)' : 'transparent',
+                                                color: activeCheckoutStep === i ? 'white' : 'var(--color-text-muted)',
+                                            }}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="cms-editor-fields-inner">
+                                    {/* Section 1: Intro */}
+                                    {activeCheckoutStep === 0 && (
+                                        <div className="cms-form-group">
+                                            <h4 className="cms-section-label">Langkah 1: Pengantar & Masalah</h4>
+                                            <label>Judul Utama</label>
+                                            <input value={content.checkout.introTitle} onChange={(e) => handleInputChange('checkout', 'introTitle', e.target.value)} />
+                                            
+                                            <label>Sub-judul</label>
+                                            <textarea value={content.checkout.introSubtitle} onChange={(e) => handleInputChange('checkout', 'introSubtitle', e.target.value)} rows="3" />
+                                            
+                                            <label>Quote Motivasi</label>
+                                            <textarea value={content.checkout.introQuote} onChange={(e) => handleInputChange('checkout', 'introQuote', e.target.value)} rows="3" />
+
+                                            {/* Stats Cards */}
+                                            <div style={{ marginTop: '20px', padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+                                                    <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Kartu Statistik (Stats)</h5>
+                                                    <button className="btn-cms-action" onClick={() => {
+                                                        const newStats = [...(content.checkout.introStats || []), { icon: 'Star', value: '100+', label: 'Label Baru' }];
+                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                    }}><Plus size={14} /> Tambah</button>
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                                    {(content.checkout.introStats || []).map((stat, idx) => {
+                                                        const IconComp = availableIcons[stat.icon] || Zap;
+                                                        return (
+                                                            <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
+                                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                                        <div style={{ padding: 5, background: 'var(--color-accent)', borderRadius: 6, color: 'white' }}><IconComp size={12} /></div>
+                                                                        <span style={{ fontSize: 11, fontWeight: 700 }}>Statistik #{idx + 1}</span>
+                                                                    </div>
+                                                                    <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
+                                                                        const newStats = content.checkout.introStats.filter((_, i) => i !== idx);
+                                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                                    }}><Trash2 size={14} /></button>
+                                                                </div>
+                                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+                                                                    <input value={stat.value} placeholder="Nilai" onChange={(e) => {
+                                                                        const newStats = [...content.checkout.introStats];
+                                                                        newStats[idx].value = e.target.value;
+                                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                                    }} style={{ padding: '8px 10px', fontSize: '13px' }} />
+                                                                    <input value={stat.label} placeholder="Label" onChange={(e) => {
+                                                                        const newStats = [...content.checkout.introStats];
+                                                                        newStats[idx].label = e.target.value;
+                                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                                    }} style={{ padding: '8px 10px', fontSize: '13px' }} />
+                                                                </div>
+
+                                                                <div>
+                                                                    <label style={{ fontSize: 10, marginBottom: 6, display: 'block', fontWeight: 600 }}>Pilih Ikon</label>
+                                                                    <div style={{ 
+                                                                        display: 'grid', 
+                                                                        gridTemplateColumns: 'repeat(9, 1fr)', 
+                                                                        gap: 4,
+                                                                        background: 'var(--color-bg-secondary)',
+                                                                        padding: 6,
+                                                                        borderRadius: 8,
+                                                                        border: '1px solid var(--color-border)'
+                                                                    }}>
+                                                                        {Object.entries(availableIcons).map(([name, IconItem]) => (
+                                                                            <button 
+                                                                                key={name}
+                                                                                type="button"
+                                                                                onClick={() => {
+                                                                                    const newStats = [...content.checkout.introStats];
+                                                                                    newStats[idx].icon = name;
+                                                                                    handleInputChange('checkout', 'introStats', newStats);
+                                                                                }}
+                                                                                style={{
+                                                                                    padding: 5,
+                                                                                    background: stat.icon === name ? 'var(--color-accent)' : 'transparent',
+                                                                                    border: 'none',
+                                                                                    borderRadius: 4,
+                                                                                    cursor: 'pointer',
+                                                                                    color: stat.icon === name ? 'white' : 'var(--color-text-muted)',
+                                                                                    display: 'flex',
+                                                                                    alignItems: 'center',
+                                                                                    justifyContent: 'center',
+                                                                                    transition: 'all 0.2s'
+                                                                                }}
+                                                                            >
+                                                                                <IconItem size={12} />
+                                                                            </button>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            {/* Problems List */}
+                                            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid var(--color-border)' }}>
+                                                <h5 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: 'var(--color-accent)' }}>Daftar Poin (List Items)</h5>
+                                                
+                                                <label>Judul Seksi</label>
+                                                <input value={content.checkout.problemSectionTitle} onChange={(e) => handleInputChange('checkout', 'problemSectionTitle', e.target.value)} placeholder="Contoh: Apakah Anda merasakan ini?" />
+
+                                                <label style={{ marginTop: 15 }}>Ikon Poin</label>
+                                                <div style={{ 
+                                                    display: 'grid', 
+                                                    gridTemplateColumns: 'repeat(9, 1fr)', 
+                                                    gap: 4,
+                                                    background: 'var(--color-bg-secondary)',
+                                                    padding: 6,
+                                                    borderRadius: 8,
+                                                    border: '1px solid var(--color-border)',
+                                                    marginBottom: 20
+                                                }}>
+                                                            {Object.entries(availableIcons).map(([name, IconItem]) => {
+                                                                // Define color mapping for a "premium" look
+                                                                const colors = {
+                                                                    CheckCircle: '#10b981', Check: '#10b981', ShieldCheck: '#10b981',
+                                                                    AlertTriangle: '#ffcc00', AlertCircle: '#ffcc00',
+                                                                    Star: '#f59e0b', Zap: '#f59e0b', Lightbulb: '#f59e0b', Trophy: '#fbbf24', Award: '#fbbf24',
+                                                                    Heart: '#ef4444', 
+                                                                    Info: '#3b82f6', HelpCircle: '#3b82f6', Globe: '#3b82f6'
+                                                                };
+                                                                const iconColor = colors[name] || 'var(--color-text-muted)';
+                                                                const isAlert = name === 'AlertTriangle' || name === 'AlertCircle';
+                                                                const isFilled = isAlert || ['Star', 'Heart', 'Zap'].includes(name);
+                                                                const isActive = content.checkout.problemIcon === name;
+
+                                                                return (
+                                                                    <button 
+                                                                        key={name}
+                                                                        type="button"
+                                                                        onClick={() => handleInputChange('checkout', 'problemIcon', name)}
+                                                                        style={{
+                                                                            padding: 5,
+                                                                            background: isActive ? 'var(--color-accent)' : 'transparent',
+                                                                            border: 'none',
+                                                                            borderRadius: 4,
+                                                                            cursor: 'pointer',
+                                                                            color: isActive ? 'white' : iconColor,
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'center',
+                                                                            transition: 'all 0.2s'
+                                                                        }}
+                                                                    >
+                                                                        <IconItem 
+                                                                            size={12} 
+                                                                            fill={isFilled && !isActive ? iconColor : "none"} 
+                                                                            stroke={isAlert && !isActive ? '#000' : (isActive ? 'white' : 'currentColor')}
+                                                                            strokeWidth={isActive ? 3 : 2}
+                                                                        />
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                </div>
+
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                                                    <label style={{ margin: 0 }}>Isi Daftar</label>
+                                                    <button className="btn-cms-action" onClick={() => {
+                                                        const newP = [...content.checkout.problems, 'Item baru...'];
+                                                        handleInputChange('checkout', 'problems', newP);
+                                                    }}><Plus size={14} /> Tambah</button>
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                                    {content.checkout.problems.map((p, idx) => (
+                                                        <div key={idx} className="form-added-item">
+                                                            <input value={p} onChange={(e) => {
+                                                                const newP = [...content.checkout.problems];
+                                                                newP[idx] = e.target.value;
+                                                                handleInputChange('checkout', 'problems', newP);
+                                                            }} style={{ border: 'none', background: 'transparent', padding: 0, fontSize: 13, flex: 1 }} />
+                                                            <button className="btn-remove" onClick={() => {
+                                                                const newP = content.checkout.problems.filter((_, i) => i !== idx);
+                                                                handleInputChange('checkout', 'problems', newP);
+                                                            }}><Trash2 size={14} /></button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section 2: Produk */}
+                                    {activeCheckoutStep === 1 && (
+                                        <div className="cms-form-group">
+                                            <h4 className="cms-section-label">Langkah 2: Detail Produk</h4>
+                                            <p style={{ fontSize: 11, color: 'var(--color-text-muted)', fontStyle: 'italic', marginBottom: 15 }}>
+                                                Bagian ini menampilkan detail dari produk yang dipilih pembeli secara dinamis.
+                                            </p>
+                                            <div style={{ padding: 15, background: 'var(--color-bg-secondary)', borderRadius: 12, border: '1px solid var(--color-border)', fontSize: 12 }}>
+                                                💡 Produk yang tampil di preview adalah salah satu dari produk unggulan Anda. Data ini disinkronkan langsung dari Katalog Produk.
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section 3: Penjelasan */}
+                                    {activeCheckoutStep === 2 && (
+                                        <div className="cms-form-group">
+                                            <h4 className="cms-section-label">Langkah 3: Penjelasan</h4>
+                                            <label>Judul Atas (Label)</label>
+                                            <input value={content.checkout.explanationTitle} onChange={(e) => handleInputChange('checkout', 'explanationTitle', e.target.value)} />
+                                            
+                                            <label>Heading Utama</label>
+                                            <input value={content.checkout.explanationHeading} onChange={(e) => handleInputChange('checkout', 'explanationHeading', e.target.value)} />
+
+                                            {/* Journey Steps */}
+                                            <div style={{ marginTop: '20px', padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+                                                    <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Langkah Perjalanan (Journey)</h5>
+                                                    <button className="btn-cms-action" onClick={() => {
+                                                        const nextNum = content.checkout.journeySteps.length + 1;
+                                                        const newSteps = [...content.checkout.journeySteps, { num: nextNum, title: 'Langkah Baru', desc: 'Penjelasan singkat.' }];
+                                                        handleInputChange('checkout', 'journeySteps', newSteps);
+                                                    }}><Plus size={14} /> Tambah</button>
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                                    {content.checkout.journeySteps.map((step, idx) => (
+                                                        <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                                                                <span style={{ fontSize: 11, fontWeight: 700 }}>Langkah #{idx + 1}</span>
+                                                                <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
+                                                                    const newSteps = content.checkout.journeySteps.filter((_, i) => i !== idx);
+                                                                    handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                }}><Trash2 size={14} /></button>
+                                                            </div>
+                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                                                <div style={{ display: 'flex', gap: 10 }}>
+                                                                    <input value={step.num} placeholder="No" onChange={(e) => {
+                                                                        const newSteps = [...content.checkout.journeySteps];
+                                                                        newSteps[idx].num = e.target.value;
+                                                                        handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                    }} style={{ width: 50, padding: '6px', fontSize: '11px' }} />
+                                                                    <input value={step.title} placeholder="Judul" onChange={(e) => {
+                                                                        const newSteps = [...content.checkout.journeySteps];
+                                                                        newSteps[idx].title = e.target.value;
+                                                                        handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                    }} style={{ flex: 1, padding: '6px', fontSize: '11px' }} />
+                                                                </div>
+                                                                <textarea value={step.desc} placeholder="Deskripsi" onChange={(e) => {
+                                                                    const newSteps = [...content.checkout.journeySteps];
+                                                                    newSteps[idx].desc = e.target.value;
+                                                                    handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                }} style={{ padding: '6px', fontSize: '11px', minHeight: '50px' }} />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* FAQ Section */}
+                                            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid var(--color-border)' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+                                                    <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Tanya Jawab (FAQ)</h5>
+                                                    <button className="btn-cms-action" onClick={() => {
+                                                        const newFaqs = [...(content.checkout.faqs || []), { q: 'Pertanyaan baru?', a: 'Jawaban baru di sini.' }];
+                                                        handleInputChange('checkout', 'faqs', newFaqs);
+                                                    }}><Plus size={14} /> Tambah</button>
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                                    {(content.checkout.faqs || []).map((faq, idx) => (
+                                                        <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                                                                <span style={{ fontSize: 11, fontWeight: 700 }}>FAQ #{idx + 1}</span>
+                                                                <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
+                                                                    const newFaqs = content.checkout.faqs.filter((_, i) => i !== idx);
+                                                                    handleInputChange('checkout', 'faqs', newFaqs);
+                                                                }}><Trash2 size={14} /></button>
+                                                            </div>
+                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                                                <div>
+                                                                    <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Pertanyaan</label>
+                                                                    <input value={faq.q} onChange={(e) => {
+                                                                        const newFaqs = [...content.checkout.faqs];
+                                                                        newFaqs[idx].q = e.target.value;
+                                                                        handleInputChange('checkout', 'faqs', newFaqs);
+                                                                    }} style={{ padding: '8px 10px', fontSize: '13px' }} />
+                                                                </div>
+                                                                <div>
+                                                                    <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Jawaban</label>
+                                                                    <textarea value={faq.a} onChange={(e) => {
+                                                                        const newFaqs = [...content.checkout.faqs];
+                                                                        newFaqs[idx].a = e.target.value;
+                                                                        handleInputChange('checkout', 'faqs', newFaqs);
+                                                                    }} rows="3" style={{ padding: '8px 10px', fontSize: '12px' }} />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Section 4: Checkout */}
+                                    {activeCheckoutStep === 3 && (
+                                        <div className="cms-form-group">
+                                            <h4 className="cms-section-label">Langkah 4: Checkout</h4>
+                                            <label>Judul Utama</label>
+                                            <input value={content.checkout.preCheckoutHeading} onChange={(e) => handleInputChange('checkout', 'preCheckoutHeading', e.target.value)} />
+                                            
+                                            <div style={{ marginTop: '15px' }}>
+                                                <label>Teks Urgensi (Dari Ads Builder)</label>
+                                                <div style={{ 
+                                                    fontSize: '11px', 
+                                                    color: 'var(--color-success)', 
+                                                    background: 'var(--color-success-dim)', 
+                                                    padding: '4px 10px', 
+                                                    borderRadius: '4px',
+                                                    marginBottom: '8px',
+                                                    display: 'inline-block',
+                                                    fontWeight: 600
+                                                }}>
+                                                    ✨ Diskon % Otomatis akan ditambahkan di depan teks ini
+                                                </div>
+                                                <input 
+                                                    value={content.ads?.ctaSubtitle || content.checkout.preCheckoutUrgency} 
+                                                    disabled
+                                                    style={{ background: 'var(--color-bg-secondary)', cursor: 'not-allowed' }}
+                                                    title="Ubah teks ini di menu Ads Builder"
+                                                />
+                                                <p style={{ fontSize: '10px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+                                                    Teks ini sekarang disinkronkan dengan <strong>Ads Builder</strong> agar konsisten.
+                                                </p>
+                                            </div>
+
+                                            {/* Includes List */}
+                                            <div style={{ marginTop: '20px' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                                                    <label style={{ margin: 0 }}>Daftar "Yang Anda Dapatkan"</label>
+                                                    <button className="btn-cms-action" onClick={() => {
+                                                        const newI = [...content.checkout.preCheckoutIncludes, 'Item baru...'];
+                                                        handleInputChange('checkout', 'preCheckoutIncludes', newI);
+                                                    }}><Plus size={14} /> Tambah</button>
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                                    {content.checkout.preCheckoutIncludes.map((item, idx) => (
+                                                        <div key={idx} className="form-added-item">
+                                                            <input value={item} onChange={(e) => {
+                                                                const newI = [...content.checkout.preCheckoutIncludes];
+                                                                newI[idx] = e.target.value;
+                                                                handleInputChange('checkout', 'preCheckoutIncludes', newI);
+                                                            }} style={{ border: 'none', background: 'transparent', padding: 0, fontSize: 13, flex: 1 }} />
+                                                            <button className="btn-remove" onClick={() => {
+                                                                const newI = content.checkout.preCheckoutIncludes.filter((_, i) => i !== idx);
+                                                                handleInputChange('checkout', 'preCheckoutIncludes', newI);
+                                                            }}><Trash2 size={14} /></button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
                         )}
 
                         {activeTab === 'branding' && (
@@ -523,7 +1029,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 {hideSidebar ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
                             </button>
 
-                            <div className="cms-url-bar">jaggad.academy/{activeTab === 'home' ? '' : activeTab}</div>
+                            <div className="cms-url-bar">jaggad.academy/{activeTab === 'home' ? '' : (activeTab === 'checkout' ? `checkout?step=${activeCheckoutStep + 1}` : activeTab)}</div>
 
                             <div style={{ display: 'flex', gap: 6 }}>
                                 <button className={`cms-toggle-btn ${previewMode === 'desktop' ? 'active' : ''}`} onClick={() => setPreviewMode('desktop')}>

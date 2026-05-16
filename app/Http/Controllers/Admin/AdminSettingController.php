@@ -100,6 +100,7 @@ class AdminSettingController extends Controller
             'contact' => 'required|array',
             'social' => 'required|array',
             'branding' => 'required|array',
+            'checkout' => 'required|array',
             'logoFile' => 'nullable|file|mimes:png,jpg,jpeg,svg,webp|max:2048',
             'faviconFile' => 'nullable|file|mimes:png,jpg,jpeg,ico,svg|max:1024',
         ]);
@@ -120,6 +121,7 @@ class AdminSettingController extends Controller
             'contact' => $request->input('contact'),
             'social' => $request->input('social'),
             'branding' => $branding,
+            'checkout' => $request->input('checkout'),
         ];
 
         SiteContent::updateOrCreate(

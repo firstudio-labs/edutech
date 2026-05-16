@@ -13,22 +13,26 @@ import { formatCurrency, getStorageUrl } from '../../Utils/helpers';
 import { useContent } from '../../Contexts/ContentContext';
 import './Welcome.css';
 
-const features = [
-    { icon: Zap, title: 'Akses Instan', desc: 'Nikmati produk digital Anda segera setelah pembayaran berhasil, tanpa menunggu.' },
-    { icon: Shield, title: 'Akses Seumur Hidup', desc: 'Satu kali beli, akses selamanya. Termasuk semua update konten di masa mendatang.' },
-    { icon: Award, title: 'Dijamin Berkualitas', desc: 'Semua materi dikurasi oleh para expert dengan pengalaman industri yang terbukti.' },
-];
+
 
 export default function Welcome({ products = [], categories = [], dbStats = {}, previewMode = false }) {
     const { content } = useContent();
     const home = content?.home || {};
     const about = content?.about || {};
-    const sliderRef = useRef(null);
-
+    
     const iconMap = {
         Users, Target, Eye, BookOpen, Award, Zap, Shield, CheckCircle,
         Video, Mic, MessageSquare, Globe, Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp
     };
+
+    // Get features from context or use defaults
+    const homeFeatures = (home.features || []).map(f => ({
+        icon: iconMap[f.icon] || Zap,
+        title: f.title,
+        desc: f.desc
+    }));
+
+    const sliderRef = useRef(null);
     
     // Sync home stats with "JAGGAD dalam Angka" from About Page
     const stats = (about.achievements || []).map(stat => ({
@@ -193,8 +197,8 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
                             </Link>
                         </div>
                         <div className="features-right">
-                            {features.map(({ icon: Icon, title, desc }) => (
-                                <div key={title} className="feature-item">
+                            {homeFeatures.map(({ icon: Icon, title, desc }, idx) => (
+                                <div key={idx} className="feature-item">
                                     <div className="feature-icon"><Icon size={20} /></div>
                                     <div>
                                         <h4 className="feature-title">{title}</h4>

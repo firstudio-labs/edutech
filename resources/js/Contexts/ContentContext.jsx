@@ -18,7 +18,12 @@ const defaultContent = {
         whyJaggadSubtitle: 'Ribuan pelajar telah mempercayakan pengembangan skill mereka kepada JAGGAD ACADEMY.',
         ctaBannerTitle: 'Siap Tingkatkan Skill Anda?',
         ctaBannerDesc: 'Bergabunglah dengan ribuan pelajar yang telah mengubah karir mereka bersama JAGGAD ACADEMY.',
-        ctaBannerBtn: 'Mulai Belajar Sekarang'
+        ctaBannerBtn: 'Mulai Belajar Sekarang',
+        features: [
+            { icon: 'Zap', title: 'Akses Instan', desc: 'Nikmati produk digital Anda segera setelah pembayaran berhasil, tanpa menunggu.' },
+            { icon: 'Shield', title: 'Akses Seumur Hidup', desc: 'Satu kali beli, akses selamanya. Termasuk semua update konten di masa mendatang.' },
+            { icon: 'Award', title: 'Dijamin Berkualitas', desc: 'Semua materi dikurasi oleh para expert dengan pengalaman industri yang terbukti.' },
+        ]
     },
     about: {
         heroTitle: 'Mencerdaskan Generasi Digital',
@@ -72,6 +77,49 @@ const defaultContent = {
         siteTagline: 'Academy',
         favicon: '',
         logo: '',
+    },
+    checkout: {
+        introTitle: 'Apakah Anda Siap Mengubah Karir Anda?',
+        introSubtitle: 'Setiap pelajar sukses dimulai dari satu langkah yang berani. Hari ini, Anda sudah di sini — itu adalah langkah terbaik.',
+        introQuote: '"Investasi terbaik adalah investasi pada ilmu pengetahuan. Dan ilmu yang tepat bisa mengubah hidup Anda selamanya."',
+        introStats: [
+            { icon: 'ShieldCheck', value: 'Akses Selamanya', label: 'Lifetime Access' },
+            { icon: 'Clock', value: '24/7', label: 'Dukungan Teknis' },
+        ],
+        problemSectionTitle: 'Apakah Anda merasakan ini?',
+        problemIcon: 'Zap',
+        problems: [
+            'Merasa tertinggal di era digital yang bergerak cepat',
+            'Skill yang belum relevan dengan kebutuhan industri',
+            'Bingung mulai dari mana untuk meningkatkan penghasilan',
+            'Belajar sendiri tapi tidak tahu mana yang benar'
+        ],
+        explanationTitle: 'Mengapa Ini Penting untuk Anda?',
+        explanationHeading: 'Perjalanan Belajar yang Telah Terbukti',
+        journeySteps: [
+            { num: '01', title: 'Dapatkan Fondasi yang Kuat', desc: 'Mulai dari dasar yang tepat agar setiap langkah selanjutnya menjadi lebih mudah dan efektif.' },
+            { num: '02', title: 'Praktik Langsung dengan Studi Kasus Nyata', desc: 'Bukan hanya teori — setiap materi dilengkapi contoh nyata dari praktisi industri berpengalaman.' },
+            { num: '03', title: 'Bangun Portfolio yang Mengesankan', desc: 'Terapkan ilmu untuk menciptakan karya nyata yang bisa ditunjukkan kepada klien atau perusahaan.' },
+            { num: '04', title: 'Raih Hasil yang Terukur', desc: 'Ikuti jalur yang telah membantu ribuan peserta mendapatkan pekerjaan baru atau meningkatkan penghasilan.' },
+        ],
+        preCheckoutHeading: 'Anda Selangkah Lagi! 🎉',
+        preCheckoutUrgency: '🔥 Penawaran terbatas! Harga ini hanya berlaku hari ini.',
+        preCheckoutIncludes: [
+            'Akses seumur hidup ke semua materi',
+            'Sertifikat penyelesaian resmi',
+            'Garansi uang kembali 7 hari',
+            'Update materi gratis selamanya',
+            'Akses komunitas eksklusif peserta'
+        ],
+        faqs: [
+            { q: 'Apakah saya mendapat akses seumur hidup?', a: 'Ya! Setelah membeli, akses produk ini tidak akan pernah kedaluwarsa.' },
+            { q: 'Apakah ada garansi uang kembali?', a: 'Kami memberikan garansi uang kembali 7 hari penuh jika Anda tidak puas.' },
+            { q: 'Apakah ada sertifikat?', a: 'Ya, tersedia sertifikat penyelesaian yang dapat Anda tambahkan ke LinkedIn.' },
+            { q: 'Bagaimana cara mengakses setelah membeli?', a: 'Setelah pembayaran berhasil, produk langsung dapat diakses di dashboard Anda.' },
+        ]
+    },
+    ads: {
+        ctaSubtitle: 'Berakhir Dalam 15 Menit'
     }
 };
 

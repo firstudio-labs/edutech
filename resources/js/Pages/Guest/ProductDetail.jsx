@@ -89,7 +89,7 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
 
                             <div className="detail-section">
                                 <h2 className="detail-section-title">Deskripsi Produk</h2>
-                                <p className="detail-desc">{desc}</p>
+                                <p className="detail-desc" style={{ whiteSpace: 'pre-wrap' }}>{desc}</p>
                             </div>
 
                             <div className="detail-section">
@@ -155,24 +155,24 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
                                 </div>
 
                                 {product.start_at && (
-                                    <div className="detail-schedule" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '8px', color: '#9090a8', fontSize: '13px', lineHeight: '1.5', margin: '16px 0', width: '100%', whiteSpace: 'pre-wrap' }}>
-                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                                            <span style={{ fontSize: '14px', marginTop: '1px' }}>📅</span>
+                                    <div className="detail-schedule" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '14px', background: '#f8f9fa', border: '1px solid #edf2f7', borderRadius: '12px', color: 'var(--color-text-secondary)', fontSize: '13px', lineHeight: '1.5', margin: '16px 0', width: '100%', whiteSpace: 'pre-wrap' }}>
+                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                                            <span style={{ fontSize: '16px', marginTop: '1px' }}>📅</span>
                                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                                <span style={{ fontWeight: 600, color: '#e2e2e2' }}>
+                                                <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>
                                                     {new Date(product.start_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                                                     {product.end_at && ` - ${new Date(product.end_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`}
                                                 </span>
-                                                <span style={{ fontSize: '12px' }}>
+                                                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', fontWeight: 500 }}>
                                                     {new Date(product.start_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                                                     {product.end_at && ` - ${new Date(product.end_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`} WIB
                                                 </span>
                                             </div>
                                         </div>
                                         {product.location && (
-                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginTop: '4px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '8px' }}>
-                                                <span style={{ fontSize: '14px' }}>📍</span>
-                                                <span style={{ flex: 1, color: '#e2e2e2' }}>{product.location}</span>
+                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '4px', borderTop: '1px solid #e2e8f0', paddingTop: '10px' }}>
+                                                <span style={{ fontSize: '16px' }}>📍</span>
+                                                <span style={{ flex: 1, color: 'var(--color-text-primary)', fontWeight: 600 }}>{product.location}</span>
                                             </div>
                                         )}
                                     </div>
