@@ -5,7 +5,7 @@ import {
     Loader2, Monitor, Smartphone, PanelLeftClose, PanelLeftOpen, Target, Shield, BookOpen, 
     UserCheck, Zap, ArrowRight, Trash2, Plus, X, Users, Award, CheckCircle, Video, Mic, 
     Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp, Construction, ShoppingCart,
-    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle
+    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle, CheckCircle2
 } from 'lucide-react';
 import { useContent } from '../../Contexts/ContentContext';
 import AdminLayout from '../../Layouts/AdminLayout';
@@ -856,56 +856,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                             <label>Judul Utama</label>
                                             <input value={content.checkout.preCheckoutHeading} onChange={(e) => handleInputChange('checkout', 'preCheckoutHeading', e.target.value)} />
                                             
-                                            <div style={{ marginTop: '15px' }}>
-                                                <label>Teks Urgensi (Dari Ads Builder)</label>
-                                                <div style={{ 
-                                                    fontSize: '11px', 
-                                                    color: 'var(--color-success)', 
-                                                    background: 'var(--color-success-dim)', 
-                                                    padding: '4px 10px', 
-                                                    borderRadius: '4px',
-                                                    marginBottom: '8px',
-                                                    display: 'inline-block',
-                                                    fontWeight: 600
-                                                }}>
-                                                    ✨ Diskon % Otomatis akan ditambahkan di depan teks ini
-                                                </div>
-                                                <input 
-                                                    value={content.ads?.ctaSubtitle || content.checkout.preCheckoutUrgency} 
-                                                    disabled
-                                                    style={{ background: 'var(--color-bg-secondary)', cursor: 'not-allowed' }}
-                                                    title="Ubah teks ini di menu Ads Builder"
-                                                />
-                                                <p style={{ fontSize: '10px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
-                                                    Teks ini sekarang disinkronkan dengan <strong>Ads Builder</strong> agar konsisten.
-                                                </p>
-                                            </div>
 
-                                            {/* Includes List */}
-                                            <div style={{ marginTop: '20px' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                                                    <label style={{ margin: 0 }}>Daftar "Yang Anda Dapatkan"</label>
-                                                    <button className="btn-cms-action" onClick={() => {
-                                                        const newI = [...content.checkout.preCheckoutIncludes, 'Item baru...'];
-                                                        handleInputChange('checkout', 'preCheckoutIncludes', newI);
-                                                    }}><Plus size={14} /> Tambah</button>
-                                                </div>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                                    {content.checkout.preCheckoutIncludes.map((item, idx) => (
-                                                        <div key={idx} className="form-added-item">
-                                                            <input value={item} onChange={(e) => {
-                                                                const newI = [...content.checkout.preCheckoutIncludes];
-                                                                newI[idx] = e.target.value;
-                                                                handleInputChange('checkout', 'preCheckoutIncludes', newI);
-                                                            }} style={{ border: 'none', background: 'transparent', padding: 0, fontSize: 13, flex: 1 }} />
-                                                            <button className="btn-remove" onClick={() => {
-                                                                const newI = content.checkout.preCheckoutIncludes.filter((_, i) => i !== idx);
-                                                                handleInputChange('checkout', 'preCheckoutIncludes', newI);
-                                                            }}><Trash2 size={14} /></button>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
                                         </div>
                                     )}
                                 </div>

@@ -309,7 +309,7 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
 
                                 <div className="precart-includes">
                                     <h4>Yang Anda Dapatkan:</h4>
-                                    {content.checkout.preCheckoutIncludes.map(item => (
+                                    {(product.benefits || []).map(item => (
                                         <div key={item} className="precart-include-item">
                                             <Check size={14} className="precart-check" /> {item}
                                         </div>
