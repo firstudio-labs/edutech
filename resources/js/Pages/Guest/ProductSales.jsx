@@ -31,6 +31,7 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
     const rawProduct = dbProduct || productDef;
 
     const { content } = useContent();
+    const checkoutData = content.checkout?.[productDef?.id || dbProduct?.id] || content.checkout;
     const [internalStep, setInternalStep] = useState(0);
     const step = previewMode ? activeStep : internalStep;
     const setStep = previewMode ? () => {} : setInternalStep;
@@ -118,11 +119,11 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
                             <div className="step-intro__glow" />
                             <div className="step-intro__body">
                                 <span className="section-label">Selamat Datang</span>
-                                <h1 className="step-intro__title">{content.checkout.introTitle}</h1>
-                                <p className="step-intro__subtitle">{content.checkout.introSubtitle}</p>
+                                <h1 className="step-intro__title">{checkoutData.introTitle}</h1>
+                                <p className="step-intro__subtitle">{checkoutData.introSubtitle}</p>
 
                                 <div className="intro-stats">
-                                    {(content.checkout.introStats || []).map((stat, idx) => {
+                                    {(checkoutData.introStats || []).map((stat, idx) => {
                                         const Icon = availableIcons[stat.icon] || ShieldCheck;
                                         return (
                                             <div key={idx} className="intro-stat">
@@ -135,14 +136,14 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
                                 </div>
 
                                 <div className="intro-quote">
-                                    <p>{content.checkout.introQuote}</p>
+                                    <p>{checkoutData.introQuote}</p>
                                 </div>
 
                                 <div className="intro-problems">
-                                    <h3>{content.checkout.problemSectionTitle}</h3>
+                                    <h3>{checkoutData.problemSectionTitle}</h3>
                                     <div className="problem-list">
-                                        {content.checkout.problems.map((p, idx) => {
-                                            const iconName = content.checkout.problemIcon;
+                                        {(checkoutData.problems || []).map((p, idx) => {
+                                            const iconName = checkoutData.problemIcon;
                                             const ProbIcon = availableIcons[iconName] || ShieldCheck;
                                             
                                             const colors = {
@@ -242,11 +243,11 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
                 {/* ─── STEP 2: Education / Explanation ─── */}
                 {step === 2 && (
                     <div className="sales-step-content">
-                        <div className="step-label-top">{content.checkout.explanationTitle}</div>
-                        <h2 className="step-heading">{content.checkout.explanationHeading}</h2>
+                        <div className="step-label-top">{checkoutData.explanationTitle}</div>
+                        <h2 className="step-heading">{checkoutData.explanationHeading}</h2>
 
                         <div className="journey-steps">
-                            {content.checkout.journeySteps.map(j => (
+                            {(checkoutData.journeySteps || []).map(j => (
                                 <div key={j.num} className="journey-step-item">
                                     <div className="journey-num">{j.num}</div>
                                     <div className="journey-content">
@@ -277,7 +278,7 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
                         <div className="sales-faq">
                             <h3>Pertanyaan yang Sering Diajukan</h3>
                             <div className="faq-list">
-                                {(content.checkout.faqs || []).map((faq, i) => (
+                                {(checkoutData.faqs || []).map((faq, i) => (
                                     <div key={i} className={`faq-item ${openFaq === i ? 'open' : ''}`}>
                                         <button className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                                             {faq.q}
@@ -295,7 +296,7 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
                 {step === 3 && (
                     <div className="sales-step-content">
                         <div className="step-label-top">Konfirmasi Pembelian</div>
-                        <h2 className="step-heading">{content.checkout.preCheckoutHeading}</h2>
+                        <h2 className="step-heading">{checkoutData.preCheckoutHeading}</h2>
 
                         <div className="precart-layout">
                             <div className="precart-summary">
@@ -318,7 +319,7 @@ export default function ProductSales({ id, product: dbProduct, previewMode = fal
 
                                 <div className="precart-urgency">
                                     {(() => {
-                                        const urgencyText = content.ads?.ctaSubtitle || content.checkout.preCheckoutUrgency || 'Berakhir Dalam 15 Menit';
+                                        const urgencyText = content.ads?.ctaSubtitle || checkoutData.preCheckoutUrgency || 'Berakhir Dalam 15 Menit';
                                         const diskonPerc = product.originalPrice > product.price 
                                             ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
                                             : 0;

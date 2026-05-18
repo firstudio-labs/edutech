@@ -5,7 +5,7 @@ import {
     Loader2, Monitor, Smartphone, PanelLeftClose, PanelLeftOpen, Target, Shield, BookOpen, 
     UserCheck, Zap, ArrowRight, Trash2, Plus, X, Users, Award, CheckCircle, Video, Mic, 
     Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp, Construction, ShoppingCart,
-    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle, CheckCircle2
+    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle, CheckCircle2, ChevronDown
 } from 'lucide-react';
 import { useContent } from '../../Contexts/ContentContext';
 import AdminLayout from '../../Layouts/AdminLayout';
@@ -24,8 +24,9 @@ const availableIcons = {
     ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle
 };
 
-export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [] }) {
+export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [], dbAllProducts = [] }) {
     const { content, updateContent } = useContent();
+    const [selectedPreviewProductId, setSelectedPreviewProductId] = useState(dbAllProducts[0]?.id || dbFeaturedProducts[0]?.id || 1);
     const [activeTab, setActiveTab] = useState('home');
     const [activeCheckoutStep, setActiveCheckoutStep] = useState(0);
     const [isSaving, setIsSaving] = useState(false);
@@ -80,18 +81,42 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
         updateContent(tab, field, value);
     };
 
+    const baseCheckoutFields = Object.keys(content.checkout || {}).reduce((acc, key) => {
+        if (isNaN(Number(key))) {
+            acc[key] = content.checkout[key];
+        }
+        return acc;
+    }, {});
+
+    const checkoutData = content.checkout?.[selectedPreviewProductId] || baseCheckoutFields;
+
+    const handleCheckoutChange = (field, value) => {
+        const updatedProductCheckout = {
+            ...checkoutData,
+            [field]: value
+        };
+        updateContent('checkout', selectedPreviewProductId, updatedProductCheckout);
+    };
+
     const renderPreview = () => {
         switch (activeTab) {
             case 'home': return <Welcome previewMode={true} products={dbFeaturedProducts} categories={dbCategories} />;
             case 'about': return <About previewMode={true} />;
             case 'contact': return <Contact previewMode={true} />;
-            case 'checkout': return (
-                <ProductSales 
-                    previewMode={true} 
-                    activeStep={activeCheckoutStep} 
-                    product={dbFeaturedProducts[0] || { id: 1, title: 'Produk Demo', price: 500000, description: 'Deskripsi produk demo untuk preview CMS.' }}
-                />
-            );
+            case 'checkout': {
+                const selectedProduct = dbAllProducts?.find(p => p.id == selectedPreviewProductId) 
+                    || dbFeaturedProducts?.find(p => p.id == selectedPreviewProductId) 
+                    || dbFeaturedProducts[0] 
+                    || { id: 1, title: 'Produk Demo', price: 500000, description: 'Deskripsi produk demo untuk preview CMS.' };
+                
+                return (
+                    <ProductSales 
+                        previewMode={true} 
+                        activeStep={activeCheckoutStep} 
+                        product={selectedProduct}
+                    />
+                );
+            }
             default: return null;
         }
     };
@@ -557,30 +582,63 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                 </div>
 
                                 <div className="cms-editor-fields-inner">
+                                    <div className="cms-form-group" style={{ marginBottom: '15px' }}>
+                                        <h4 className="cms-section-label">Pilih Produk untuk Preview</h4>
+                                        <div style={{ position: 'relative' }}>
+                                            <select 
+                                                value={selectedPreviewProductId} 
+                                                onChange={(e) => setSelectedPreviewProductId(e.target.value)}
+                                                style={{ 
+                                                    width: '100%', 
+                                                    padding: '10px 35px 10px 12px', 
+                                                    borderRadius: '8px', 
+                                                    border: '1px solid var(--color-border)', 
+                                                    background: 'var(--color-bg)', 
+                                                    color: 'var(--color-text-primary)',
+                                                    appearance: 'none',
+                                                    WebkitAppearance: 'none',
+                                                    MozAppearance: 'none',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                {dbAllProducts && dbAllProducts.length > 0 ? (
+                                                    dbAllProducts.map(p => (
+                                                        <option key={p.id} value={p.id}>{p.name}</option>
+                                                    ))
+                                                ) : (
+                                                    <option value="1">Produk Demo</option>
+                                                )}
+                                            </select>
+                                            <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center' }}>
+                                                <ChevronDown size={16} />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     {/* Section 1: Intro */}
                                     {activeCheckoutStep === 0 && (
                                         <div className="cms-form-group">
                                             <h4 className="cms-section-label">Langkah 1: Pengantar & Masalah</h4>
                                             <label>Judul Utama</label>
-                                            <input value={content.checkout.introTitle} onChange={(e) => handleInputChange('checkout', 'introTitle', e.target.value)} />
+                                            <input value={checkoutData.introTitle || ''} onChange={(e) => handleCheckoutChange('introTitle', e.target.value)} />
                                             
                                             <label>Sub-judul</label>
-                                            <textarea value={content.checkout.introSubtitle} onChange={(e) => handleInputChange('checkout', 'introSubtitle', e.target.value)} rows="3" />
+                                            <textarea value={checkoutData.introSubtitle || ''} onChange={(e) => handleCheckoutChange('introSubtitle', e.target.value)} rows="3" />
                                             
                                             <label>Quote Motivasi</label>
-                                            <textarea value={content.checkout.introQuote} onChange={(e) => handleInputChange('checkout', 'introQuote', e.target.value)} rows="3" />
+                                            <textarea value={checkoutData.introQuote || ''} onChange={(e) => handleCheckoutChange('introQuote', e.target.value)} rows="3" />
 
                                             {/* Stats Cards */}
                                             <div style={{ marginTop: '20px', padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                                     <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Kartu Statistik (Stats)</h5>
                                                     <button className="btn-cms-action" onClick={() => {
-                                                        const newStats = [...(content.checkout.introStats || []), { icon: 'Star', value: '100+', label: 'Label Baru' }];
-                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                        const newStats = [...(checkoutData.introStats || []), { icon: 'Star', value: '100+', label: 'Label Baru' }];
+                                                        handleCheckoutChange('introStats', newStats);
                                                     }}><Plus size={14} /> Tambah</button>
                                                 </div>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                                    {(content.checkout.introStats || []).map((stat, idx) => {
+                                                    {(checkoutData.introStats || []).map((stat, idx) => {
                                                         const IconComp = availableIcons[stat.icon] || Zap;
                                                         return (
                                                             <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
@@ -590,20 +648,20 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                         <span style={{ fontSize: 11, fontWeight: 700 }}>Statistik #{idx + 1}</span>
                                                                     </div>
                                                                     <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
-                                                                        const newStats = content.checkout.introStats.filter((_, i) => i !== idx);
-                                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                                        const newStats = checkoutData.introStats.filter((_, i) => i !== idx);
+                                                                        handleCheckoutChange('introStats', newStats);
                                                                     }}><Trash2 size={14} /></button>
                                                                 </div>
                                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
                                                                     <input value={stat.value} placeholder="Nilai" onChange={(e) => {
-                                                                        const newStats = [...content.checkout.introStats];
+                                                                        const newStats = [...checkoutData.introStats];
                                                                         newStats[idx].value = e.target.value;
-                                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                                        handleCheckoutChange('introStats', newStats);
                                                                     }} style={{ padding: '8px 10px', fontSize: '13px' }} />
                                                                     <input value={stat.label} placeholder="Label" onChange={(e) => {
-                                                                        const newStats = [...content.checkout.introStats];
+                                                                        const newStats = [...checkoutData.introStats];
                                                                         newStats[idx].label = e.target.value;
-                                                                        handleInputChange('checkout', 'introStats', newStats);
+                                                                        handleCheckoutChange('introStats', newStats);
                                                                     }} style={{ padding: '8px 10px', fontSize: '13px' }} />
                                                                 </div>
 
@@ -623,9 +681,9 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                                 key={name}
                                                                                 type="button"
                                                                                 onClick={() => {
-                                                                                    const newStats = [...content.checkout.introStats];
+                                                                                    const newStats = [...checkoutData.introStats];
                                                                                     newStats[idx].icon = name;
-                                                                                    handleInputChange('checkout', 'introStats', newStats);
+                                                                                    handleCheckoutChange('introStats', newStats);
                                                                                 }}
                                                                                 style={{
                                                                                     padding: 5,
@@ -656,7 +714,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                 <h5 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: 'var(--color-accent)' }}>Daftar Poin (List Items)</h5>
                                                 
                                                 <label>Judul Seksi</label>
-                                                <input value={content.checkout.problemSectionTitle} onChange={(e) => handleInputChange('checkout', 'problemSectionTitle', e.target.value)} placeholder="Contoh: Apakah Anda merasakan ini?" />
+                                                <input value={checkoutData.problemSectionTitle || ''} onChange={(e) => handleCheckoutChange('problemSectionTitle', e.target.value)} placeholder="Contoh: Apakah Anda merasakan ini?" />
 
                                                 <label style={{ marginTop: 15 }}>Ikon Poin</label>
                                                 <div style={{ 
@@ -681,13 +739,13 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                 const iconColor = colors[name] || 'var(--color-text-muted)';
                                                                 const isAlert = name === 'AlertTriangle' || name === 'AlertCircle';
                                                                 const isFilled = isAlert || ['Star', 'Heart', 'Zap'].includes(name);
-                                                                const isActive = content.checkout.problemIcon === name;
+                                                                const isActive = checkoutData.problemIcon === name;
 
                                                                 return (
                                                                     <button 
                                                                         key={name}
                                                                         type="button"
-                                                                        onClick={() => handleInputChange('checkout', 'problemIcon', name)}
+                                                                        onClick={() => handleCheckoutChange('problemIcon', name)}
                                                                         style={{
                                                                             padding: 5,
                                                                             background: isActive ? 'var(--color-accent)' : 'transparent',
@@ -715,21 +773,21 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                                                     <label style={{ margin: 0 }}>Isi Daftar</label>
                                                     <button className="btn-cms-action" onClick={() => {
-                                                        const newP = [...content.checkout.problems, 'Item baru...'];
-                                                        handleInputChange('checkout', 'problems', newP);
+                                                        const newP = [...(checkoutData.problems || []), 'Item baru...'];
+                                                        handleCheckoutChange('problems', newP);
                                                     }}><Plus size={14} /> Tambah</button>
                                                 </div>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                                    {content.checkout.problems.map((p, idx) => (
+                                                    {(checkoutData.problems || []).map((p, idx) => (
                                                         <div key={idx} className="form-added-item">
                                                             <input value={p} onChange={(e) => {
-                                                                const newP = [...content.checkout.problems];
+                                                                const newP = [...checkoutData.problems];
                                                                 newP[idx] = e.target.value;
-                                                                handleInputChange('checkout', 'problems', newP);
+                                                                handleCheckoutChange('problems', newP);
                                                             }} style={{ border: 'none', background: 'transparent', padding: 0, fontSize: 13, flex: 1 }} />
                                                             <button className="btn-remove" onClick={() => {
-                                                                const newP = content.checkout.problems.filter((_, i) => i !== idx);
-                                                                handleInputChange('checkout', 'problems', newP);
+                                                                const newP = checkoutData.problems.filter((_, i) => i !== idx);
+                                                                handleCheckoutChange('problems', newP);
                                                             }}><Trash2 size={14} /></button>
                                                         </div>
                                                     ))}
@@ -746,7 +804,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                 Bagian ini menampilkan detail dari produk yang dipilih pembeli secara dinamis.
                                             </p>
                                             <div style={{ padding: 15, background: 'var(--color-bg-secondary)', borderRadius: 12, border: '1px solid var(--color-border)', fontSize: 12 }}>
-                                                💡 Produk yang tampil di preview adalah salah satu dari produk unggulan Anda. Data ini disinkronkan langsung dari Katalog Produk.
+                                                💡 Tampilan di preview akan menyesuaikan dengan produk yang Anda pilih di dropdown atas. Data ini disinkronkan langsung dari Katalog Produk.
                                             </div>
                                         </div>
                                     )}
@@ -756,48 +814,48 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                         <div className="cms-form-group">
                                             <h4 className="cms-section-label">Langkah 3: Penjelasan</h4>
                                             <label>Judul Atas (Label)</label>
-                                            <input value={content.checkout.explanationTitle} onChange={(e) => handleInputChange('checkout', 'explanationTitle', e.target.value)} />
+                                            <input value={checkoutData.explanationTitle || ''} onChange={(e) => handleCheckoutChange('explanationTitle', e.target.value)} />
                                             
                                             <label>Heading Utama</label>
-                                            <input value={content.checkout.explanationHeading} onChange={(e) => handleInputChange('checkout', 'explanationHeading', e.target.value)} />
+                                            <input value={checkoutData.explanationHeading || ''} onChange={(e) => handleCheckoutChange('explanationHeading', e.target.value)} />
 
                                             {/* Journey Steps */}
                                             <div style={{ marginTop: '20px', padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                                     <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Langkah Perjalanan (Journey)</h5>
                                                     <button className="btn-cms-action" onClick={() => {
-                                                        const nextNum = content.checkout.journeySteps.length + 1;
-                                                        const newSteps = [...content.checkout.journeySteps, { num: nextNum, title: 'Langkah Baru', desc: 'Penjelasan singkat.' }];
-                                                        handleInputChange('checkout', 'journeySteps', newSteps);
+                                                        const nextNum = (checkoutData.journeySteps || []).length + 1;
+                                                        const newSteps = [...(checkoutData.journeySteps || []), { num: nextNum, title: 'Langkah Baru', desc: 'Penjelasan singkat.' }];
+                                                        handleCheckoutChange('journeySteps', newSteps);
                                                     }}><Plus size={14} /> Tambah</button>
                                                 </div>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                                    {content.checkout.journeySteps.map((step, idx) => (
+                                                    {(checkoutData.journeySteps || []).map((step, idx) => (
                                                         <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
                                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                                                                 <span style={{ fontSize: 11, fontWeight: 700 }}>Langkah #{idx + 1}</span>
                                                                 <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
-                                                                    const newSteps = content.checkout.journeySteps.filter((_, i) => i !== idx);
-                                                                    handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                    const newSteps = checkoutData.journeySteps.filter((_, i) => i !== idx);
+                                                                    handleCheckoutChange('journeySteps', newSteps);
                                                                 }}><Trash2 size={14} /></button>
                                                             </div>
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                                                 <div style={{ display: 'flex', gap: 10 }}>
                                                                     <input value={step.num} placeholder="No" onChange={(e) => {
-                                                                        const newSteps = [...content.checkout.journeySteps];
+                                                                        const newSteps = [...checkoutData.journeySteps];
                                                                         newSteps[idx].num = e.target.value;
-                                                                        handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                        handleCheckoutChange('journeySteps', newSteps);
                                                                     }} style={{ width: 50, padding: '6px', fontSize: '11px' }} />
                                                                     <input value={step.title} placeholder="Judul" onChange={(e) => {
-                                                                        const newSteps = [...content.checkout.journeySteps];
+                                                                        const newSteps = [...checkoutData.journeySteps];
                                                                         newSteps[idx].title = e.target.value;
-                                                                        handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                        handleCheckoutChange('journeySteps', newSteps);
                                                                     }} style={{ flex: 1, padding: '6px', fontSize: '11px' }} />
                                                                 </div>
                                                                 <textarea value={step.desc} placeholder="Deskripsi" onChange={(e) => {
-                                                                    const newSteps = [...content.checkout.journeySteps];
+                                                                    const newSteps = [...checkoutData.journeySteps];
                                                                     newSteps[idx].desc = e.target.value;
-                                                                    handleInputChange('checkout', 'journeySteps', newSteps);
+                                                                    handleCheckoutChange('journeySteps', newSteps);
                                                                 }} style={{ padding: '6px', fontSize: '11px', minHeight: '50px' }} />
                                                             </div>
                                                         </div>
@@ -810,35 +868,35 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
                                                     <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Tanya Jawab (FAQ)</h5>
                                                     <button className="btn-cms-action" onClick={() => {
-                                                        const newFaqs = [...(content.checkout.faqs || []), { q: 'Pertanyaan baru?', a: 'Jawaban baru di sini.' }];
-                                                        handleInputChange('checkout', 'faqs', newFaqs);
+                                                        const newFaqs = [...(checkoutData.faqs || []), { q: 'Pertanyaan baru?', a: 'Jawaban baru di sini.' }];
+                                                        handleCheckoutChange('faqs', newFaqs);
                                                     }}><Plus size={14} /> Tambah</button>
                                                 </div>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                                    {(content.checkout.faqs || []).map((faq, idx) => (
+                                                    {(checkoutData.faqs || []).map((faq, idx) => (
                                                         <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
                                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                                                                 <span style={{ fontSize: 11, fontWeight: 700 }}>FAQ #{idx + 1}</span>
                                                                 <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
-                                                                    const newFaqs = content.checkout.faqs.filter((_, i) => i !== idx);
-                                                                    handleInputChange('checkout', 'faqs', newFaqs);
+                                                                    const newFaqs = checkoutData.faqs.filter((_, i) => i !== idx);
+                                                                    handleCheckoutChange('faqs', newFaqs);
                                                                 }}><Trash2 size={14} /></button>
                                                             </div>
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                                                                 <div>
                                                                     <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Pertanyaan</label>
                                                                     <input value={faq.q} onChange={(e) => {
-                                                                        const newFaqs = [...content.checkout.faqs];
+                                                                        const newFaqs = [...checkoutData.faqs];
                                                                         newFaqs[idx].q = e.target.value;
-                                                                        handleInputChange('checkout', 'faqs', newFaqs);
+                                                                        handleCheckoutChange('faqs', newFaqs);
                                                                     }} style={{ padding: '8px 10px', fontSize: '13px' }} />
                                                                 </div>
                                                                 <div>
                                                                     <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Jawaban</label>
                                                                     <textarea value={faq.a} onChange={(e) => {
-                                                                        const newFaqs = [...content.checkout.faqs];
+                                                                        const newFaqs = [...checkoutData.faqs];
                                                                         newFaqs[idx].a = e.target.value;
-                                                                        handleInputChange('checkout', 'faqs', newFaqs);
+                                                                        handleCheckoutChange('faqs', newFaqs);
                                                                     }} rows="3" style={{ padding: '8px 10px', fontSize: '12px' }} />
                                                                 </div>
                                                             </div>
@@ -854,7 +912,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                         <div className="cms-form-group">
                                             <h4 className="cms-section-label">Langkah 4: Checkout</h4>
                                             <label>Judul Utama</label>
-                                            <input value={content.checkout.preCheckoutHeading} onChange={(e) => handleInputChange('checkout', 'preCheckoutHeading', e.target.value)} />
+                                            <input value={checkoutData.preCheckoutHeading || ''} onChange={(e) => handleCheckoutChange('preCheckoutHeading', e.target.value)} />
                                             
 
                                         </div>
