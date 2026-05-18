@@ -54,7 +54,7 @@ export default function ProductDetail({ product: dbProduct, similarProducts = []
 
     const inCart = isInCart(product.id);
     const isPurchased = auth?.purchased_products?.includes(product.id);
-    const related = similarProducts.length > 0 ? similarProducts : products.filter(p => p.category === categorySlug && p.id !== product.id).slice(0, 3);
+    const related = similarProducts;
 
     const handleBuy = () => {
         router.get(route('products.sales', product.slug || product.id));

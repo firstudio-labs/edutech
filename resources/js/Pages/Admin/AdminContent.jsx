@@ -583,7 +583,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
 
                                 <div className="cms-editor-fields-inner">
                                     <div className="cms-form-group" style={{ marginBottom: '15px' }}>
-                                        <h4 className="cms-section-label">Pilih Produk untuk Preview</h4>
+                                        <h4 className="cms-section-label">Pilih Produk</h4>
                                         <div style={{ position: 'relative' }}>
                                             <select 
                                                 value={selectedPreviewProductId} 
@@ -655,12 +655,12 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
                                                                     <input value={stat.value} placeholder="Nilai" onChange={(e) => {
                                                                         const newStats = [...checkoutData.introStats];
-                                                                        newStats[idx].value = e.target.value;
+                                                                        newStats[idx] = { ...newStats[idx], value: e.target.value };
                                                                         handleCheckoutChange('introStats', newStats);
                                                                     }} style={{ padding: '8px 10px', fontSize: '13px' }} />
                                                                     <input value={stat.label} placeholder="Label" onChange={(e) => {
                                                                         const newStats = [...checkoutData.introStats];
-                                                                        newStats[idx].label = e.target.value;
+                                                                        newStats[idx] = { ...newStats[idx], label: e.target.value };
                                                                         handleCheckoutChange('introStats', newStats);
                                                                     }} style={{ padding: '8px 10px', fontSize: '13px' }} />
                                                                 </div>
@@ -682,7 +682,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                                 type="button"
                                                                                 onClick={() => {
                                                                                     const newStats = [...checkoutData.introStats];
-                                                                                    newStats[idx].icon = name;
+                                                                                    newStats[idx] = { ...newStats[idx], icon: name };
                                                                                     handleCheckoutChange('introStats', newStats);
                                                                                 }}
                                                                                 style={{
@@ -843,18 +843,18 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                 <div style={{ display: 'flex', gap: 10 }}>
                                                                     <input value={step.num} placeholder="No" onChange={(e) => {
                                                                         const newSteps = [...checkoutData.journeySteps];
-                                                                        newSteps[idx].num = e.target.value;
+                                                                        newSteps[idx] = { ...newSteps[idx], num: e.target.value };
                                                                         handleCheckoutChange('journeySteps', newSteps);
                                                                     }} style={{ width: 50, padding: '6px', fontSize: '11px' }} />
                                                                     <input value={step.title} placeholder="Judul" onChange={(e) => {
                                                                         const newSteps = [...checkoutData.journeySteps];
-                                                                        newSteps[idx].title = e.target.value;
+                                                                        newSteps[idx] = { ...newSteps[idx], title: e.target.value };
                                                                         handleCheckoutChange('journeySteps', newSteps);
                                                                     }} style={{ flex: 1, padding: '6px', fontSize: '11px' }} />
                                                                 </div>
                                                                 <textarea value={step.desc} placeholder="Deskripsi" onChange={(e) => {
                                                                     const newSteps = [...checkoutData.journeySteps];
-                                                                    newSteps[idx].desc = e.target.value;
+                                                                    newSteps[idx] = { ...newSteps[idx], desc: e.target.value };
                                                                     handleCheckoutChange('journeySteps', newSteps);
                                                                 }} style={{ padding: '6px', fontSize: '11px', minHeight: '50px' }} />
                                                             </div>
@@ -887,7 +887,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                     <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Pertanyaan</label>
                                                                     <input value={faq.q} onChange={(e) => {
                                                                         const newFaqs = [...checkoutData.faqs];
-                                                                        newFaqs[idx].q = e.target.value;
+                                                                        newFaqs[idx] = { ...newFaqs[idx], q: e.target.value };
                                                                         handleCheckoutChange('faqs', newFaqs);
                                                                     }} style={{ padding: '8px 10px', fontSize: '13px' }} />
                                                                 </div>
@@ -895,7 +895,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                                                     <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Jawaban</label>
                                                                     <textarea value={faq.a} onChange={(e) => {
                                                                         const newFaqs = [...checkoutData.faqs];
-                                                                        newFaqs[idx].a = e.target.value;
+                                                                        newFaqs[idx] = { ...newFaqs[idx], a: e.target.value };
                                                                         handleCheckoutChange('faqs', newFaqs);
                                                                     }} rows="3" style={{ padding: '8px 10px', fontSize: '12px' }} />
                                                                 </div>
