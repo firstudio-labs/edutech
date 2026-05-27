@@ -23,12 +23,24 @@ export default function AdminProductForm({ dbCategories = [], product }) {
         return localDate.toISOString().slice(0, 16);
     };
 
+    const formatNumberWithDots = (val) => {
+        if (val === undefined || val === null || val === '') return '';
+        const clean = val.toString().replace(/\D/g, '');
+        if (!clean) return '';
+        return clean.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    const parseNumberFromDots = (val) => {
+        if (!val) return '';
+        return val.toString().replace(/\D/g, '');
+    };
+
     const { data: form, setData: setForm, post, processing } = useForm({
         _method: isEdit ? 'PUT' : 'POST',
         title: product?.name || '', 
         category: product?.category_id || (dbCategories[0]?.id || ''), 
-        price: product?.price || '', 
-        originalPrice: product?.normal_price || '',
+        price: product?.price ? Math.round(parseFloat(product.price)) : '', 
+        originalPrice: product?.normal_price ? Math.round(parseFloat(product.normal_price)) : '',
         description: product?.short_description || '', 
         longDescription: product?.description || '', 
         badge: product?.badge || '',
@@ -226,21 +238,21 @@ export default function AdminProductForm({ dbCategories = [], product }) {
                                     <label>Harga Jual *</label>
                                     <div style={{ position: 'relative' }}>
                                         <span style={{ position: 'absolute', left: 12, top: 12, color: 'var(--color-text-muted)' }}>Rp</span>
-                                        <input type="number" style={{ paddingLeft: 40 }} value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="0" />
+                                        <input type="text" style={{ paddingLeft: 40 }} value={formatNumberWithDots(form.price)} onChange={e => setForm({ ...form, price: parseNumberFromDots(e.target.value) })} placeholder="0" />
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <label>Harga Normal (Membentuk diskon coret)</label>
-                                        {form.originalPrice > form.price && form.price > 0 && (
+                                        {Number(form.originalPrice) > Number(form.price) && Number(form.price) > 0 && (
                                             <span style={{ fontSize: '11px', background: 'var(--color-accent-dim)', color: 'var(--color-accent-light)', padding: '2px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
-                                                Hemat {Math.round(((form.originalPrice - form.price) / form.originalPrice) * 100)}%
+                                                Hemat {Math.round(((Number(form.originalPrice) - Number(form.price)) / Number(form.originalPrice)) * 100)}%
                                             </span>
                                         )}
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <span style={{ position: 'absolute', left: 12, top: 12, color: 'var(--color-text-muted)' }}>Rp</span>
-                                        <input type="number" style={{ paddingLeft: 40 }} value={form.originalPrice} onChange={e => setForm({ ...form, originalPrice: e.target.value })} placeholder="0" />
+                                        <input type="text" style={{ paddingLeft: 40 }} value={formatNumberWithDots(form.originalPrice)} onChange={e => setForm({ ...form, originalPrice: parseNumberFromDots(e.target.value) })} placeholder="0" />
                                     </div>
                                 </div>
                             </div>
