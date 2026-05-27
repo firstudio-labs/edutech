@@ -14,7 +14,6 @@ class PublicController extends Controller
     public function home()
     {
         $featuredProducts = Product::with('category')
-            ->where('featured', true)
             ->latest()
             ->take(6)
             ->get();
