@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SiteContent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
 use Inertia\Inertia;
 
 class AdminSettingController extends Controller
@@ -108,13 +112,35 @@ class AdminSettingController extends Controller
         ]);
 
         $branding = $request->input('branding');
+        $oldBranding = null;
+        $existingContent = SiteContent::where('key', 'site_content')->first();
+        if ($existingContent) {
+            $parsed = json_decode($existingContent->value, true);
+            $oldBranding = $parsed['branding'] ?? null;
+        }
 
         if ($request->hasFile('logoFile')) {
-            $branding['logo'] = $request->file('logoFile')->store('branding', 'public');
+            $file = $request->file('logoFile');
+            if ($file->getClientOriginalExtension() === 'svg') {
+                $branding['logo'] = $file->store('branding', 'public');
+            } else {
+                $branding['logo'] = $this->saveImageAsWebp($file, 'branding');
+            }
+            if ($oldBranding && !empty($oldBranding['logo']) && Storage::disk('public')->exists($oldBranding['logo'])) {
+                Storage::disk('public')->delete($oldBranding['logo']);
+            }
         }
         
         if ($request->hasFile('faviconFile')) {
-            $branding['favicon'] = $request->file('faviconFile')->store('branding', 'public');
+            $file = $request->file('faviconFile');
+            if (in_array(strtolower($file->getClientOriginalExtension()), ['svg', 'ico'])) {
+                $branding['favicon'] = $file->store('branding', 'public');
+            } else {
+                $branding['favicon'] = $this->saveImageAsWebp($file, 'branding');
+            }
+            if ($oldBranding && !empty($oldBranding['favicon']) && Storage::disk('public')->exists($oldBranding['favicon'])) {
+                Storage::disk('public')->delete($oldBranding['favicon']);
+            }
         }
 
         $allContent = [
@@ -138,5 +164,16 @@ class AdminSettingController extends Controller
     public function chatbot()
     {
         return Inertia::render('Admin/AdminChatbot');
+    }
+
+    private function saveImageAsWebp($file, $directory)
+    {
+        $manager = new ImageManager(new Driver());
+        $image = $manager->decode($file->getRealPath());
+        $encoded = $image->encode(new WebpEncoder(80));
+        $filename = uniqid() . '.webp';
+        $path = "{$directory}/{$filename}";
+        Storage::disk('public')->put($path, (string) $encoded);
+        return $path;
     }
 }

@@ -50,10 +50,10 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
         );
     }
     
-    // Fallback to initial products if backend didn't send anything
-    const featuredProducts = products.length > 0 
-        ? products.slice(0, 3)
-        : initialProducts.filter(p => p.featured).slice(0, 3);
+    const activeCategories = categories.filter(cat => cat.products_count > 0);
+
+    // Only show real products from database
+    const featuredProducts = products.slice(0, 3);
 
     const scroll = (direction) => {
         if (!sliderRef.current) return;
@@ -86,9 +86,6 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
                         <Link href={route('products')} className="btn-hero-primary">
                             {home.ctaPrimary} <ArrowRight size={18} />
                         </Link>
-                        {/* <Link href={route('packages.landing', { slug: 'growth-pack' })} className="btn-hero-secondary">
-                            {home.ctaSecondary}
-                        </Link> */}
                     </div>
                     <div className="hero__proof">
                         <div className="proof-avatars">
@@ -137,7 +134,7 @@ export default function Welcome({ products = [], categories = [], dbStats = {}, 
 
                     <div className="categories-wrapper">
                         <div className="categories-slider" ref={sliderRef}>
-                            {categories.length > 0 ? categories.map((cat) => (
+                            {activeCategories.length > 0 ? activeCategories.map((cat) => (
                                 <Link href={route('products', { category: cat.slug })} key={cat.id} className="category-card card-red">
                                     <div className="category-card__image">
                                         <img src={getStorageUrl(cat.image)} alt={cat.name} />

@@ -7,7 +7,10 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
 class AdminCategoryController extends Controller
 {
     public function index()
@@ -35,7 +38,7 @@ class AdminCategoryController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('imageFile')) {
-            $imagePath = $request->file('imageFile')->store('categories', 'public');
+            $imagePath = $this->saveImageAsWebp($request->file('imageFile'), 'categories');
         }
 
         Category::create([
@@ -58,7 +61,10 @@ class AdminCategoryController extends Controller
 
         $imagePath = $category->image;
         if ($request->hasFile('imageFile')) {
-            $imagePath = $request->file('imageFile')->store('categories', 'public');
+            if ($category->image && Storage::disk('public')->exists($category->image)) {
+                Storage::disk('public')->delete($category->image);
+            }
+            $imagePath = $this->saveImageAsWebp($request->file('imageFile'), 'categories');
         }
 
         $category->update([
@@ -75,9 +81,24 @@ class AdminCategoryController extends Controller
             return back()->withErrors(['message' => 'Kategori tidak bisa dihapus karena memiliki produk terkait.']);
         }
 
+        if ($category->image && Storage::disk('public')->exists($category->image)) {
+            Storage::disk('public')->delete($category->image);
+        }
+
         $category->delete();
 
         return back()->with('success', 'Kategori berhasil dihapus.');
+    }
+
+    private function saveImageAsWebp($file, $directory)
+    {
+        $manager = new ImageManager(new Driver());
+        $image = $manager->decode($file->getRealPath());
+        $encoded = $image->encode(new WebpEncoder(80));
+        $filename = uniqid() . '.webp';
+        $path = "{$directory}/{$filename}";
+        Storage::disk('public')->put($path, (string) $encoded);
+        return $path;
     }
 }
 

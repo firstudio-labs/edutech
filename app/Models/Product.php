@@ -25,11 +25,17 @@ class Product extends Model
         'start_at',
         'end_at',
         'location',
+        'landing_blocks',
+        'landing_faq',
+        'countdown_hours',
+        'landing_quota_text',
     ];
 
     protected $casts = [
         'benefits' => 'array',
         'materials' => 'array',
+        'landing_blocks' => 'array',
+        'landing_faq' => 'array',
         'price' => 'decimal:2',
         'normal_price' => 'decimal:2',
         'rating' => 'decimal:1',

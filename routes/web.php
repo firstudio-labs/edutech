@@ -67,6 +67,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
         Route::get('/products/{product}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
         Route::match(['POST', 'PUT'], '/products/{product}', [AdminProductController::class, 'update'])->name('products.update');
+        Route::post('/products/{product}/landing-blocks', [AdminProductController::class, 'updateLandingBlocks'])->name('products.landing');
         Route::delete('/products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
 
         Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');

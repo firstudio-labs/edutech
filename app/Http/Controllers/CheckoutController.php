@@ -9,6 +9,10 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
 
 class CheckoutController extends Controller
 {
@@ -104,7 +108,7 @@ class CheckoutController extends Controller
 
         if ($isManual) {
             if ($request->hasFile('proof')) {
-                $path = $request->file('proof')->store('payments', 'public');
+                $path = $this->saveImageAsWebp($request->file('proof'), 'payments');
     
                 Payment::create([
                     'transaction_id' => $transaction->id,
@@ -209,6 +213,17 @@ class CheckoutController extends Controller
                 $user->increment('total_spent', $transaction->total_amount);
             }
         });
+    }
+
+    private function saveImageAsWebp($file, $directory)
+    {
+        $manager = new ImageManager(new Driver());
+        $image = $manager->decode($file->getRealPath());
+        $encoded = $image->encode(new WebpEncoder(80));
+        $filename = uniqid() . '.webp';
+        $path = "{$directory}/{$filename}";
+        Storage::disk('public')->put($path, (string) $encoded);
+        return $path;
     }
 }
 

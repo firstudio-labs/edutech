@@ -15,6 +15,15 @@ class Payment extends Model
         'rejection_reason',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($payment) {
+            if ($payment->proof_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($payment->proof_image)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($payment->proof_image);
+            }
+        });
+    }
+
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);

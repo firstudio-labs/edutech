@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { 
     Save, Eye, EyeOff, Layout, Type, Image as ImageIcon, MessageSquare, Phone, MapPin, Globe, 
     Loader2, Monitor, Smartphone, PanelLeftClose, PanelLeftOpen, Target, Shield, BookOpen, 
     UserCheck, Zap, ArrowRight, Trash2, Plus, X, Users, Award, CheckCircle, Video, Mic, 
     Star, Heart, Rocket, Trophy, Lightbulb, TrendingUp, Construction, ShoppingCart,
-    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle, CheckCircle2, ChevronDown
+    ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle, CheckCircle2, ChevronDown,
+    ArrowUpDown, Link as LinkIcon, ChevronUp, Play, MousePointerClick, Images, Youtube
 } from 'lucide-react';
 import { useContent } from '../../Contexts/ContentContext';
 import AdminLayout from '../../Layouts/AdminLayout';
@@ -24,6 +25,19 @@ const availableIcons = {
     ShieldCheck, Clock, AlertTriangle, AlertCircle, Info, HelpCircle
 };
 
+const BLOCK_TYPES = [
+    { type: 'image',   label: 'Gambar Tunggal',    icon: ImageIcon,          color: '#3b82f6' },
+    // { type: 'slider',  label: 'Multiple Gambar (Slider)', icon: ImageIcon,       color: '#8b5cf6' },
+    { type: 'youtube', label: 'Link YouTube',       icon: Play,            color: '#ef4444' },
+    { type: 'button',  label: 'Tombol (→ Checkout)', icon: MousePointerClick, color: '#10b981' },
+];
+
+function getYoutubeEmbedId(url) {
+    if (!url) return null;
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&\n?#]+)/);
+    return match ? match[1] : null;
+}
+
 export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [], dbAllProducts = [] }) {
     const { content, updateContent } = useContent();
     const [selectedPreviewProductId, setSelectedPreviewProductId] = useState(dbAllProducts[0]?.id || dbFeaturedProducts[0]?.id || 1);
@@ -38,6 +52,40 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
     const [logoPreview, setLogoPreview] = useState(null);
     const [faviconFile, setFaviconFile] = useState(null);
     const [faviconPreview, setFaviconPreview] = useState(null);
+
+    // Landing blocks state
+    const [landingBlocks, setLandingBlocks] = useState([]);
+    const [landingFaq, setLandingFaq] = useState([]);
+    const [countdownHours, setCountdownHours] = useState('');
+    const [landingQuotaText, setLandingQuotaText] = useState('');
+    const [blockFiles, setBlockFiles] = useState({});
+    const [showBlockPicker, setShowBlockPicker] = useState(false);
+
+    useEffect(() => {
+        const product = dbAllProducts.find(p => p.id == selectedPreviewProductId) || dbFeaturedProducts[0];
+        if (product) {
+            const blocks = Array.isArray(product.landing_blocks) ? product.landing_blocks : JSON.parse(product.landing_blocks || '[]');
+            const formattedBlocks = blocks.filter(b => b.type !== 'faq').map(b => {
+                if (b.type === 'slider') {
+                    return { ...b, previews: [...(b.images || [])] };
+                }
+                return b;
+            });
+            setLandingBlocks(formattedBlocks);
+
+            const faq = Array.isArray(product.landing_faq) ? product.landing_faq : JSON.parse(product.landing_faq || '[]');
+            setLandingFaq(faq.length > 0 ? faq : [{ q: '', a: '' }]);
+
+            setCountdownHours(product.countdown_hours || '');
+            setLandingQuotaText(product.landing_quota_text || 'Kuota Hampir Penuh ‼️');
+        } else {
+            setLandingBlocks([]);
+            setLandingFaq([{ q: '', a: '' }]);
+            setCountdownHours('');
+            setLandingQuotaText('Kuota Hampir Penuh ‼️');
+        }
+        setBlockFiles({});
+    }, [selectedPreviewProductId, dbAllProducts, dbFeaturedProducts]);
 
     const handleFileChange = (e, type) => {
         const file = e.target.files[0];
@@ -73,6 +121,123 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
             onError: () => {
                 setIsSaving(false);
                 toast.error('Gagal menyimpan perubahan.');
+            }
+        });
+    };
+
+    // ── Landing Block Handlers ──
+    const addBlock = (type) => {
+        let newBlock = { type };
+        if (type === 'image') newBlock = { type, url: '', preview: '' };
+        if (type === 'slider') newBlock = { type, images: [], previews: [] };
+        if (type === 'youtube') newBlock = { type, url: '' };
+        if (type === 'button') newBlock = { type, label: 'Beli Sekarang 🚀' };
+        if (type === 'faq') newBlock = { type, items: [{ q: '', a: '' }] };
+        setLandingBlocks(prev => [...prev, newBlock]);
+        setShowBlockPicker(false);
+    };
+
+    const removeBlock = (idx) => {
+        setLandingBlocks(prev => prev.filter((_, i) => i !== idx));
+        setBlockFiles(prev => {
+            const next = { ...prev };
+            delete next[idx];
+            return next;
+        });
+    };
+
+    const moveBlock = (idx, dir) => {
+        setLandingBlocks(prev => {
+            const arr = [...prev];
+            const targetIdx = idx + dir;
+            if (targetIdx < 0 || targetIdx >= arr.length) return arr;
+            [arr[idx], arr[targetIdx]] = [arr[targetIdx], arr[idx]];
+            return arr;
+        });
+    };
+
+    const updateBlock = (idx, patch) => {
+        setLandingBlocks(prev => prev.map((b, i) => i === idx ? { ...b, ...patch } : b));
+    };
+
+    const handleBlockImageFile = (file, blockIdx) => {
+        if (!file || !file.type.startsWith('image/')) return toast.error('File harus gambar');
+        if (file.size > 10 * 1024 * 1024) return toast.error('Ukuran maks 10MB per gambar');
+        const preview = URL.createObjectURL(file);
+        updateBlock(blockIdx, { preview, url: '', file });
+    };
+
+    const handleSliderImageFiles = (files, blockIdx) => {
+        const fileArr = Array.from(files).filter(f => f.type.startsWith('image/'));
+        if (fileArr.length === 0) return toast.error('Pilih file gambar');
+        const oversized = fileArr.find(f => f.size > 10 * 1024 * 1024);
+        if (oversized) return toast.error('Ukuran maks 10MB per gambar');
+
+        const newPreviews = fileArr.map(f => URL.createObjectURL(f));
+        
+        setLandingBlocks(prev => prev.map((b, i) => {
+            if (i !== blockIdx) return b;
+            return {
+                ...b,
+                previews: [...(b.previews || []), ...newPreviews],
+                images: [...(b.images || []), ...newPreviews.map(()=>'')],
+                files: [...(b.files || Array((b.images || []).length).fill(null)), ...fileArr]
+            };
+        }));
+    };
+
+    const removeSliderImage = (blockIdx, imgIdx) => {
+        setLandingBlocks(prev => prev.map((b, i) => {
+            if (i !== blockIdx) return b;
+            return {
+                ...b,
+                images: b.images.filter((_, idx) => idx !== imgIdx),
+                previews: b.previews.filter((_, idx) => idx !== imgIdx),
+                files: (b.files || []).filter((_, idx) => idx !== imgIdx),
+            };
+        }));
+    };
+
+    const saveLandingBlocks = () => {
+        const product = dbAllProducts.find(p => p.id == selectedPreviewProductId);
+        if (!product) return toast.error('Pilih produk dulu');
+
+        const cleanBlocks = landingBlocks.map(block => {
+            const { preview, previews, file, files, ...rest } = block;
+            return rest;
+        });
+
+        const formData = new FormData();
+        formData.append('_method', 'POST');
+        formData.append('landingBlocks', JSON.stringify(cleanBlocks));
+        formData.append('landingFaq', JSON.stringify(landingFaq.filter(f => f.q)));
+        formData.append('countdownHours', countdownHours);
+        formData.append('landingQuotaText', landingQuotaText);
+
+        landingBlocks.forEach((block, blockIdx) => {
+            if (block.type === 'image' && block.file) {
+                formData.append(`landingBlockImages[${blockIdx}]`, block.file);
+            } else if (block.type === 'slider' && block.files) {
+                block.files.forEach((f, imgIdx) => {
+                    if (f) formData.append(`landingBlockImages[${blockIdx}_${imgIdx}]`, f);
+                });
+            }
+        });
+
+        setIsSaving(true);
+        router.post(route('admin.products.landing', product.slug), formData, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Landing Page Produk diperbarui!');
+                setIsSaving(false);
+            },
+            onError: (err) => {
+                console.error("Validation error:", err);
+                toast.error('Gagal menyimpan: ' + (Object.values(err)[0] || 'Periksa kembali data Anda'));
+                setIsSaving(false);
+            },
+            onFinish: () => {
+                setIsSaving(false);
             }
         });
     };
@@ -113,7 +278,13 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                     <ProductSales 
                         previewMode={true} 
                         activeStep={activeCheckoutStep} 
-                        product={selectedProduct}
+                        product={{ 
+                            ...selectedProduct, 
+                            landing_blocks: landingBlocks,
+                            landing_faq: landingFaq,
+                            countdown_hours: countdownHours,
+                            landing_quota_text: landingQuotaText
+                        }}
                     />
                 );
             }
@@ -143,7 +314,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                             <Phone size={18} /> <span>Kontak</span>
                         </button>
                         <button className={`cms-tab-btn ${activeTab === 'checkout' ? 'active' : ''}`} onClick={() => setActiveTab('checkout')}>
-                            <ShoppingCart size={18} /> <span>Checkout</span>
+                            <ShoppingCart size={18} /> <span>Konten Product</span>
                         </button>
                         <button className={`cms-tab-btn ${activeTab === 'branding' ? 'active' : ''}`} onClick={() => setActiveTab('branding')}>
                             <Target size={18} /> <span>Branding & Logo</span>
@@ -548,7 +719,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                             <>
                                 <div style={{ 
                                     display: 'grid', 
-                                    gridTemplateColumns: 'repeat(4, 1fr)', 
+                                    gridTemplateColumns: 'repeat(2, 1fr)', 
                                     gap: 6, 
                                     marginBottom: 20, 
                                     padding: 6, 
@@ -556,7 +727,7 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                     borderRadius: 14,
                                     border: '1px solid var(--color-border)'
                                 }}>
-                                    {['Pengantar', 'Produk', 'Penjelasan', 'Checkout'].map((s, i) => (
+                                    {['Produk', 'Checkout'].map((s, i) => (
                                         <button 
                                             key={s} 
                                             onClick={() => setActiveCheckoutStep(i)}
@@ -615,306 +786,322 @@ export default function AdminContent({ dbCategories = [], dbFeaturedProducts = [
                                         </div>
                                     </div>
 
-                                    {/* Section 1: Intro */}
+                                    {/* Step 0: Produk */}
                                     {activeCheckoutStep === 0 && (
                                         <div className="cms-form-group">
-                                            <h4 className="cms-section-label">Langkah 1: Pengantar & Masalah</h4>
-                                            <label>Judul Utama</label>
-                                            <input value={checkoutData.introTitle || ''} onChange={(e) => handleCheckoutChange('introTitle', e.target.value)} />
-                                            
-                                            <label>Sub-judul</label>
-                                            <textarea value={checkoutData.introSubtitle || ''} onChange={(e) => handleCheckoutChange('introSubtitle', e.target.value)} rows="3" />
-                                            
-                                            <label>Quote Motivasi</label>
-                                            <textarea value={checkoutData.introQuote || ''} onChange={(e) => handleCheckoutChange('introQuote', e.target.value)} rows="3" />
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+                                                <h4 className="cms-section-label" style={{ margin: 0 }}>Step 1: Produk (Landing Page)</h4>
+                                            </div>
+                                            <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 15 }}>
+                                                Atur blok konten landing page (gambar, slider, YouTube, tombol, FAQ) yang akan ditampilkan untuk produk yang sedang Anda pilih.
+                                            </p>
 
-                                            {/* Stats Cards */}
-                                            <div style={{ marginTop: '20px', padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
-                                                    <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Kartu Statistik (Stats)</h5>
-                                                    <button className="btn-cms-action" onClick={() => {
-                                                        const newStats = [...(checkoutData.introStats || []), { icon: 'Star', value: '100+', label: 'Label Baru' }];
-                                                        handleCheckoutChange('introStats', newStats);
-                                                    }}><Plus size={14} /> Tambah</button>
-                                                </div>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                                    {(checkoutData.introStats || []).map((stat, idx) => {
-                                                        const IconComp = availableIcons[stat.icon] || Zap;
-                                                        return (
-                                                            <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
-                                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                                                        <div style={{ padding: 5, background: 'var(--color-accent)', borderRadius: 6, color: 'white' }}><IconComp size={12} /></div>
-                                                                        <span style={{ fontSize: 11, fontWeight: 700 }}>Statistik #{idx + 1}</span>
-                                                                    </div>
-                                                                    <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
-                                                                        const newStats = checkoutData.introStats.filter((_, i) => i !== idx);
-                                                                        handleCheckoutChange('introStats', newStats);
-                                                                    }}><Trash2 size={14} /></button>
-                                                                </div>
-                                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
-                                                                    <input value={stat.value} placeholder="Nilai" onChange={(e) => {
-                                                                        const newStats = [...checkoutData.introStats];
-                                                                        newStats[idx] = { ...newStats[idx], value: e.target.value };
-                                                                        handleCheckoutChange('introStats', newStats);
-                                                                    }} style={{ padding: '8px 10px', fontSize: '13px' }} />
-                                                                    <input value={stat.label} placeholder="Label" onChange={(e) => {
-                                                                        const newStats = [...checkoutData.introStats];
-                                                                        newStats[idx] = { ...newStats[idx], label: e.target.value };
-                                                                        handleCheckoutChange('introStats', newStats);
-                                                                    }} style={{ padding: '8px 10px', fontSize: '13px' }} />
-                                                                </div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                                                {landingBlocks.length === 0 && (
+                                                    <div style={{ textAlign: 'center', padding: 'var(--space-8)', background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-xl)', border: '2px dashed var(--color-border)' }}>
+                                                        <ArrowUpDown size={28} style={{ color: 'var(--color-text-muted)', margin: '0 auto 8px' }} />
+                                                        <p style={{ color: 'var(--color-text-muted)', fontWeight: 600, fontSize: 13 }}>Belum ada blok konten</p>
+                                                    </div>
+                                                )}
 
-                                                                <div>
-                                                                    <label style={{ fontSize: 10, marginBottom: 6, display: 'block', fontWeight: 600 }}>Pilih Ikon</label>
-                                                                    <div style={{ 
-                                                                        display: 'grid', 
-                                                                        gridTemplateColumns: 'repeat(9, 1fr)', 
-                                                                        gap: 4,
-                                                                        background: 'var(--color-bg-secondary)',
-                                                                        padding: 6,
-                                                                        borderRadius: 8,
-                                                                        border: '1px solid var(--color-border)'
-                                                                    }}>
-                                                                        {Object.entries(availableIcons).map(([name, IconItem]) => (
-                                                                            <button 
-                                                                                key={name}
-                                                                                type="button"
-                                                                                onClick={() => {
-                                                                                    const newStats = [...checkoutData.introStats];
-                                                                                    newStats[idx] = { ...newStats[idx], icon: name };
-                                                                                    handleCheckoutChange('introStats', newStats);
-                                                                                }}
-                                                                                style={{
-                                                                                    padding: 5,
-                                                                                    background: stat.icon === name ? 'var(--color-accent)' : 'transparent',
-                                                                                    border: 'none',
-                                                                                    borderRadius: 4,
-                                                                                    cursor: 'pointer',
-                                                                                    color: stat.icon === name ? 'white' : 'var(--color-text-muted)',
-                                                                                    display: 'flex',
-                                                                                    alignItems: 'center',
-                                                                                    justifyContent: 'center',
-                                                                                    transition: 'all 0.2s'
-                                                                                }}
-                                                                            >
-                                                                                <IconItem size={12} />
-                                                                            </button>
-                                                                        ))}
-                                                                    </div>
+                                                {landingBlocks.map((block, idx) => {
+                                                    const blockDef = BLOCK_TYPES.find(b => b.type === block.type);
+                                                    const Icon = blockDef?.icon || ImageIcon;
+                                                    return (
+                                                        <div key={idx} style={{ background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', overflow: 'hidden' }}>
+                                                            {/* Block header */}
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'var(--color-bg-secondary)', borderBottom: '1px solid var(--color-border)' }}>
+                                                                <div style={{ width: 32, height: 32, borderRadius: 8, background: blockDef?.color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                                    <Icon size={16} style={{ color: blockDef?.color }} />
+                                                                </div>
+                                                                <div style={{ flex: 1 }}>
+                                                                    <span style={{ fontWeight: 700, fontSize: 13 }}>{blockDef?.label}</span>
+                                                                    <span style={{ marginLeft: 8, fontSize: 11, color: 'var(--color-text-muted)', fontWeight: 500 }}>Blok #{idx + 1}</span>
+                                                                </div>
+                                                                <div style={{ display: 'flex', gap: 4 }}>
+                                                                    <button onClick={() => moveBlock(idx, -1)} disabled={idx === 0} style={{ padding: 6, borderRadius: 6, border: 'none', background: 'transparent', cursor: idx === 0 ? 'not-allowed' : 'pointer', color: idx === 0 ? 'var(--color-border)' : 'var(--color-text-muted)' }} title="Naik">
+                                                                        <ChevronUp size={16} />
+                                                                    </button>
+                                                                    <button onClick={() => moveBlock(idx, 1)} disabled={idx === landingBlocks.length - 1} style={{ padding: 6, borderRadius: 6, border: 'none', background: 'transparent', cursor: idx === landingBlocks.length - 1 ? 'not-allowed' : 'pointer', color: idx === landingBlocks.length - 1 ? 'var(--color-border)' : 'var(--color-text-muted)' }} title="Turun">
+                                                                        <ChevronDown size={16} />
+                                                                    </button>
+                                                                    <button onClick={() => removeBlock(idx)} style={{ padding: 6, borderRadius: 6, border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444' }} title="Hapus">
+                                                                        <Trash2 size={16} />
+                                                                    </button>
                                                                 </div>
                                                             </div>
-                                                        );
-                                                    })}
+
+                                                            {/* Block content editor */}
+                                                            <div style={{ padding: 'var(--space-4)' }}>
+                                                                {/* ── Image Block ── */}
+                                                                {block.type === 'image' && (
+                                                                    <div>
+                                                                        <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>Lebar optimal: <strong>1080px</strong>.</p>
+                                                                        {(block.preview || block.url) ? (
+                                                                            <div style={{ position: 'relative', display: 'inline-block' }}>
+                                                                                <img 
+                                                                                    src={block.preview || (block.url?.startsWith('http') ? block.url : `/storage/${block.url}`)} 
+                                                                                    alt="block" 
+                                                                                    style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 12, objectFit: 'contain', background: '#000' }} 
+                                                                                />
+                                                                                <button onClick={() => { updateBlock(idx, { url: '', preview: '' }); setBlockFiles(prev => { const n = {...prev}; delete n[idx]; return n; }); }} style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(0,0,0,0.7)', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer' }}>
+                                                                                    <X size={12} />
+                                                                                </button>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '30px 20px', border: '2px dashed var(--color-border)', borderRadius: 12, cursor: 'pointer', background: 'var(--color-bg-secondary)' }}>
+                                                                                <ImageIcon size={24} style={{ color: 'var(--color-text-muted)' }} />
+                                                                                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-text-secondary)' }}>Upload Gambar</span>
+                                                                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleBlockImageFile(e.target.files[0], idx)} />
+                                                                            </label>
+                                                                        )}
+                                                                        {!block.preview && (
+                                                                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 12 }}>
+                                                                                <LinkIcon size={14} style={{ color: 'var(--color-text-muted)' }} />
+                                                                                <input value={block.url || ''} onChange={e => updateBlock(idx, { url: e.target.value, preview: '' })} placeholder="Atau URL gambar..." style={{ flex: 1, padding: '8px 12px', fontSize: 13 }} />
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* ── Slider Block ── */}
+                                                                {block.type === 'slider' && (
+                                                                    <div>
+                                                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: 10, marginBottom: 12 }}>
+                                                                            {(block.previews || []).map((prev, imgIdx) => (
+                                                                                <div key={imgIdx} style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', background: '#000' }}>
+                                                                                    <img src={prev?.startsWith('blob:') || prev?.startsWith('http') ? prev : `/storage/${prev}`} alt={`slide${imgIdx}`} style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} />
+                                                                                    <button onClick={() => removeSliderImage(idx, imgIdx)} style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.7)', color: 'white', border: 'none', borderRadius: 4, padding: '2px 6px', cursor: 'pointer' }}>
+                                                                                        <X size={10} />
+                                                                                    </button>
+                                                                                </div>
+                                                                            ))}
+                                                                            <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, aspectRatio: '1/1', border: '2px dashed var(--color-border)', borderRadius: 8, cursor: 'pointer', background: 'var(--color-bg-secondary)' }}>
+                                                                                <Plus size={20} style={{ color: 'var(--color-text-muted)' }} />
+                                                                                <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => handleSliderImageFiles(e.target.files, idx)} />
+                                                                            </label>
+                                                                        </div>
+                                                                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                                                                            <LinkIcon size={14} style={{ color: 'var(--color-text-muted)' }} />
+                                                                            <input placeholder="Tempel URL dan Enter..." style={{ flex: 1, padding: '8px 12px', fontSize: 13 }}
+                                                                                onKeyDown={e => {
+                                                                                    if (e.key === 'Enter' && e.target.value.trim()) {
+                                                                                        const url = e.target.value.trim();
+                                                                                        setLandingBlocks(prev => prev.map((b, i) => i === idx ? { ...b, images: [...(b.images || []), url], previews: [...(b.previews || []), url] } : b));
+                                                                                        e.target.value = '';
+                                                                                    }
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* ── YouTube Block ── */}
+                                                                {block.type === 'youtube' && (
+                                                                    <div>
+                                                                        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                                                                            <Youtube size={20} style={{ color: '#ef4444' }} />
+                                                                            <input 
+                                                                                value={block.url || ''} 
+                                                                                onChange={e => updateBlock(idx, { url: e.target.value })} 
+                                                                                placeholder="Masukkan link YouTube (contoh: https://youtube.com/watch?v=...)" 
+                                                                                style={{ flex: 1, padding: '10px 14px', fontSize: 14 }}
+                                                                            />
+                                                                        </div>
+                                                                        {getYoutubeEmbedId(block.url) && (
+                                                                            <div style={{ marginTop: 12, borderRadius: 12, overflow: 'hidden', maxWidth: 400 }}>
+                                                                                <iframe width="100%" height="225" src={`https://www.youtube.com/embed/${getYoutubeEmbedId(block.url)}`} frameBorder="0" allowFullScreen></iframe>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* ── Button Block ── */}
+                                                                {block.type === 'button' && (
+                                                                    <div>
+                                                                        <label style={{ fontSize: 11, marginBottom: 4, display: 'block' }}>Teks Tombol</label>
+                                                                        <input 
+                                                                            value={block.label || ''} 
+                                                                            onChange={e => updateBlock(idx, { label: e.target.value })} 
+                                                                            placeholder="Contoh: Beli Sekarang 🚀"
+                                                                            style={{ width: '100%', padding: '10px 14px', fontSize: 14 }}
+                                                                        />
+                                                                    </div>
+                                                                )}
+
+                                                                {/* ── FAQ Block ── */}
+                                                                {block.type === 'faq' && (
+                                                                    <div>
+                                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                                                            {(block.items || []).map((faq, faqIdx) => (
+                                                                                <div key={faqIdx} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                                                                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                                                                        <input value={faq.q || ''} onChange={e => {
+                                                                                            const newItems = [...block.items];
+                                                                                            newItems[faqIdx] = { ...newItems[faqIdx], q: e.target.value };
+                                                                                            updateBlock(idx, { items: newItems });
+                                                                                        }} placeholder="Pertanyaan..." style={{ padding: '8px 12px', fontSize: 13 }} />
+                                                                                        <textarea value={faq.a || ''} onChange={e => {
+                                                                                            const newItems = [...block.items];
+                                                                                            newItems[faqIdx] = { ...newItems[faqIdx], a: e.target.value };
+                                                                                            updateBlock(idx, { items: newItems });
+                                                                                        }} placeholder="Jawaban..." rows="2" style={{ padding: '8px 12px', fontSize: 13 }} />
+                                                                                    </div>
+                                                                                    <button onClick={() => {
+                                                                                        const newItems = block.items.filter((_, i) => i !== faqIdx);
+                                                                                        updateBlock(idx, { items: newItems });
+                                                                                    }} style={{ padding: 8, background: 'var(--color-bg-secondary)', border: 'none', borderRadius: 8, color: '#ef4444', cursor: 'pointer' }}>
+                                                                                        <Trash2 size={16} />
+                                                                                    </button>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                        <button className="btn-cms-action" onClick={() => updateBlock(idx, { items: [...(block.items || []), { q: '', a: '' }] })} style={{ marginTop: 12 }}>
+                                                                            <Plus size={14} /> Tambah FAQ
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+
+                                                {/* Add Block button */}
+                                                <div style={{ position: 'relative', marginTop: 12 }}>
+                                                    {showBlockPicker ? (
+                                                        <div style={{ background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4)', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                                                                <h4 style={{ margin: 0, fontSize: 14 }}>Pilih Jenis Blok</h4>
+                                                                <button onClick={() => setShowBlockPicker(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
+                                                            </div>
+                                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
+                                                                {BLOCK_TYPES.map(bt => (
+                                                                    <button key={bt.type} onClick={() => addBlock(bt.type)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px', border: '1px solid var(--color-border)', borderRadius: 12, background: 'var(--color-bg-secondary)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}>
+                                                                        <div style={{ width: 40, height: 40, borderRadius: 10, background: bt.color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                            <bt.icon size={20} style={{ color: bt.color }} />
+                                                                        </div>
+                                                                        <span style={{ fontWeight: 600, fontSize: 13 }}>{bt.label}</span>
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <button onClick={() => setShowBlockPicker(true)} style={{ width: '100%', padding: '20px', border: '2px dashed var(--color-border)', borderRadius: 'var(--radius-xl)', background: 'transparent', color: 'var(--color-text-secondary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', transition: 'all 0.2s' }}>
+                                                            <Plus size={20} /> Tambah Blok Konten
+                                                        </button>
+                                                    )}
+                                                </div>
+
+                                                {/* Simpan Blok button */}
+                                                <button 
+                                                    disabled={isSaving} 
+                                                    className="btn-admin-primary" 
+                                                    onClick={saveLandingBlocks} 
+                                                    style={{ width: '100%', justifyContent: 'center', marginTop: 16, background: 'var(--color-success)', borderColor: 'var(--color-success)', border: 'none' }}
+                                                >
+                                                    {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                                                    <span>{isSaving ? 'Menyimpan...' : 'Simpan Blok'}</span>
+                                                </button>
+                                            </div>
+
+                                            {/* Countdown & Quota Configuration */}
+                                            <div style={{ marginTop: 24, padding: 16, background: 'var(--color-bg-secondary)', borderRadius: 16, border: '1px solid var(--color-border)' }}>
+                                                <h4 style={{ margin: '0 0 4px 0', fontSize: 13, fontWeight: 700 }}>Pengaturan Hitung Mundur & Urgensi</h4>
+                                                <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 12 }}>
+                                                    Atur hitung mundur dan teks kuota untuk memicu efek urgensi (urgency marketing) di bagian navbar atas.
+                                                </p>
+                                                
+                                                <div style={{ marginBottom: 14 }}>
+                                                    <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 6 }}>Sisa Waktu Hitung Mundur (Jam)</label>
+                                                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                                                        <input 
+                                                            type="number" 
+                                                            min="0" 
+                                                            placeholder="Contoh: 2 atau 24" 
+                                                            value={countdownHours} 
+                                                            onChange={e => setCountdownHours(e.target.value)} 
+                                                            style={{ flex: 1, height: '40px', fontSize: '14px', padding: '0 12px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 8 }} 
+                                                        />
+                                                        <span style={{ fontSize: '13px', fontWeight: 600 }}>Jam</span>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 6 }}>Teks Keterangan Kuota</label>
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Contoh: Kuota Hampir Penuh ‼️" 
+                                                        value={landingQuotaText} 
+                                                        onChange={e => setLandingQuotaText(e.target.value)} 
+                                                        style={{ width: '100%', height: '40px', fontSize: '14px', padding: '0 12px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 8 }} 
+                                                    />
                                                 </div>
                                             </div>
 
-                                            {/* Problems List */}
-                                            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid var(--color-border)' }}>
-                                                <h5 style={{ fontSize: 13, fontWeight: 700, marginBottom: 15, color: 'var(--color-accent)' }}>Daftar Poin (List Items)</h5>
+                                            {/* Dedicated FAQ Editor Section */}
+                                            <div style={{ marginTop: 24, padding: 16, background: 'var(--color-bg-secondary)', borderRadius: 16, border: '1px solid var(--color-border)' }}>
+                                                <h4 style={{ margin: '0 0 4px 0', fontSize: 13, fontWeight: 700 }}>Pengaturan FAQ (Selalu di Paling Bawah)</h4>
+                                                <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 16 }}>
+                                                    Kustomisasi pertanyaan dan jawaban bantuan yang akan selalu ditampilkan di bagian terbawah landing page produk ini.
+                                                </p>
                                                 
-                                                <label>Judul Seksi</label>
-                                                <input value={checkoutData.problemSectionTitle || ''} onChange={(e) => handleCheckoutChange('problemSectionTitle', e.target.value)} placeholder="Contoh: Apakah Anda merasakan ini?" />
-
-                                                <label style={{ marginTop: 15 }}>Ikon Poin</label>
-                                                <div style={{ 
-                                                    display: 'grid', 
-                                                    gridTemplateColumns: 'repeat(9, 1fr)', 
-                                                    gap: 4,
-                                                    background: 'var(--color-bg-secondary)',
-                                                    padding: 6,
-                                                    borderRadius: 8,
-                                                    border: '1px solid var(--color-border)',
-                                                    marginBottom: 20
-                                                }}>
-                                                            {Object.entries(availableIcons).map(([name, IconItem]) => {
-                                                                // Define color mapping for a "premium" look
-                                                                const colors = {
-                                                                    CheckCircle: '#10b981', Check: '#10b981', ShieldCheck: '#10b981',
-                                                                    AlertTriangle: '#ffcc00', AlertCircle: '#ffcc00',
-                                                                    Star: '#f59e0b', Zap: '#f59e0b', Lightbulb: '#f59e0b', Trophy: '#fbbf24', Award: '#fbbf24',
-                                                                    Heart: '#ef4444', 
-                                                                    Info: '#3b82f6', HelpCircle: '#3b82f6', Globe: '#3b82f6'
-                                                                };
-                                                                const iconColor = colors[name] || 'var(--color-text-muted)';
-                                                                const isAlert = name === 'AlertTriangle' || name === 'AlertCircle';
-                                                                const isFilled = isAlert || ['Star', 'Heart', 'Zap'].includes(name);
-                                                                const isActive = checkoutData.problemIcon === name;
-
-                                                                return (
-                                                                    <button 
-                                                                        key={name}
-                                                                        type="button"
-                                                                        onClick={() => handleCheckoutChange('problemIcon', name)}
-                                                                        style={{
-                                                                            padding: 5,
-                                                                            background: isActive ? 'var(--color-accent)' : 'transparent',
-                                                                            border: 'none',
-                                                                            borderRadius: 4,
-                                                                            cursor: 'pointer',
-                                                                            color: isActive ? 'white' : iconColor,
-                                                                            display: 'flex',
-                                                                            alignItems: 'center',
-                                                                            justifyContent: 'center',
-                                                                            transition: 'all 0.2s'
-                                                                        }}
-                                                                    >
-                                                                        <IconItem 
-                                                                            size={12} 
-                                                                            fill={isFilled && !isActive ? iconColor : "none"} 
-                                                                            stroke={isAlert && !isActive ? '#000' : (isActive ? 'white' : 'currentColor')}
-                                                                            strokeWidth={isActive ? 3 : 2}
-                                                                        />
-                                                                    </button>
-                                                                );
-                                                            })}
-                                                </div>
-
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                                                    <label style={{ margin: 0 }}>Isi Daftar</label>
-                                                    <button className="btn-cms-action" onClick={() => {
-                                                        const newP = [...(checkoutData.problems || []), 'Item baru...'];
-                                                        handleCheckoutChange('problems', newP);
-                                                    }}><Plus size={14} /> Tambah</button>
-                                                </div>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                                    {(checkoutData.problems || []).map((p, idx) => (
-                                                        <div key={idx} className="form-added-item">
-                                                            <input value={p} onChange={(e) => {
-                                                                const newP = [...checkoutData.problems];
-                                                                newP[idx] = e.target.value;
-                                                                handleCheckoutChange('problems', newP);
-                                                            }} style={{ border: 'none', background: 'transparent', padding: 0, fontSize: 13, flex: 1 }} />
-                                                            <button className="btn-remove" onClick={() => {
-                                                                const newP = checkoutData.problems.filter((_, i) => i !== idx);
-                                                                handleCheckoutChange('problems', newP);
-                                                            }}><Trash2 size={14} /></button>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                                    {landingFaq.map((faq, faqIdx) => (
+                                                        <div key={faqIdx} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: 'var(--color-bg)', padding: 12, borderRadius: 12, border: '1px solid var(--color-border)' }}>
+                                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                                                <input 
+                                                                    value={faq.q || ''} 
+                                                                    onChange={e => {
+                                                                        const newFaq = [...landingFaq];
+                                                                        newFaq[faqIdx] = { ...newFaq[faqIdx], q: e.target.value };
+                                                                        setLandingFaq(newFaq);
+                                                                    }} 
+                                                                    placeholder="Pertanyaan..." 
+                                                                    style={{ padding: '8px 12px', fontSize: 13, height: 36, width: '100%', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 8 }} 
+                                                                />
+                                                                <textarea 
+                                                                    value={faq.a || ''} 
+                                                                    onChange={e => {
+                                                                        const newFaq = [...landingFaq];
+                                                                        newFaq[faqIdx] = { ...newFaq[faqIdx], a: e.target.value };
+                                                                        setLandingFaq(newFaq);
+                                                                    }} 
+                                                                    placeholder="Jawaban..." 
+                                                                    rows="2" 
+                                                                    style={{ padding: '8px 12px', fontSize: 13, width: '100%', resize: 'vertical', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 8 }} 
+                                                                />
+                                                            </div>
+                                                            <button 
+                                                                onClick={() => {
+                                                                    const newFaq = landingFaq.filter((_, i) => i !== faqIdx);
+                                                                    setLandingFaq(newFaq.length > 0 ? newFaq : [{ q: '', a: '' }]);
+                                                                }} 
+                                                                style={{ padding: 8, background: 'var(--color-bg-secondary)', border: 'none', borderRadius: 8, color: '#ef4444', cursor: 'pointer' }}
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
                                                         </div>
                                                     ))}
                                                 </div>
+                                                
+                                                <button 
+                                                    className="btn-cms-action" 
+                                                    onClick={() => setLandingFaq(prev => [...prev, { q: '', a: '' }])} 
+                                                    style={{ marginTop: 12, width: '100%', justifyContent: 'center' }}
+                                                >
+                                                    <Plus size={14} /> Tambah FAQ Baru
+                                                </button>
                                             </div>
+
                                         </div>
                                     )}
 
-                                    {/* Section 2: Produk */}
+                                    {/* Step 1: Checkout */}
                                     {activeCheckoutStep === 1 && (
                                         <div className="cms-form-group">
-                                            <h4 className="cms-section-label">Langkah 2: Detail Produk</h4>
-                                            <p style={{ fontSize: 11, color: 'var(--color-text-muted)', fontStyle: 'italic', marginBottom: 15 }}>
-                                                Bagian ini menampilkan detail dari produk yang dipilih pembeli secara dinamis.
-                                            </p>
-                                            <div style={{ padding: 15, background: 'var(--color-bg-secondary)', borderRadius: 12, border: '1px solid var(--color-border)', fontSize: 12 }}>
-                                                💡 Tampilan di preview akan menyesuaikan dengan produk yang Anda pilih di dropdown atas. Data ini disinkronkan langsung dari Katalog Produk.
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Section 3: Penjelasan */}
-                                    {activeCheckoutStep === 2 && (
-                                        <div className="cms-form-group">
-                                            <h4 className="cms-section-label">Langkah 3: Penjelasan</h4>
-                                            <label>Judul Atas (Label)</label>
-                                            <input value={checkoutData.explanationTitle || ''} onChange={(e) => handleCheckoutChange('explanationTitle', e.target.value)} />
-                                            
-                                            <label>Heading Utama</label>
-                                            <input value={checkoutData.explanationHeading || ''} onChange={(e) => handleCheckoutChange('explanationHeading', e.target.value)} />
-
-                                            {/* Journey Steps */}
-                                            <div style={{ marginTop: '20px', padding: '15px', background: 'var(--color-bg-secondary)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
-                                                    <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Langkah Perjalanan (Journey)</h5>
-                                                    <button className="btn-cms-action" onClick={() => {
-                                                        const nextNum = (checkoutData.journeySteps || []).length + 1;
-                                                        const newSteps = [...(checkoutData.journeySteps || []), { num: nextNum, title: 'Langkah Baru', desc: 'Penjelasan singkat.' }];
-                                                        handleCheckoutChange('journeySteps', newSteps);
-                                                    }}><Plus size={14} /> Tambah</button>
-                                                </div>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                                    {(checkoutData.journeySteps || []).map((step, idx) => (
-                                                        <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                                                                <span style={{ fontSize: 11, fontWeight: 700 }}>Langkah #{idx + 1}</span>
-                                                                <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
-                                                                    const newSteps = checkoutData.journeySteps.filter((_, i) => i !== idx);
-                                                                    handleCheckoutChange('journeySteps', newSteps);
-                                                                }}><Trash2 size={14} /></button>
-                                                            </div>
-                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                                                <div style={{ display: 'flex', gap: 10 }}>
-                                                                    <input value={step.num} placeholder="No" onChange={(e) => {
-                                                                        const newSteps = [...checkoutData.journeySteps];
-                                                                        newSteps[idx] = { ...newSteps[idx], num: e.target.value };
-                                                                        handleCheckoutChange('journeySteps', newSteps);
-                                                                    }} style={{ width: 50, padding: '6px', fontSize: '11px' }} />
-                                                                    <input value={step.title} placeholder="Judul" onChange={(e) => {
-                                                                        const newSteps = [...checkoutData.journeySteps];
-                                                                        newSteps[idx] = { ...newSteps[idx], title: e.target.value };
-                                                                        handleCheckoutChange('journeySteps', newSteps);
-                                                                    }} style={{ flex: 1, padding: '6px', fontSize: '11px' }} />
-                                                                </div>
-                                                                <textarea value={step.desc} placeholder="Deskripsi" onChange={(e) => {
-                                                                    const newSteps = [...checkoutData.journeySteps];
-                                                                    newSteps[idx] = { ...newSteps[idx], desc: e.target.value };
-                                                                    handleCheckoutChange('journeySteps', newSteps);
-                                                                }} style={{ padding: '6px', fontSize: '11px', minHeight: '50px' }} />
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                            {/* FAQ Section */}
-                                            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid var(--color-border)' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
-                                                    <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--color-accent)' }}>Tanya Jawab (FAQ)</h5>
-                                                    <button className="btn-cms-action" onClick={() => {
-                                                        const newFaqs = [...(checkoutData.faqs || []), { q: 'Pertanyaan baru?', a: 'Jawaban baru di sini.' }];
-                                                        handleCheckoutChange('faqs', newFaqs);
-                                                    }}><Plus size={14} /> Tambah</button>
-                                                </div>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                                    {(checkoutData.faqs || []).map((faq, idx) => (
-                                                        <div key={idx} style={{ padding: 12, background: 'var(--color-bg)', borderRadius: 10, border: '1px solid var(--color-border)' }}>
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                                                                <span style={{ fontSize: 11, fontWeight: 700 }}>FAQ #{idx + 1}</span>
-                                                                <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => {
-                                                                    const newFaqs = checkoutData.faqs.filter((_, i) => i !== idx);
-                                                                    handleCheckoutChange('faqs', newFaqs);
-                                                                }}><Trash2 size={14} /></button>
-                                                            </div>
-                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                                                                <div>
-                                                                    <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Pertanyaan</label>
-                                                                    <input value={faq.q} onChange={(e) => {
-                                                                        const newFaqs = [...checkoutData.faqs];
-                                                                        newFaqs[idx] = { ...newFaqs[idx], q: e.target.value };
-                                                                        handleCheckoutChange('faqs', newFaqs);
-                                                                    }} style={{ padding: '8px 10px', fontSize: '13px' }} />
-                                                                </div>
-                                                                <div>
-                                                                    <label style={{ fontSize: 10, marginBottom: 4, display: 'block' }}>Jawaban</label>
-                                                                    <textarea value={faq.a} onChange={(e) => {
-                                                                        const newFaqs = [...checkoutData.faqs];
-                                                                        newFaqs[idx] = { ...newFaqs[idx], a: e.target.value };
-                                                                        handleCheckoutChange('faqs', newFaqs);
-                                                                    }} rows="3" style={{ padding: '8px 10px', fontSize: '12px' }} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Section 4: Checkout */}
-                                    {activeCheckoutStep === 3 && (
-                                        <div className="cms-form-group">
-                                            <h4 className="cms-section-label">Langkah 4: Checkout</h4>
-                                            <label>Judul Utama</label>
+                                            <h4 className="cms-section-label">Step 2: Checkout (Konfirmasi)</h4>
+                                            <label>Judul Utama Halaman Checkout</label>
                                             <input value={checkoutData.preCheckoutHeading || ''} onChange={(e) => handleCheckoutChange('preCheckoutHeading', e.target.value)} />
-                                            
-
                                         </div>
                                     )}
                                 </div>

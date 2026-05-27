@@ -49,7 +49,7 @@ export default function Ads({ previewMode = false, customData = null, dbAds, dbP
             return;
         }
 
-        router.get(route('products.detail', product.slug || product.id));
+        router.get(route('products.sales', product.slug || product.id));
     };
 
     const parseList = (data) => typeof data === 'string' ? JSON.parse(data) : (data || []);
